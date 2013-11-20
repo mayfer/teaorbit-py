@@ -11,6 +11,8 @@
         <script type="text/javascript" src="{{ STATIC_URL }}scripts/network.js"></script>
 		<script type='text/javascript'>
 
+            window.networking = null;
+
             window.last_id = 0;
             window.latitude = null;
             window.longitude = null;
@@ -31,11 +33,12 @@
             }
             
 			$(document).ready(function(){
-                window.network = Networking();
                 window.ui = UI;
                 window.ui.init();
                 $('#type-here').focus();
                 navigator.geolocation.getCurrentPosition(function(position){
+                    window.network = Networking();
+
                     window.latitude = position.coords.latitude;
                     window.longitude = position.coords.longitude;
                     window.gps_accuracy = position.coords.accuracy;

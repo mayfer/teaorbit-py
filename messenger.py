@@ -25,13 +25,13 @@ class Connection(SockJSConnection):
     def on_message(self, text):
         message = json_decode(text)
         if message['action'] == 'get_spiels':
-            session = message['body']['session']
-            latitude = message['body']['latitude']
-            longitude = message['body']['longitude']
+            session = message['session']
+            latitude = message['body'].get('latitude', 0);
+            longitude = message['body'].get('longitude', 0);
             spiels = self.get_state_since(message['body']['since'], latitude, longitude)
             self.send_obj('spiels', spiels)
         if message['action'] == 'post_spiel':
-            session = message['body']['session']
+            session = message['session']
             name = message['body']['name']
             spiel = message['body']['spiel']
             latitude = message['body']['latitude']

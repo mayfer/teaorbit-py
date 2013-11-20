@@ -1,6 +1,7 @@
 function Networking() {
     var that = this;
-    var session_id;
+
+    this.session_id = '';
 
     this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
@@ -13,8 +14,9 @@ function Networking() {
 
         // initial login
         if(message.action == 'session') {
-            session_id = message.body.session_id;
+            this.session_id = message.body.session_id;
             console.log("Logged in, session ID: " + session_id);
+            that.send('get_spiels', {'since': window.last_id});
         }
 
         // chat state
@@ -35,6 +37,7 @@ function Networking() {
         var json_data = JSON.stringify({
             'action': action,
             'body': body,
+            'session': this.session_id,
         })
         this.sock.send(json_data);
     }

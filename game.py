@@ -1,10 +1,12 @@
 from random import choice
 from common import json_encode
+from db import History
 
 class GameState(object):
 
     def __init__(self):
         self.players = {}
+        self.history = History()
         print "Blank game initiated"
 
     def add_player(self, session_id):
