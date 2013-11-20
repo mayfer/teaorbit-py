@@ -13,7 +13,6 @@ class Connection(SockJSConnection):
         self.broadcast_text("{id} joined.".format(id=sessid))
 
         self.send_obj('session', {'session_id': sessid})
-        self.send_obj('spiels', {'session_id': sessid})
 
         # Add client to the clients list
         self.participants.add(self)
@@ -25,13 +24,14 @@ class Connection(SockJSConnection):
 
     def on_message(self, text):
         message = json_decode(text)
-        if message['action'] == 'get':
-            player = message['body']['session']
-            spiels = self.get_state_since(message['body']['since'])
+        if message['action'] == 'get_spiels':
+            session = message['body']['session']
+            latitude = message['body']['latitude']
+            longitude = message['body']['longitude']
+            spiels = self.get_state_since(message['body']['since'], latitude, longitude)
             self.send_obj('spiels', spiels)
         if message['action'] == 'post_spiel':
-            print message
-            player = message['body']['session']
+            session = message['body']['session']
             name = message['body']['name']
             spiel = message['body']['spiel']
             latitude = message['body']['latitude']
@@ -53,8 +53,16 @@ class Connection(SockJSConnection):
     def send_obj(self, action, obj):
         self.send(json_encode({'action': action, 'body': obj}))
 
-    def notify_recipients():
-        pass
+    def notify_recipients(self, name, spiel, latitude, longitude):
+        recipients = self.participants
+        json_message = json_encode({
+            'action': 'new_post',
+            'body': {
+                'name': name,
+                'spiel': spiel,
+            }
+        })
+        self.broadcast(recipients, json_message)
 
     def broadcast_text(self, text):
         json_message = json_encode({'action': 'log', 'body': {'message': text}})
@@ -63,10 +71,10 @@ class Connection(SockJSConnection):
     def send_state(self):
         self.send_obj('state', self.game_state.dictify())
 
-    def get_state_since(self, since_id):
+    def get_state_since(self, since_id, latitude, longitude):
         spiels = [
-            'Test',
-            'Hllo Wrld',
+            {'name': 'Muratti', 'spiel': 'Ratatat'},
+            {'name': 'sup', 'spiel': 'Hllo Wrld'},
         ]
         return spiels
 

@@ -10,7 +10,6 @@
         <script type="text/javascript" src="{{ STATIC_URL }}scripts/ui.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}scripts/network.js"></script>
 		<script type='text/javascript'>
-            window.network = Networking();
 
             window.last_id = 0;
             window.latitude = null;
@@ -21,17 +20,6 @@
                 $(document).scrollTop($(document).height());
             }
 
-            function init() {
-                navigator.geolocation.getCurrentPosition(function(position){
-                    window.latitude = position.coords.latitude;
-                    window.longitude = position.coords.longitude;
-                    window.gps_accuracy = position.coords.accuracy;
-
-                    $('#post input[type="text"]').prop('disabled', false);
-                    $('#type-here').focus();
-                    get_messages();
-                });
-            }
             function get_messages(last_id) {
                 if(last_id == undefined) last_id = 0;
                 var postdata = {
@@ -43,28 +31,17 @@
             }
             
 			$(document).ready(function(){
-                init();
-                $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+                window.network = Networking();
+                window.ui = UI;
+                window.ui.init();
+                $('#type-here').focus();
+                navigator.geolocation.getCurrentPosition(function(position){
+                    window.latitude = position.coords.latitude;
+                    window.longitude = position.coords.longitude;
+                    window.gps_accuracy = position.coords.accuracy;
 
-                $('#post form').on('submit', function(e){
-                    e.preventDefault();
-                    var latitude = window.latitude;
-                    var longitude = window.longitude;
-                    var accuracy = window.gps_accuracy;
-                    
-                    if(!latitude || !longitude) {
-                        alert("No location data. Please allow the browser geolocation access.");
-                    } else if(accuracy > 200) {
-                        alert("Location data not accurate enough.");
-                    } else {
-                        $(this).find('input[name="latitude"]').val(latitude);
-                        $(this).find('input[name="longitude"]').val(longitude);
-                        $(this).find('input[name="session"]').val(window.network.session_id);
-                        var form = $(this).serializeJSON();
-                        window.network.send('post_spiel', form);
-
-                        $(this).find('input[name="message"]').val('');
-                    }
+                    $('#loader').hide();
+                    get_messages();
                 });
 			});
 		</script>
@@ -72,6 +49,9 @@
             body, html { background: #333; margin: 0; padding: 0; color: #aaa; font-family: Arial; }
             a, a:visited { color: #fff; text-decoration: none; }
             a:hover { border-bottom: 1px solid #666; }
+
+            #loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.3); height: 100%; width: 100%; text-align: center; }
+            #loader .loader-icon { position: absolute; line-height: 100px; top: 50%; margin-top: -50px; left: 50%; margin-left: -200px; width: 400px; background: rgba(255,255,255,0.5); font-size: 30px; color: #fff; text-shadow: 2px 2px 0 #000; box-shadow: 2px 2px 0 #000; }
 
             #header { position: fixed; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px;}
@@ -114,11 +94,14 @@
                         <input type='hidden' name='longitude' value='0' />
                         <input type='hidden' name='last_id' value='0' />
                         <input type='hidden' name='session' value='' />
-                        <input type='text' name='spiel' disabled='disabled' id='type-here' placeholder='Type your message' />
+                        <input type='text' name='spiel' id='type-here' placeholder='Type your message' />
                         <input type='submit' value='Send' id='submit' />
                     </form>
                 </div>
             </div>
+        </div>
+        <div id='loader'>
+            <div class='loader-icon'>Getting location...</div>
         </div>
         <!--
 		<script type="text/javascript">

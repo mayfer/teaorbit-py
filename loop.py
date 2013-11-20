@@ -31,6 +31,7 @@ def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
 
     main_loop = tornado.ioloop.IOLoop.instance()
 
+    print "Reloader", use_reloader
     if use_reloader:
         # Use tornado reload to handle IOLoop restarting.
         from tornado import autoreload
