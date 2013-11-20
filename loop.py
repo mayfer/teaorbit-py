@@ -36,6 +36,9 @@ def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
         # Use tornado reload to handle IOLoop restarting.
         from tornado import autoreload
         autoreload.start()
+        for (path, dirs, files) in os.walk(os.path.join(FILE_ROOT, 'templates')):
+            for item in files:
+                tornado.autoreload.watch(os.path.join(path, item))
 
     try:
         print "Runing on :{port}".format(port=port)
