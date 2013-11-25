@@ -24,5 +24,5 @@ def unix_now():
     return datetime_to_unix(datetime.utcnow().replace(tzinfo=utc))
 
 def datetime_now():
-    return detetime.utcnow().replace(tzinfo=utc)
+    return datetime.utcnow().replace(tzinfo=utc)
 

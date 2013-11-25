@@ -30,7 +30,7 @@ class Connection(SockJSConnection):
         if message['action'] == 'get_spiels':
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
-            spiels = self.get_state_since(message['body']['since'], latitude, longitude)
+            spiels = self.get_spiels(latitude, longitude)
             for spiel in spiels:
                 self.send_obj(spiel)
         if message['action'] == 'post_spiel':
@@ -41,6 +41,7 @@ class Connection(SockJSConnection):
             date = unix_now()
             spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
             self.notify_recipients(spiel_dto)
+            self.game_state.post_spiel(spiel_dto)
 
     def on_close(self):
         sessid = self.session.session_id
@@ -67,10 +68,7 @@ class Connection(SockJSConnection):
         json_message = json_encode({'action': 'log', 'body': {'message': text}})
         self.broadcast(self.participants, json_message)
 
-    def get_state_since(self, since_id, latitude, longitude):
-        spiels = [
-            Spiel(name='murat', spiel='wat di fak'),
-            Spiel(name='huseyin', spiel='vallahi billahi'),
-        ]
+    def get_spiels(self, latitude, longitude):
+        spiels = self.game_state.get_spiels(latitude, longitude)
         return spiels
 

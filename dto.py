@@ -36,6 +36,11 @@ class DTO:
     def json(self):
         return recursive_json(self)
 
+    @classmethod
+    def from_json(cls, json_text):
+        kwargs = json_decode(json_text)
+        return cls(**kwargs)
+
 class Response(DTO):
     def __init__(self, action=None, body=None, errors=None):
         self.action = action
