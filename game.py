@@ -1,60 +1,29 @@
 from random import choice
 from common import json_encode
 from db import History
+from geo import Geo
 
 class GameState(object):
 
     def __init__(self):
         self.players = {}
         self.history = History()
-        print "Blank game initiated"
+        self.geo = Geo()
+        print "Blank world initiated"
 
     def add_player(self, session_id):
-        player = Player(session_id)
-        self.players[session_id] = player
+        self.players[session_id] = True
         return player
 
     def remove_player(self, session_id):
         del self.players[session_id]
 
     def post_spiel(self, spiel):
-        self.history.append(spiel)
+        block_id = self.geo.get_block_id(spiel.latitude, spiel.longitude)
+        self.history.insert_spiel(block_id, spiel)
 
+    def get_spiels(self, since_timestamp, latitude, longitude):
+        block_id = self.geo.get_block_id(latitude, longitude):
+        self.history.get_spiels(block_id, since_timestamp)
 
-class Player(object):
-
-    def __init__(self, session_id):
-        self.id = session_id
-        self.color = self.generate_color()
-
-    def generate_color(self):
-        return "#ffffff"
-
-    def set_location(self, latitude, longitude):
-        self.latitude = latitude
-        self.longitude = longitude
-
-    def dictify(self):
-        return {
-            'id': self.id,
-            'color': self.color,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-        }
-
-class Spiel(object):
-    def __init__(self):
-        # Initial starting position of hat defined here.
-        self.position = Position(700, 700)
-        self.owner = None
-
-    def dictify(self):
-        return {
-            'owner': self.owner,
-            'latitude': self.latitude,
-            'y': self.longitude
-        }
-
-    def json(self):
-        return json_encode(self.dictify())
 
