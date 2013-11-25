@@ -8,11 +8,11 @@ function Networking() {
     var that = this;
 
     this.session_id = '';
-    this.updates_uri = '/updates';
 
-    this.sock = new SockJS(this.updates_uri);
+    this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
         console.log('Connected');
+        window.ui.reset();
     };
     this.sock.onmessage = function(e) {
         //console.log('message', e.data);

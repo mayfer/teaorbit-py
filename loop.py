@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# disable .pyc files
+import sys
+sys.dont_write_bytecode = True
+
 import daemon
 from optparse import make_option, OptionParser
 from messenger import Connection
@@ -11,6 +15,8 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 
 STATIC_URL = '/static/'
 FILE_ROOT = os.path.dirname(__file__)
+
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -31,7 +37,6 @@ def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
 
     main_loop = tornado.ioloop.IOLoop.instance()
 
-    print "Reloader", use_reloader
     if use_reloader:
         # Use tornado reload to handle IOLoop restarting.
         from tornado import autoreload

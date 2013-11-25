@@ -20,7 +20,6 @@ class Connection(SockJSConnection):
         self.participants.add(self)
         self.game_state.add_player(sessid)
 
-        self.debug()
         #periodic = ioloop.PeriodicCallback(self.send_state, 50)
         #periodic.start()
 
@@ -49,10 +48,9 @@ class Connection(SockJSConnection):
         self.game_state.remove_player(sessid)
         self.participants.remove(self)
         self.broadcast_text("{id} left.".format(id=sessid))
-        self.debug()
 
-    def debug(self):
-        print self.game_state.__dict__
+    def debug(self, log):
+        print log
 
     def response(self, dto):
         return Response(action=dto._action, body=dto).json()

@@ -10,7 +10,6 @@ class GameState(object):
         self.players = {}
         self.history = History()
         self.geo = Geo()
-        print "Blank world initiated"
 
     def add_player(self, session_id):
         self.players[session_id] = True

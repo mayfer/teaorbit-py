@@ -3,12 +3,6 @@ from common import json_encode, json_decode
 from decimal import Decimal
 
 def recursive_json(obj):
-    """Represent instance of a class as JSON.
-    Arguments:
-    obj -- any object
-    Return:
-    String that reprent JSON-encoded object.
-    """
     def serialize(obj):
         """Recursively walk object's hierarchy."""
         if isinstance(obj, (bool, int, long, float, basestring)) or obj is None:
@@ -25,6 +19,7 @@ def recursive_json(obj):
         elif isinstance(obj, tuple):
             return tuple(serialize([item for item in obj]))
         elif hasattr(obj, '__dict__'):
+            # filter private attrs
             return serialize(dict([(key, val) for key, val in obj.__dict__.items() if not key.startswith('_')]))
         else:
             return repr(obj) # convert to string
@@ -32,7 +27,6 @@ def recursive_json(obj):
 
 
 class DTO:
-
     def json(self):
         return recursive_json(self)
 

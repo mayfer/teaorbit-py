@@ -49,5 +49,9 @@ function UI() {
         $(document).scrollTop($(document).height());
     }
 
+    this.reset = function() {
+        $('#chat .inner').html('');
+    }
+
     return this;
 }
