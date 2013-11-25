@@ -78,18 +78,20 @@ def init():
         make_option('--daemonize', action='store_true',
             dest='daemonize', default=False,
             help="Run tornado in the background."),
+        make_option('--port', action='store',
+            dest='port', default='8001',
+            help="Port to listen."),
     )
     parser = OptionParser(option_list=option_list)
     (options, args) = parser.parse_args()
 
     help = "Starts a Tornado Web."
     addr = '0.0.0.0'
-    port = '8001'
 
-    if not port.isdigit():
+    if not options.port.isdigit():
         raise CommandError("%r is not a valid port number." % port)
 
-    runloop(addr, port, options.xheaders, options.no_keep_alive, options.use_reloader, options.daemonize)
+    runloop(addr, options.port, options.xheaders, options.no_keep_alive, options.use_reloader, options.daemonize)
 
 
 if __name__ == "__main__":
