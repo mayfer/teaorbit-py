@@ -8,8 +8,9 @@ function Networking() {
     var that = this;
 
     this.session_id = '';
+    this.updates_uri = '/updates';
 
-    this.sock = new SockJS('/updates');
+    this.sock = new SockJS(this.updates_uri);
     this.sock.onopen = function() {
         console.log('Connected');
     };
@@ -38,6 +39,10 @@ function Networking() {
     };
     this.sock.onclose = function() {
         console.log('Connection closed');
+        this.retry_interval = window.setTimeout(function () {
+            console.log('Retrying...');
+            window.networking = new Networking();
+        }, 2000);
     };
     this.send = function(action, body) {
         var json_data = JSON.stringify({
