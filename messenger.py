@@ -1,7 +1,24 @@
 from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState, Player
-from common import json_encode, json_decode
+from common import json_encode, json_decode, unix_now
+from dto import DTO, Response
+
+class Session(DTO):
+    _action = 'session'
+
+    def __init__(self, session_id):
+        self.session_id = session_id
+
+class Spiel(DTO):
+    _action = 'new_spiel'
+
+    def __init__(self, name='', spiel='', latitude=0, longitude=0, date=None):
+        self.name = name
+        self.spiel = spiel
+        self.latitude = latitude
+        self.longitude = longitude
+        self.date = date
 
 class Connection(SockJSConnection):
     participants = set()
@@ -9,10 +26,11 @@ class Connection(SockJSConnection):
 
     def on_open(self, info):
         sessid = self.session.session_id
+        self.session_id = sessid
         # Send that someone joined
         self.broadcast_text("{id} joined.".format(id=sessid))
 
-        self.send_obj('session', {'session_id': sessid})
+        self.send_obj(Session(sessid))
 
         # Add client to the clients list
         self.participants.add(self)
@@ -24,20 +42,21 @@ class Connection(SockJSConnection):
 
     def on_message(self, text):
         message = json_decode(text)
+        session = message['session']
         if message['action'] == 'get_spiels':
-            session = message['session']
-            latitude = message['body'].get('latitude', 0);
-            longitude = message['body'].get('longitude', 0);
+            latitude = message['body'].get('latitude', 0)
+            longitude = message['body'].get('longitude', 0)
             spiels = self.get_state_since(message['body']['since'], latitude, longitude)
-            self.send_obj('spiels', spiels)
+            for spiel in spiels:
+                self.send_obj(spiel)
         if message['action'] == 'post_spiel':
-            session = message['session']
             name = message['body']['name']
             spiel = message['body']['spiel']
-            latitude = message['body']['latitude']
-            longitude = message['body']['longitude']
-            self.send_obj('ack', {'something': 'worked'})
-            self.notify_recipients(name, spiel, latitude, longitude)
+            latitude = message['body'].get('latitude', 0)
+            longitude = message['body'].get('longitude', 0)
+            date = unix_now()
+            spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
+            self.notify_recipients(spiel_dto)
 
     def on_close(self):
         sessid = self.session.session_id
@@ -50,31 +69,24 @@ class Connection(SockJSConnection):
     def debug(self):
         print self.game_state.__dict__
 
-    def send_obj(self, action, obj):
-        self.send(json_encode({'action': action, 'body': obj}))
+    def response(self, dto):
+        return Response(action=dto._action, body=dto).json()
 
-    def notify_recipients(self, name, spiel, latitude, longitude):
+    def send_obj(self, dto):
+        self.send(self.response(dto))
+
+    def notify_recipients(self, spiel):
         recipients = self.participants
-        json_message = json_encode({
-            'action': 'new_post',
-            'body': {
-                'name': name,
-                'spiel': spiel,
-            }
-        })
-        self.broadcast(recipients, json_message)
+        self.broadcast(recipients, self.response(spiel))
 
     def broadcast_text(self, text):
         json_message = json_encode({'action': 'log', 'body': {'message': text}})
         self.broadcast(self.participants, json_message)
 
-    def send_state(self):
-        self.send_obj('state', self.game_state.dictify())
-
     def get_state_since(self, since_id, latitude, longitude):
         spiels = [
-            {'name': 'Muratti', 'spiel': 'Ratatat'},
-            {'name': 'sup', 'spiel': 'Hllo Wrld'},
+            Spiel(name='murat', spiel='wat di fak'),
+            Spiel(name='huseyin', spiel='vallahi billahi'),
         ]
         return spiels
 

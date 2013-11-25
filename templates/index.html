@@ -18,22 +18,8 @@
             window.longitude = null;
             window.gps_accuracy = null;
 
-            function scroll() {
-                $(document).scrollTop($(document).height());
-            }
-
-            function get_messages(last_id) {
-                if(last_id == undefined) last_id = 0;
-                var postdata = {
-                    latitude: window.latitude,
-                    longitude: window.longitude,
-                    last_id: last_id,
-                };
-
-            }
-            
 			$(document).ready(function(){
-                window.ui = UI;
+                window.ui = new UI();
                 window.ui.init();
                 $('#type-here').focus();
                 navigator.geolocation.getCurrentPosition(function(position){
@@ -44,7 +30,6 @@
                     window.gps_accuracy = position.coords.accuracy;
 
                     $('#loader').hide();
-                    get_messages();
                 });
 			});
 		</script>
@@ -86,7 +71,6 @@
 			</div>
 			<div id='chat'>
 				<div class='inner'>
-                    <div id='loading'>loading...</div>
                 </div>
 			</div>
             <div id='post'>

@@ -27,7 +27,7 @@ class Player(object):
         self.id = session_id
         self.color = self.generate_color()
 
-    def generate_color():
+    def generate_color(self):
         return "#ffffff"
 
     def set_location(self, latitude, longitude):

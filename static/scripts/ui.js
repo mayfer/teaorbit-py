@@ -1,6 +1,7 @@
-UI = {
+function UI() {
+    var this_ui = this;
 
-    init: function() {
+    this.init = function() {
         $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
         $('#post form').on('submit', function(e){
@@ -20,33 +21,33 @@ UI = {
                 var form = $(this).serializeJSON();
                 window.network.send('post_spiel', form);
 
-                $(this).find('input[name="message"]').val('');
+                $(this).find('input[name="spiel"]').val('');
             }
         });
-    },
+    }
 
-    add_messages: function(messages) {
+    this.add_spiel = function(spiel) {
         var chat = $('#chat .inner');
-        for(var i=0; i<messages.length; i++) {
-            var row = $('<div>').addClass('row');
-            var date = new Date(messages[i].date*1000);
-            var datestring = date.toLocaleString()
-            var message;
-            if(messages[i].name) {
-                message = "<span class='name'>" + escapeHtml(messages[i].name) + "</span> " + escapeHtml(messages[i].message);
-            } else {
-                message = escapeHtml(messages[i].message);
-            }
-            row.append( $('<div>').addClass('message').html(message) );
-            row.append( $('<div>').addClass('date').attr('title', datestring).html(messages[i].date) );
-            chat.append(row);
-            $('.date').timeago();
-        }
-        if(messages.length > 0) {
-            window.last_id = messages[messages.length-1].id;
+        var row = $('<div>').addClass('row');
+        var date = new Date(spiel.date*1000);
+        var datestring = date.toLocaleString()
+        var text;
+        if(spiel.name) {
+            text = "<span class='name'>" + escapeHtml(spiel.name) + "</span> " + escapeHtml(spiel.spiel);
         } else {
-            window.last_id = 0;
+            text = escapeHtml(spiel.spiel);
         }
-        scroll();
-    },
+        row.append( $('<div>').addClass('message').html(text) );
+        row.append( $('<div>').addClass('date').attr('title', datestring).html(spiel.date) );
+        chat.append(row);
+        $('.date').timeago();
+        window.last_id = spiel.id;
+        this_ui.scroll();
+    }
+
+    this.scroll = function() {
+        $(document).scrollTop($(document).height());
+    }
+
+    return this;
 }

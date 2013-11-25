@@ -1,3 +1,9 @@
+function Spiel() {
+    
+    return this;
+}
+
+
 function Networking() {
     var that = this;
 
@@ -22,7 +28,7 @@ function Networking() {
         // chat state
         if(message.action == 'new_spiel') {
             var spiel = message.body;
-            UI.add_spiel(spiel);
+            window.ui.add_spiel(spiel);
         }
 
         // general activity log
