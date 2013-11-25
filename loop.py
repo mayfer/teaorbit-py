@@ -47,7 +47,7 @@ def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
                 tornado.autoreload.watch(os.path.join(path, item))
 
     try:
-        print "Runing on :{port}".format(port=port)
+        print "*** [success] Runing on :{port}".format(port=port)
         if daemonize is True:
             log = open('tornado.log', 'a+')
             ctx = daemon.DaemonContext(stdout=log, stderr=log, working_directory='.')

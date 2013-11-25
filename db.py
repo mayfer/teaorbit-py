@@ -23,7 +23,7 @@ class History(object):
             # test connection
             self.redis.client_list()
         except:
-            print "*** Can't connect to Redis, using a fall-back in-memory database."
+            print "*** [notice] Can't connect to Redis, using a fall-back in-memory database."
             self.redis = FakeRedis()
 
     def insert_spiel(self, block_id, spiel_json, timestamp):
