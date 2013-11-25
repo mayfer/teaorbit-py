@@ -13,7 +13,6 @@ class GameState(object):
 
     def add_player(self, session_id):
         self.players[session_id] = True
-        return player
 
     def remove_player(self, session_id):
         del self.players[session_id]
@@ -23,7 +22,7 @@ class GameState(object):
         self.history.insert_spiel(block_id, spiel)
 
     def get_spiels(self, since_timestamp, latitude, longitude):
-        block_id = self.geo.get_block_id(latitude, longitude):
+        block_id = self.geo.get_block_id(latitude, longitude)
         self.history.get_spiels(block_id, since_timestamp)
 
 

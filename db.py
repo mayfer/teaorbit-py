@@ -1,5 +1,5 @@
 from redis import Redis
-from messenger import Spiel
+from dto import Spiel
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
 

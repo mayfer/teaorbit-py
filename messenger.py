@@ -1,24 +1,8 @@
 from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
-from game import GameState, Player
+from game import GameState
 from common import json_encode, json_decode, unix_now
-from dto import DTO, Response
-
-class Session(DTO):
-    _action = 'session'
-
-    def __init__(self, session_id):
-        self.session_id = session_id
-
-class Spiel(DTO):
-    _action = 'new_spiel'
-
-    def __init__(self, name='', spiel='', latitude=0, longitude=0, date=None):
-        self.name = name
-        self.spiel = spiel
-        self.latitude = latitude
-        self.longitude = longitude
-        self.date = date
+from dto import DTO, Response, Spiel, Session
 
 class Connection(SockJSConnection):
     participants = set()
