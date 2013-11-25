@@ -25,7 +25,7 @@ def recursive_json(obj):
         elif isinstance(obj, tuple):
             return tuple(serialize([item for item in obj]))
         elif hasattr(obj, '__dict__'):
-            return serialize(obj.__dict__)
+            return serialize(dict([(key, val) for key, val in obj.__dict__.items() if not key.startswith('_')]))
         else:
             return repr(obj) # convert to string
     return json_encode(serialize(obj))
@@ -59,7 +59,7 @@ class Spiel(DTO):
     def __init__(self, name='', spiel='', latitude=0, longitude=0, date=None):
         self.name = name
         self.spiel = spiel
-        self.latitude = latitude
-        self.longitude = longitude
         self.date = date
+        self._latitude = latitude
+        self._longitude = longitude
 

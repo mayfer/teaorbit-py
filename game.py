@@ -19,7 +19,7 @@ class GameState(object):
         del self.players[session_id]
 
     def post_spiel(self, spiel):
-        block_id = self.geo.get_block_id(spiel.latitude, spiel.longitude)
+        block_id = self.geo.get_block_id(spiel._latitude, spiel._longitude)
         self.history.insert_spiel(block_id, spiel.json(), spiel.date)
 
     def get_spiels(self, latitude, longitude):
