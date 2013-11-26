@@ -4,7 +4,7 @@ from decimal import Decimal
 
 def recursive_json(obj):
     def serialize(obj):
-        """Recursively walk object's hierarchy."""
+        # recursively walk object's hierarchy
         if isinstance(obj, (bool, int, long, float, basestring)) or obj is None:
             return obj
         elif isinstance(obj, Decimal):
@@ -25,7 +25,7 @@ def recursive_json(obj):
             return repr(obj) # convert to string
     return json_encode(serialize(obj))
 
-
+# data transfer object. defines attributes and serializes to json.
 class DTO:
     def json(self):
         return recursive_json(self)
@@ -50,10 +50,15 @@ class Session(DTO):
 class Spiel(DTO):
     _action = 'new_spiel'
 
-    def __init__(self, name='', spiel='', latitude=0, longitude=0, date=None):
+    def __init__(self, name='', spiel='', latitude=49.15, longitude=123.88, date=None):
         self.name = name
         self.spiel = spiel
         self.date = date
         self._latitude = latitude
         self._longitude = longitude
 
+class Block(DTO):
+    _action = 'block'
+
+    def __init__(self, block_id):
+        self.block_id = block_id

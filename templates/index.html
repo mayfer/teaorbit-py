@@ -44,7 +44,9 @@
 
             #header { position: fixed; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px;}
-            #header .about { float: right; line-height: 50px; padding-right: 20px; }
+            #show-map { float: right; line-height: 50px; padding-right: 20px; }
+            #show-map:hover { border: none; }
+            #show-map .about span { font-size: 12px; line-height: 50px; display: inline-block; }
 
             #post { position: fixed; bottom: 0; left: 0; background: #000; width: 100%; }
             #post .inner { margin: 20px; position: relative; }
@@ -62,12 +64,15 @@
             #chat .name { color: #888; }
             #chat .name:before { content: "[" }
             #chat .name:after { content: "] " }
+
+            img#map { display: inline-block; width: 25px; height: 25px; }
+
         </style>
 	</head>
 	<body>
 		<div id='container'>
             <div id='header'>
-                <div class='about'>you are seeing posts from everyone.</div>
+                <a id='show-map'><img id='map' align='middle' /><span>Show coverage map</span></a>
                 <h1><a href='/'>tea orbit</a></h1>
 			</div>
 			<div id='chat'>

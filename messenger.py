@@ -2,11 +2,11 @@ from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now
-from dto import DTO, Response, Spiel, Session
+from dto import DTO, Response, Spiel, Session, Block
 
 class Connection(SockJSConnection):
     participants = set()
-    game_state = GameState()
+    game = GameState()
 
     def on_open(self, info):
         sessid = self.session.session_id
@@ -18,7 +18,7 @@ class Connection(SockJSConnection):
 
         # Add client to the clients list
         self.participants.add(self)
-        self.game_state.add_player(sessid)
+        self.game.add_player(sessid)
 
         #periodic = ioloop.PeriodicCallback(self.send_state, 50)
         #periodic.start()
@@ -30,8 +30,12 @@ class Connection(SockJSConnection):
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
             spiels = self.get_spiels(latitude, longitude)
+
             for spiel in spiels:
                 self.send_obj(spiel)
+
+            block_id = self.game.get_block_id(latitude, longitude)
+            self.send_obj(Block(block_id))
         if message['action'] == 'post_spiel':
             name = message['body']['name']
             spiel = message['body']['spiel']
@@ -40,12 +44,12 @@ class Connection(SockJSConnection):
             date = unix_now()
             spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
             self.notify_recipients(spiel_dto)
-            self.game_state.post_spiel(spiel_dto)
+            self.game.post_spiel(spiel_dto)
 
     def on_close(self):
         sessid = self.session.session_id
         # Remove client from the clients list and broadcast leave message
-        self.game_state.remove_player(sessid)
+        self.game.remove_player(sessid)
         self.participants.remove(self)
         self.broadcast_text("{id} left.".format(id=sessid))
 
@@ -67,6 +71,6 @@ class Connection(SockJSConnection):
         self.broadcast(self.participants, json_message)
 
     def get_spiels(self, latitude, longitude):
-        spiels = self.game_state.get_spiels(latitude, longitude)
+        spiels = self.game.get_spiels(latitude, longitude)
         return spiels
 

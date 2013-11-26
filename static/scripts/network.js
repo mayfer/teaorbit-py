@@ -22,8 +22,8 @@ function Networking() {
         // initial login
         if(message.action == 'session') {
             this.session_id = message.body.session_id;
-            console.log("Logged in, session ID: " + session_id);
-            that.send('get_spiels', {'since': window.last_id});
+            console.log("Logged in, session ID: " + this.session_id);
+            that.send('get_spiels', {'latitude': window.latitude, 'longitude': window.longitude});
         }
 
         // chat state
@@ -35,6 +35,13 @@ function Networking() {
         // general activity log
         if(message.action == 'log') {
             console.log("Log: " + message.body.message);
+        }
+
+        // area info
+        if(message.action == 'block') {
+            var block_id = message.body.block_id;
+            console.log("Block ID: " + block_id);
+            window.ui.set_map_url("https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000aa|fillcolor:0x6666ff|weight:5|"+block_id+"&size=512x512&sensor=false");
         }
     };
     this.sock.onclose = function() {
