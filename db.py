@@ -21,8 +21,8 @@ class History(object):
         try:
             self.redis = Redis(host='localhost', port=6379, db=0, password=None, socket_timeout=None, connection_pool=None, charset='utf-8', errors='strict', decode_responses=False, unix_socket_path=None)
             # test connection
-            self.redis.client_list()
-        except:
+            self.redis.ping()
+        except ConnectionError:
             print "*** [notice] Can't connect to Redis, using a fall-back in-memory database."
             self.redis = FakeRedis()
 
