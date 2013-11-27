@@ -35,7 +35,7 @@
 			});
 		</script>
         <style type='text/css'>
-            body, html { background: #333; margin: 0; padding: 0; color: #aaa; font-family: Arial; }
+            body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: Arial; position: relative; }
             a, a:visited { color: #fff; text-decoration: none; }
             a:hover { border-bottom: 1px solid #666; }
 
@@ -44,8 +44,8 @@
 
             #header { position: fixed; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px;}
-            #show-map { float: right; line-height: 50px; padding-right: 20px; }
-            #show-map:hover { border: none; }
+            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 10px; }
+            #show-map:hover, #show-map.show { border: none; background: #777; }
             #show-map .about span { font-size: 12px; line-height: 50px; display: inline-block; }
 
             #post { position: fixed; bottom: 0; left: 0; background: #000; width: 100%; }
@@ -65,14 +65,17 @@
             #chat .name:before { content: "[" }
             #chat .name:after { content: "] " }
 
-            img#map { display: inline-block; width: 25px; height: 25px; }
+            #header img.map { display: inline-block; width: 25px; height: 25px; vertical-align: middle; margin: 12px; }
+            #map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; }
+            #map-expanded { display: none; position: absolute; top: 0; right: 0; background: #777; padding: 20px; text-align: center; }
+            #map-expanded.show { display: block; }
 
         </style>
 	</head>
 	<body>
 		<div id='container'>
             <div id='header'>
-                <a id='show-map'><img id='map' align='middle' /><span>Show coverage map</span></a>
+                <a id='show-map' href='#'><img class='map' align='middle' />Show coverage map</a>
                 <h1><a href='/'>tea orbit</a></h1>
 			</div>
 			<div id='chat'>
@@ -112,5 +115,9 @@
 		
 		</script>
         -->
+        <div id='map-expanded'>
+            <div>You are seeing messages from the area shown<div>
+            <div><img class='map' /></div>
+        </div>
 	</body>
 </html>

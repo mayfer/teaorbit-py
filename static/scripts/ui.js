@@ -24,6 +24,11 @@ function UI() {
                 $(this).find('input[name="spiel"]').val('');
             }
         });
+
+        $('#show-map').click(function(e){
+            e.preventDefault();
+            this_ui.toggle_map();
+        });
     }
 
     this.add_spiel = function(spiel) {
@@ -53,7 +58,11 @@ function UI() {
         $('#chat .inner').html('');
     }
     this.set_map_url = function(url) {
-        $('#map').attr('src', url);
+        $('.map').attr('src', url);
+    }
+    this.toggle_map = function() {
+        $('#map-expanded').toggleClass('show');
+        $('#show-map').toggleClass('show');
     }
 
     return this;
