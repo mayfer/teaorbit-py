@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-	<head>
+    <head>
         <link rel='shortcut icon' href='#' />
-		<title>tea orbit</title>
-		<script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.min.js'></script>
-		<script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.timeago.min.js'></script>
-		<script type='text/javascript' src='{{ STATIC_URL }}scripts/modernizr.min.js'></script>
-		<script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js'></script>
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+
+        <title>tea orbit</title>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.timeago.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/modernizr.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js'></script>
         <script type="text/javascript" src="{{ STATIC_URL }}scripts/sockjs.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}scripts/ui.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}scripts/network.js"></script>
-		<script type='text/javascript'>
+        <script type='text/javascript'>
 
             window.networking = null;
 
@@ -19,7 +21,7 @@
             window.longitude = null;
             window.gps_accuracy = null;
 
-			$(document).ready(function(){
+            $(document).ready(function(){
                 window.ui = new UI();
                 window.ui.init();
                 $('#type-here').focus();
@@ -32,21 +34,27 @@
 
                     $('#loader').hide();
                 });
-			});
-		</script>
+            });
+        </script>
         <style type='text/css'>
             body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: Arial; position: relative; }
-            @media all and (max-width: 1001px) {
-                body, html { width: 600px; }
-            }
             a, a:visited { color: #fff; text-decoration: none; }
             a:hover { border-bottom: 1px solid #666; }
 
             #loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.3); height: 100%; width: 100%; text-align: center; }
             #loader .loader-icon { position: absolute; line-height: 100px; top: 50%; margin-top: -50px; left: 50%; margin-left: -200px; width: 400px; background: rgba(255,255,255,0.5); font-size: 30px; color: #fff; text-shadow: 2px 2px 0 #000; box-shadow: 2px 2px 0 #000; }
 
-            #header { position: fixed; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; }
-            #header h1 { margin: 0; padding: 0 30px; line-height: 50px;}
+            #header { width: 100%; background: #000;  font-family: monospace; }
+            #header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
+
+            @media only screen 
+            and (min-device-width : 320px) 
+            and (max-device-width : 568px) { 
+                #header h1 { margin: 0; padding: 10px 30px; line-height: 15px; font-size: 12px; }
+                input[type='submit'] { position: absolute; right: 0; height: 40px; }
+                input { height: 40px; line-height: 40px; display: inline-block; }
+            }
+
             #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 10px; }
             #show-map:hover, #show-map.show { border: none; background: #777; }
             #show-map .about span { font-size: 12px; line-height: 50px; display: inline-block; }
@@ -59,7 +67,7 @@
             input#name { width: 20%; }
             input#submit { padding-right: 8px; }
 
-            #chat { }
+            #chat { width: 100%; height: 100%; overflow-y: scroll; }
             #chat .inner { padding: 90px 30px; }
             #chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 2px 0; }
             #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
@@ -74,17 +82,17 @@
             #map-expanded.show { display: block; }
 
         </style>
-	</head>
-	<body>
-		<div id='container'>
+    </head>
+    <body>
+        <div id='container'>
             <div id='header'>
                 <a id='show-map' href='#'><img class='map' align='middle' />Show coverage map</a>
-                <h1><a href='/'>tea orbit</a></h1>
-			</div>
-			<div id='chat'>
-				<div class='inner'>
+                <h1><a href='/'>tea<br /> orbit</a></h1>
+            </div>
+            <div id='chat'>
+                <div class='inner'>
                 </div>
-			</div>
+            </div>
             <div id='post'>
                 <div class='inner'>
                     <form action='/post'>
@@ -103,24 +111,24 @@
             <div class='loader-icon'>Getting location...</div>
         </div>
         <!--
-		<script type="text/javascript">
-		
-		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-28051023-1']);
-		  _gaq.push(['_setDomainName', 'muratayfer.com']);
-		  _gaq.push(['_trackPageview']);
-		
-		  (function() {
-		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
-		
-		</script>
+        <script type="text/javascript">
+        
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-28051023-1']);
+          _gaq.push(['_setDomainName', 'muratayfer.com']);
+          _gaq.push(['_trackPageview']);
+        
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        
+        </script>
         -->
         <div id='map-expanded'>
             <div>You are seeing messages from the area shown<div>
             <div><img class='map' /></div>
         </div>
-	</body>
+    </body>
 </html>
