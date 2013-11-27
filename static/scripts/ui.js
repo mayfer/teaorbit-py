@@ -52,6 +52,9 @@ function UI() {
     this.reset = function() {
         $('#chat .inner').html('');
     }
+    this.set_map_url = function(url) {
+        $('#map').attr('src', url);
+    }
 
     return this;
 }
