@@ -36,6 +36,9 @@
 		</script>
         <style type='text/css'>
             body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: Arial; position: relative; }
+            @media all and (max-width: 1001px) {
+                body, html { width: 600px; }
+            }
             a, a:visited { color: #fff; text-decoration: none; }
             a:hover { border-bottom: 1px solid #666; }
 
@@ -57,7 +60,7 @@
             input#submit { padding-right: 8px; }
 
             #chat { }
-            #chat .inner { padding: 30px; }
+            #chat .inner { padding: 90px 30px; }
             #chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 2px 0; }
             #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
             #chat .row:hover .date { color: #aaa; }
@@ -67,7 +70,7 @@
 
             #header img.map { display: inline-block; width: 25px; height: 25px; vertical-align: middle; margin: 12px; }
             #map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; }
-            #map-expanded { display: none; position: absolute; top: 0; right: 0; background: #777; padding: 20px; text-align: center; }
+            #map-expanded { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; }
             #map-expanded.show { display: block; }
 
         </style>
