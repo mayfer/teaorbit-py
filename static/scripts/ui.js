@@ -51,7 +51,7 @@ function UI() {
     }
 
     this.scroll = function() {
-        $(document).scrollTop($(document).height());
+        $('#chat').scrollTop($('#chat')[0].scrollHeight);
     }
 
     this.reset = function() {

@@ -37,29 +37,22 @@
             });
         </script>
         <style type='text/css'>
-            body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: Arial; position: relative; }
+            body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: monospace; position: relative; overflow: hidden; }
+
             a, a:visited { color: #fff; text-decoration: none; }
             a:hover { border-bottom: 1px solid #666; }
 
             #loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.3); height: 100%; width: 100%; text-align: center; }
             #loader .loader-icon { position: absolute; line-height: 100px; top: 50%; margin-top: -50px; left: 50%; margin-left: -200px; width: 400px; background: rgba(255,255,255,0.5); font-size: 30px; color: #fff; text-shadow: 2px 2px 0 #000; box-shadow: 2px 2px 0 #000; }
 
-            #header { width: 100%; background: #000;  font-family: monospace; }
+            #header { position: absolute; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; z-index: 100; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
-
-            @media only screen 
-            and (min-device-width : 320px) 
-            and (max-device-width : 568px) { 
-                #header h1 { margin: 0; padding: 10px 30px; line-height: 15px; font-size: 12px; }
-                input[type='submit'] { position: absolute; right: 0; height: 40px; }
-                input { height: 40px; line-height: 40px; display: inline-block; }
-            }
 
             #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 10px; }
             #show-map:hover, #show-map.show { border: none; background: #777; }
-            #show-map .about span { font-size: 12px; line-height: 50px; display: inline-block; }
+            #show-map img.map { display: inline-block; width: 25px; height: 25px; vertical-align: middle; margin: 12px; }
 
-            #post { position: fixed; bottom: 0; left: 0; background: #000; width: 100%; }
+            #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
             #post .inner { margin: 20px; position: relative; }
             #post input { background: #444; border: 1px solid #aaa; line-height: 20px; color: #fff; border-radius: 2px; text-indent: 5px; padding: 3px; }
 
@@ -67,19 +60,37 @@
             input#name { width: 20%; }
             input#submit { padding-right: 8px; }
 
-            #chat { width: 100%; height: 100%; overflow-y: scroll; }
-            #chat .inner { padding: 90px 30px; }
+            #chat { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; }
+            #chat .inner { padding: 30px; }
             #chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 2px 0; }
             #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
             #chat .row:hover .date { color: #aaa; }
-            #chat .name { color: #888; }
+            #chat .name { color: #888; margin-right: 5px; }
             #chat .name:before { content: "[" }
             #chat .name:after { content: "] " }
 
-            #header img.map { display: inline-block; width: 25px; height: 25px; vertical-align: middle; margin: 12px; }
-            #map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; }
-            #map-expanded { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; }
+            #map-expanded { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; z-index: 100; color: #ddd; }
+            #map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; box-shadow: 0 0 5px 0 rgba(0,0,0,0.5); }
             #map-expanded.show { display: block; }
+
+            
+            @media only screen 
+            and (min-device-width : 320px) 
+            and (max-device-width : 568px) { 
+                #header { height: 30px; padding: 0; }
+                #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; }
+                #show-map { line-height: 30px; font-size: 12px; }
+                #show-map img.map { display: none; }
+                #map-expanded { top: 30px; }
+                #map-expanded img.map { width: 250px; height: 250px; }
+
+                #post .inner { margin: 5px 10px; }
+                #post input { display: block; }
+                #post input[type='submit'] { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
+                #post input[name='spiel'] {  width: 95%; }
+                #post input[name='name'] {  width: 60%; }
+            }
+
 
         </style>
     </head>
@@ -87,7 +98,7 @@
         <div id='container'>
             <div id='header'>
                 <a id='show-map' href='#'><img class='map' align='middle' />Show coverage map</a>
-                <h1><a href='/'>tea<br /> orbit</a></h1>
+                <h1><a href='/'>tea orbit</a></h1>
             </div>
             <div id='chat'>
                 <div class='inner'>

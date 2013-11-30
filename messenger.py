@@ -41,10 +41,12 @@ class Connection(SockJSConnection):
             spiel = message['body']['spiel']
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
-            date = unix_now()
-            spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
-            self.notify_recipients(spiel_dto)
-            self.game.post_spiel(spiel_dto)
+
+            if spiel and latitude and longitude:
+                date = unix_now()
+                spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
+                self.notify_recipients(spiel_dto)
+                self.game.post_spiel(spiel_dto)
 
     def on_close(self):
         sessid = self.session.session_id
