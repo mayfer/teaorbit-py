@@ -1,6 +1,10 @@
 function UI() {
     var this_ui = this;
 
+    this.flags = {
+        chatCssUpdated: false,
+    }
+
     this.init = function() {
         $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
@@ -45,6 +49,12 @@ function UI() {
         row.append( $('<div>').addClass('message').html(text) );
         row.append( $('<div>').addClass('date').attr('title', datestring).html(spiel.date) );
         chat.append(row);
+
+        if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height()) {
+            $('#chat').css('top', '0');
+            this.flags.chatCssUpdated = true;
+        }
+
         $('.date').timeago();
         window.last_id = spiel.id;
         this_ui.scroll();
