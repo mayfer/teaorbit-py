@@ -6,6 +6,7 @@ from dto import DTO, Response, Spiel, Session, Block
 
 class Connection(SockJSConnection):
     participants = set()
+    rooms = {}
     game = GameState()
 
     def on_open(self, info):
@@ -35,6 +36,10 @@ class Connection(SockJSConnection):
                 self.send_obj(spiel)
 
             block_id = self.game.get_block_id(latitude, longitude)
+            if block_id not in self.rooms.keys():
+                self.rooms[block_id] = set()
+            self.rooms[block_id].add(self)
+
             self.send_obj(Block(block_id))
         if message['action'] == 'post_spiel':
             name = message['body']['name']
@@ -44,8 +49,9 @@ class Connection(SockJSConnection):
 
             if spiel and latitude and longitude:
                 date = unix_now()
+                block_id = self.game.get_block_id(latitude, longitude)
                 spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
-                self.notify_recipients(spiel_dto)
+                self.notify_recipients(block_id, spiel_dto)
                 self.game.post_spiel(spiel_dto)
 
     def on_close(self):
@@ -53,6 +59,10 @@ class Connection(SockJSConnection):
         # Remove client from the clients list and broadcast leave message
         self.game.remove_player(sessid)
         self.participants.remove(self)
+
+        for block, room in self.rooms.iteritems():
+            room.remove(self)
+
         self.broadcast_text("{id} left.".format(id=sessid))
 
     def debug(self, log):
@@ -64,8 +74,8 @@ class Connection(SockJSConnection):
     def send_obj(self, dto):
         self.send(self.response(dto))
 
-    def notify_recipients(self, spiel):
-        recipients = self.participants
+    def notify_recipients(self, block_id, spiel):
+        recipients = self.rooms[block_id]
         self.broadcast(recipients, self.response(spiel))
 
     def broadcast_text(self, text):
