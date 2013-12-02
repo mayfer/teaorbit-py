@@ -77,22 +77,20 @@ class Connection(SockJSConnection):
                 player = self.game.players[session]
                 color = player.color
 
-                print "post_spiel", chatroom, latitude, longitude, color
-
                 spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date, color=color)
                 self.notify_recipients(block_id, spiel_dto)
                 self.game.post_spiel_to_block(block_id, spiel_dto)
 
     def on_close(self):
-        sessid = self.session_id
+        session_id = self.session_id
         # Remove client from the clients list and broadcast leave message
-        self.game.remove_player(sessid)
+        # self.game.remove_player(session_id)
         self.participants.remove(self)
 
         for block, room in self.rooms.iteritems():
             room.remove(self)
 
-        self.broadcast_text("{id} left.".format(id=sessid))
+        self.broadcast_text("{id} left.".format(id=session_id))
 
     def debug(self, log):
         print log

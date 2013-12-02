@@ -3,6 +3,7 @@ from common import json_encode
 from db import History
 from geo import Geo
 from dto import Spiel
+import random
 
 class GameState(object):
 
@@ -12,7 +13,9 @@ class GameState(object):
         self.geo = Geo()
 
     def add_player(self, session_id):
-        player = Player(color="#fff")
+        r = lambda: random.randint(0,255)
+        color = '#%02X%02X%02X' % (r(),r(),r())
+        player = Player(color=color)
         self.players[session_id] = player
         return player
 

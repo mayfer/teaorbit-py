@@ -16,20 +16,20 @@ function UI() {
             e.preventDefault();
             var latitude = window.latitude;
             var longitude = window.longitude;
+            var chatroom = window.chatroom
             var accuracy = window.gps_accuracy;
             
-            if(!latitude || !longitude) {
-                alert("No location data. Please allow the browser geolocation access.");
-            } else if(accuracy > 200) {
-                alert("Location data not accurate enough.");
-            } else {
+            if(chatroom || (latitude && longitude)) {
                 $(this).find('input[name="latitude"]').val(latitude);
                 $(this).find('input[name="longitude"]').val(longitude);
-                $(this).find('input[name="chatroom"]').val(window.chatroom);
+                $(this).find('input[name="chatroom"]').val(chatroom);
                 var form = $(this).serializeJSON();
                 window.networking.send('post_spiel', form);
 
                 $(this).find('input[name="spiel"]').val('');
+            }
+            else {
+                alert("No location data. Please allow the browser geolocation access.");
             }
         });
 
@@ -50,6 +50,7 @@ function UI() {
         $(window).focus(function(e){
             document.title = window.title;
             this_ui.flags.windowFocused = true;
+            this_ui.flags.newMessages = 0;
         });
         $(window).blur(function(e){
             this_ui.flags.windowFocused = false;
@@ -60,14 +61,22 @@ function UI() {
         var chat = $('#chat .inner');
         var row = $('<div>').addClass('row');
         var date = new Date(spiel.date*1000);
+        var color = spiel.color;
         var datestring = date.toLocaleString()
         var text;
-        if(spiel.name) {
-            text = "<span class='name'>" + escapeHtml(spiel.name) + "</span> " + escapeHtml(spiel.spiel);
-        } else {
-            text = escapeHtml(spiel.spiel);
+
+        var message = $('<div>').addClass('message');
+        if(color) {
+            var color_elem = $('<span>').addClass('color').css('background', color);
+            message.append(color_elem);
         }
-        row.append( $('<div>').addClass('message').html(text) );
+        if(spiel.name) {
+            message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
+        }
+        message.append(escapeHtml(spiel.spiel));
+        
+
+        row.append(message);
         row.append( $('<div>').addClass('date').attr('title', datestring).html(spiel.date) );
         chat.append(row);
 
