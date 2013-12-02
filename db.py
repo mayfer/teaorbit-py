@@ -32,7 +32,7 @@ class History(object):
 
     def get_spiels(self, block_id):
         # since = datetime_to_unix(datetime_now() - timedelta(days=2))
-        spiel_jsons = self.redis.zrevrangebyscore(block_id, '+inf', '-inf', start=0, num=20)
+        spiel_jsons = self.redis.zrevrangebyscore(block_id, '+inf', '-inf', start=0, num=30)
         spiel_jsons.reverse()
         return spiel_jsons
 
