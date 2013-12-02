@@ -23,7 +23,11 @@ function Networking() {
         if(message.action == 'session') {
             this.session_id = message.body.session_id;
             console.log("Logged in, session ID: " + this.session_id);
-            that.send('get_spiels', {'latitude': window.latitude, 'longitude': window.longitude});
+            that.send('get_spiels', {
+                'latitude': window.latitude,
+                'longitude': window.longitude,
+                'chatroom': window.chatroom,
+            });
         }
 
         // chat state

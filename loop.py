@@ -21,7 +21,7 @@ FILE_ROOT = os.path.dirname(__file__)
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("templates/index.html", STATIC_URL=STATIC_URL)
+        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name='')
 
 class ChatroomHandler(tornado.web.RequestHandler):
     def get(self, room_name):

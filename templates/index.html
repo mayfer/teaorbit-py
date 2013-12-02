@@ -21,12 +21,18 @@
             window.longitude = null;
             window.gps_accuracy = null;
 
+            {% if room_name %}
+                window.chatroom = '{{ room_name }}';
+            {% else %}
+                window.chatroom = '';
+            {% end %}
+
             $(document).ready(function(){
                 window.ui = new UI();
                 window.ui.init();
                 $('#type-here').focus();
                 navigator.geolocation.getCurrentPosition(function(position){
-                    window.network = Networking();
+                    window.networking = Networking();
 
                     window.latitude = position.coords.latitude;
                     window.longitude = position.coords.longitude;
@@ -48,7 +54,7 @@
             #header { position: absolute; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; z-index: 100; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
 
-            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 10px; }
+            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 10px; content: "Test"; }
             #show-map:hover, #show-map.show { border: none; background: #777; }
             #show-map img.map { display: inline-block; width: 25px; height: 25px; vertical-align: middle; margin: 12px; }
 
@@ -97,7 +103,7 @@
     <body>
         <div id='container'>
             <div id='header'>
-                <a id='show-map' href='#'><img class='map' align='middle' />Show coverage map</a>
+                <a id='show-map' href='#'><img class='map' align='middle' /></a>
                 <h1><a href='/'>tea orbit</a></h1>
             </div>
             <div id='chat'>
@@ -112,6 +118,7 @@
                         <input type='hidden' name='longitude' value='0' />
                         <input type='hidden' name='last_id' value='0' />
                         <input type='hidden' name='session' value='' />
+                        <input type='hidden' name='chatroom' value='' />
                         <input type='text' name='spiel' id='type-here' placeholder='Type your message' />
                         <input type='submit' value='Send' id='submit' />
                     </form>

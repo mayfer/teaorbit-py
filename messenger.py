@@ -27,32 +27,48 @@ class Connection(SockJSConnection):
     def on_message(self, text):
         message = json_decode(text)
         session = message['session']
+
         if message['action'] == 'get_spiels':
+            chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
-            spiels = self.get_spiels(latitude, longitude)
+            print "get_spiels", chatroom, latitude, longitude
+
+            if chatroom:
+                block_id = chatroom
+                spiels = self.game.get_spiels_by_block_id(block_id)
+            else:
+                block_id = self.game.get_block_id(latitude, longitude)
+                spiels = self.game.get_spiels_by_block_id(block_id)
 
             for spiel in spiels:
                 self.send_obj(spiel)
 
-            block_id = self.game.get_block_id(latitude, longitude)
             if block_id not in self.rooms.keys():
                 self.rooms[block_id] = set()
             self.rooms[block_id].add(self)
 
             self.send_obj(Block(block_id))
+
         if message['action'] == 'post_spiel':
             name = message['body']['name']
             spiel = message['body']['spiel']
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
+            chatroom = message['body'].get('chatroom', '')
 
-            if spiel and latitude and longitude:
+            print "post_spiel", chatroom, latitude, longitude
+
+            if spiel:
                 date = unix_now()
-                block_id = self.game.get_block_id(latitude, longitude)
+                if chatroom:
+                    block_id = chatroom
+                elif latitude and longitude:
+                    block_id = self.game.get_block_id(latitude, longitude)
+
                 spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
                 self.notify_recipients(block_id, spiel_dto)
-                self.game.post_spiel(spiel_dto)
+                self.game.post_spiel_to_block(block_id, spiel_dto)
 
     def on_close(self):
         sessid = self.session.session_id
@@ -81,8 +97,4 @@ class Connection(SockJSConnection):
     def broadcast_text(self, text):
         json_message = json_encode({'action': 'log', 'body': {'message': text}})
         self.broadcast(self.participants, json_message)
-
-    def get_spiels(self, latitude, longitude):
-        spiels = self.game.get_spiels(latitude, longitude)
-        return spiels
 

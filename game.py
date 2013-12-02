@@ -22,12 +22,16 @@ class GameState(object):
 
     def post_spiel(self, spiel):
         block_id = self.get_block_id(spiel._latitude, spiel._longitude)
-        print "Block ID: %s" % block_id
         self.history.insert_spiel(block_id, spiel.json(), spiel.date)
 
-    def get_spiels(self, latitude, longitude):
+    def post_spiel_to_block(self, block_id, spiel):
+        self.history.insert_spiel(block_id, spiel.json(), spiel.date)
+
+    def get_spiels_by_location(self, latitude, longitude):
         block_id = self.get_block_id(latitude, longitude)
-        print "Block ID: %s" % block_id
+        return self.get_spiels_by_block_id(block_id)
+
+    def get_spiels_by_block_id(self, block_id):
         spiel_jsons = self.history.get_spiels(block_id)
         spiels = []
         for spiel_json in spiel_jsons:

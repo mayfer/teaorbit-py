@@ -1,12 +1,13 @@
 function UI() {
     var this_ui = this;
+    
+    this.networking = window.networking;
 
     this.flags = {
         chatCssUpdated: false,
     }
 
     this.init = function() {
-        $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
         $('#post form').on('submit', function(e){
             e.preventDefault();
@@ -21,9 +22,10 @@ function UI() {
             } else {
                 $(this).find('input[name="latitude"]').val(latitude);
                 $(this).find('input[name="longitude"]').val(longitude);
-                $(this).find('input[name="session"]').val(window.network.session_id);
+                $(this).find('input[name="session"]').val(window.session_id);
+                $(this).find('input[name="chatroom"]').val(window.chatroom);
                 var form = $(this).serializeJSON();
-                window.network.send('post_spiel', form);
+                window.networking.send('post_spiel', form);
 
                 $(this).find('input[name="spiel"]').val('');
             }
