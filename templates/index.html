@@ -23,6 +23,10 @@
 
             {% if room_name %}
                 window.chatroom = '{{ room_name }}';
+                $(document).ready(function() {
+                    $('img.map').hide();
+                    $('.contextual-info').html('You are seeing messages from anyone who opened teaorbit.com/{{ room_name }}');
+                });
             {% else %}
                 window.chatroom = '';
             {% end %}
@@ -54,9 +58,9 @@
             #header { position: absolute; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; z-index: 100; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
 
-            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 10px; content: "Test"; }
+            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 20px; content: "Test"; }
             #show-map:hover, #show-map.show { border: none; background: #777; }
-            #show-map img.map { display: inline-block; width: 25px; height: 25px; vertical-align: middle; margin: 12px; }
+            #show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-right: 5px; }
 
             #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
             #post .inner { margin: 20px; position: relative; }
@@ -103,7 +107,7 @@
     <body>
         <div id='container'>
             <div id='header'>
-                <a id='show-map' href='#'><img class='map' align='middle' /></a>
+                <a id='show-map' href='#'><img class='map' align='middle' /> Show details</a>
                 <h1><a href='/'>tea orbit</a></h1>
             </div>
             <div id='chat'>
@@ -145,7 +149,7 @@
         </script>
         -->
         <div id='map-expanded'>
-            <div>You are seeing messages from the area shown<div>
+            <div class='contextual-info'>You are seeing messages from the area shown<div>
             <div><img class='map' /></div>
         </div>
     </body>
