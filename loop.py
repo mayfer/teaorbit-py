@@ -23,12 +23,17 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("templates/index.html", STATIC_URL=STATIC_URL)
 
+class ChatroomHandler(tornado.web.RequestHandler):
+    def get(self, room_name):
+        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name)
+
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
     router = SockJSRouter(Connection, '/updates')
-    handlers = [
+    handlers = router.urls + [
         (r'/', MainHandler),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(FILE_ROOT, 'static/')}),
-    ] + router.urls
+        (r'/(?P<room_name>.*)', ChatroomHandler),
+    ]
     tornado_app = tornado.web.Application(handlers)
 
     # start tornado web server in single-threaded mode
