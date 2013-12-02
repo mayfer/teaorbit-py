@@ -8,6 +8,7 @@ function UI() {
     }
 
     this.init = function() {
+        $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
         $('#post form').on('submit', function(e){
             e.preventDefault();
