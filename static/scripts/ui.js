@@ -23,13 +23,21 @@ function UI() {
             } else {
                 $(this).find('input[name="latitude"]').val(latitude);
                 $(this).find('input[name="longitude"]').val(longitude);
-                $(this).find('input[name="session"]').val(window.session_id);
                 $(this).find('input[name="chatroom"]').val(window.chatroom);
                 var form = $(this).serializeJSON();
                 window.networking.send('post_spiel', form);
 
                 $(this).find('input[name="spiel"]').val('');
             }
+        });
+
+        var name = $.cookie("name");
+        if(name) {
+            $('#name').val(name);
+        }
+        $('#name').change(function(e){
+            var name = $('input[name="name"]').val();
+            $.cookie("name", name);
         });
 
         $('#show-map').click(function(e){

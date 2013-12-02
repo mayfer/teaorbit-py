@@ -12,7 +12,9 @@ class GameState(object):
         self.geo = Geo()
 
     def add_player(self, session_id):
-        self.players[session_id] = True
+        player = Player(color="#fff")
+        self.players[session_id] = player
+        return player
 
     def remove_player(self, session_id):
         del self.players[session_id]
@@ -39,3 +41,7 @@ class GameState(object):
             spiels.append(spiel)
 
         return spiels
+
+class Player(object):
+    def __init__(self, color):
+        self.color = color

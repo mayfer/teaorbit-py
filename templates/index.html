@@ -3,9 +3,11 @@
     <head>
         <link rel='shortcut icon' href='#' />
         <meta name="viewport" content="width=device-width, user-scalable=no">
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
 
         <title>tea orbit</title>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.cookie.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.timeago.min.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/modernizr.min.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js'></script>
@@ -32,9 +34,9 @@
             {% end %}
 
             $(document).ready(function(){
+                $('#type-here').focus();
                 window.ui = new UI();
                 window.ui.init();
-                $('#type-here').focus();
                 navigator.geolocation.getCurrentPosition(function(position){
                     window.networking = Networking();
 
@@ -58,9 +60,9 @@
             #header { position: absolute; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; z-index: 100; }
             #header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
 
-            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 20px; content: "Test"; }
+            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 20px;}
             #show-map:hover, #show-map.show { border: none; background: #777; }
-            #show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-right: 5px; }
+            #show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-right: 10px; }
 
             #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
             #post .inner { margin: 20px; position: relative; }
@@ -107,7 +109,7 @@
     <body>
         <div id='container'>
             <div id='header'>
-                <a id='show-map' href='#'><img class='map' align='middle' /> Show details</a>
+                <a id='show-map' href='#'><img class='map' align='middle' /><span id='show-hide-details'>Info</span></a>
                 <h1><a href='/'>tea orbit</a></h1>
             </div>
             <div id='chat'>

@@ -7,8 +7,6 @@ function Spiel() {
 function Networking() {
     var that = this;
 
-    this.session_id = '';
-
     this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
         console.log('Connected');
@@ -21,8 +19,9 @@ function Networking() {
 
         // initial login
         if(message.action == 'session') {
-            this.session_id = message.body.session_id;
-            console.log("Logged in, session ID: " + this.session_id);
+            window.session_id = message.body.session_id;
+            $.cookie("session", this.session_id);
+            console.log("Logged in, session ID: " + window.session_id);
             that.send('get_spiels', {
                 'latitude': window.latitude,
                 'longitude': window.longitude,
@@ -53,13 +52,14 @@ function Networking() {
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
             window.networking = new Networking();
+            ui.network = window.network
         }, 2000);
     };
     this.send = function(action, body) {
         var json_data = JSON.stringify({
             'action': action,
             'body': body,
-            'session': this.session_id,
+            'session': window.session_id,
         })
         this.sock.send(json_data);
     }

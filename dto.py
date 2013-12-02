@@ -44,16 +44,18 @@ class Response(DTO):
 class Session(DTO):
     _action = 'session'
 
-    def __init__(self, session_id):
+    def __init__(self, session_id, color):
         self.session_id = session_id
+        self.color = color
 
 class Spiel(DTO):
     _action = 'new_spiel'
 
-    def __init__(self, name='', spiel='', latitude=49.15, longitude=123.88, date=None):
+    def __init__(self, name='', spiel='', latitude=49.15, longitude=123.88, date=None, color=None):
         self.name = name
         self.spiel = spiel
         self.date = date
+        self.color = color
         self._latitude = latitude
         self._longitude = longitude
 

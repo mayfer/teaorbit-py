@@ -10,16 +10,25 @@ class Connection(SockJSConnection):
     game = GameState()
 
     def on_open(self, info):
-        sessid = self.session.session_id
-        self.session_id = sessid
-        # Send that someone joined
-        self.broadcast_text("{id} joined.".format(id=sessid))
+        if 'session' in info.cookies:
+            session_id = info.cookies['session'].value
+        else:
+            session_id = self.session.session_id
 
-        self.send_obj(Session(sessid))
+        if session_id not in self.game.players.keys():
+            player = self.game.add_player(session_id)
+        else:
+            player = self.game.players[session_id]
+
+        self.session_id = session_id
+
+        # Send that someone joined
+        self.broadcast_text("{id} joined.".format(id=session_id))
+
+        self.send_obj(Session(session_id, color=player.color))
 
         # Add client to the clients list
         self.participants.add(self)
-        self.game.add_player(sessid)
 
         #periodic = ioloop.PeriodicCallback(self.send_state, 50)
         #periodic.start()
@@ -29,6 +38,7 @@ class Connection(SockJSConnection):
         session = message['session']
 
         if message['action'] == 'get_spiels':
+            session = message['session']
             chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
@@ -51,6 +61,7 @@ class Connection(SockJSConnection):
             self.send_obj(Block(block_id))
 
         if message['action'] == 'post_spiel':
+            session = message['session']
             name = message['body']['name']
             spiel = message['body']['spiel']
             latitude = message['body'].get('latitude', 0)
@@ -71,7 +82,7 @@ class Connection(SockJSConnection):
                 self.game.post_spiel_to_block(block_id, spiel_dto)
 
     def on_close(self):
-        sessid = self.session.session_id
+        sessid = self.session_id
         # Remove client from the clients list and broadcast leave message
         self.game.remove_player(sessid)
         self.participants.remove(self)
