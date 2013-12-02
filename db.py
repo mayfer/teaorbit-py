@@ -13,7 +13,7 @@ class FakeRedis(object):
             self._blocks[block_id] = []
         self._blocks[block_id].append({'score': timestamp, 'data': spiel_json})
 
-    def zrangebyscore(self, block_id, since='-inf', until='+inf'):
+    def zrevrangebyscore(self, block_id, since='-inf', until='+inf', start=None, limit=None):
         return [ row['data'] for row in sorted(self._blocks.get(block_id, []), key=lambda d: d['score']) if row['score'] > float(since) and row['score'] < float(until) ]
 
 class History(object):
@@ -31,8 +31,9 @@ class History(object):
         self.redis.zadd(block_id, spiel_json, timestamp)
 
     def get_spiels(self, block_id):
-        since = datetime_to_unix(datetime_now() - timedelta(days=2))
-        spiel_jsons = self.redis.zrangebyscore(block_id, since, '+inf')
+        # since = datetime_to_unix(datetime_now() - timedelta(days=2))
+        spiel_jsons = self.redis.zrevrangebyscore(block_id, '+inf', '-inf', start=0, num=20)
+        spiel_jsons.reverse()
         return spiel_jsons
 
 """
