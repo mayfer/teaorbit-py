@@ -5,6 +5,8 @@ function UI() {
 
     this.flags = {
         chatCssUpdated: false,
+        windowFocused: true,
+        newMessages: 0,
     }
 
     this.init = function() {
@@ -44,6 +46,14 @@ function UI() {
             e.preventDefault();
             this_ui.toggle_map();
         });
+
+        $(window).focus(function(e){
+            document.title = window.title;
+            this_ui.flags.windowFocused = true;
+        });
+        $(window).blur(function(e){
+            this_ui.flags.windowFocused = false;
+        });
     }
 
     this.add_spiel = function(spiel) {
@@ -68,6 +78,12 @@ function UI() {
 
         $('.date').timeago();
         window.last_id = spiel.id;
+
+        if(this.flags.windowFocused == false) {
+            this.flags.newMessages++;
+            document.title = "(" + this.flags.newMessages + ") " + window.title;
+        }
+
         this_ui.scroll();
     }
 

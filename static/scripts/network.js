@@ -15,7 +15,6 @@ function Networking() {
     this.sock.onmessage = function(e) {
         //console.log('message', e.data);
         var message = JSON.parse(e.data);
-        console.log("Update", message);
 
         // initial login
         if(message.action == 'session') {

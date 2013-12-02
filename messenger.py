@@ -42,7 +42,6 @@ class Connection(SockJSConnection):
             chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
-            print "get_spiels", chatroom, latitude, longitude
 
             if chatroom:
                 block_id = chatroom
@@ -68,8 +67,6 @@ class Connection(SockJSConnection):
             longitude = message['body'].get('longitude', 0)
             chatroom = message['body'].get('chatroom', '')
 
-            print "post_spiel", chatroom, latitude, longitude
-
             if spiel:
                 date = unix_now()
                 if chatroom:
@@ -77,7 +74,12 @@ class Connection(SockJSConnection):
                 elif latitude and longitude:
                     block_id = self.game.get_block_id(latitude, longitude)
 
-                spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date)
+                player = self.game.players[session]
+                color = player.color
+
+                print "post_spiel", chatroom, latitude, longitude, color
+
+                spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date, color=color)
                 self.notify_recipients(block_id, spiel_dto)
                 self.game.post_spiel_to_block(block_id, spiel_dto)
 
