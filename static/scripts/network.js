@@ -19,7 +19,7 @@ function Networking() {
         // initial login
         if(message.action == 'session') {
             window.session_id = message.body.session_id;
-            $.cookie("session", this.session_id);
+            $.cookie("session", window.session_id);
             console.log("Logged in, session ID: " + window.session_id);
             that.send('get_spiels', {
                 'latitude': window.latitude,
