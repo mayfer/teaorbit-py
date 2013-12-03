@@ -10,6 +10,8 @@ function UI() {
     }
 
     this.init = function() {
+        $('<audio id="notification"><source src="/static/notification.ogg" type="audio/ogg"><source src="/static/notification.mp3" type="audio/mpeg"><source src="/static/notification.wav" type="audio/wav"></audio>').appendTo('body');
+
         $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
         $('#post form').on('submit', function(e){
@@ -55,7 +57,7 @@ function UI() {
         $(window).blur(function(e){
             this_ui.flags.windowFocused = false;
         });
-    }
+    }   
 
     this.add_spiel = function(spiel) {
         var chat = $('#chat .inner');
@@ -64,6 +66,10 @@ function UI() {
         var color = spiel.color;
         var datestring = date.toLocaleString()
         var text;
+
+        if(this.flags.windowFocused == false) {
+            $('#notification')[0].play();
+        }
 
         var message = $('<div>').addClass('message');
         if(color) {
