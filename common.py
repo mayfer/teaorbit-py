@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 import calendar
+import time
 import simplejson as json
 from pytz import utc
 
@@ -26,3 +27,6 @@ def unix_now():
 def datetime_now():
     return datetime.utcnow().replace(tzinfo=utc)
 
+def unix_now_ms():
+    date = datetime_now()
+    return time.mktime(date.utctimetuple())*1e3 + date.microsecond/1e3

@@ -60,7 +60,7 @@ function UI() {
     this.add_spiel = function(spiel) {
         var chat = $('#chat .inner');
         var row = $('<div>').addClass('row');
-        var date = new Date(spiel.date*1000);
+        var date = new Date(spiel.date);
         var color = spiel.color;
         var datestring = date.toLocaleString()
         var text;
@@ -79,6 +79,11 @@ function UI() {
         row.append(message);
         row.append( $('<div>').addClass('date').attr('title', datestring).html(spiel.date) );
         chat.append(row);
+
+        function toHashtagUrl(hashtag) {
+            return "http://teaorbit.com/" + hashtag;
+        }
+        row.linkify(toHashtagUrl);
 
         if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height()) {
             $('#chat').css('top', '0');

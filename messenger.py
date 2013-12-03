@@ -1,7 +1,7 @@
 from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
-from common import json_encode, json_decode, unix_now
+from common import json_encode, json_decode, unix_now, unix_now_ms
 from dto import DTO, Response, Spiel, Session, Block
 
 class Connection(SockJSConnection):
@@ -68,7 +68,7 @@ class Connection(SockJSConnection):
             chatroom = message['body'].get('chatroom', '')
 
             if spiel:
-                date = unix_now()
+                date = unix_now_ms()
                 if chatroom:
                     block_id = chatroom
                 elif latitude and longitude:
