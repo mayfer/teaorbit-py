@@ -1,8 +1,3 @@
-function Spiel() {
-    
-    return this;
-}
-
 
 function Networking() {
     var that = this;

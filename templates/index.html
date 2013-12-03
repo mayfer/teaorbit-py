@@ -39,15 +39,25 @@
                 $('#type-here').focus();
                 window.ui = new UI();
                 window.ui.init();
-                navigator.geolocation.getCurrentPosition(function(position){
+
+                if(window.chatroom) {
                     window.networking = Networking();
 
-                    window.latitude = position.coords.latitude;
-                    window.longitude = position.coords.longitude;
-                    window.gps_accuracy = position.coords.accuracy;
+                    window.latitude = 0;
+                    window.longitude = 0;
+                    window.gps_accuracy = 0;
 
                     $('#loader').hide();
-                });
+                } else {
+                    navigator.geolocation.getCurrentPosition(function(position){
+                        window.latitude = position.coords.latitude;
+                        window.longitude = position.coords.longitude;
+                        window.gps_accuracy = position.coords.accuracy;
+
+                        window.networking = Networking();
+                        $('#loader').hide();
+                    });
+                }
             });
         </script>
         <style type='text/css'>

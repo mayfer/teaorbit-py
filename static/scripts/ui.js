@@ -1,12 +1,32 @@
 function UI() {
     var this_ui = this;
-    
-    this.networking = window.networking;
 
     this.flags = {
         chatCssUpdated: false,
         windowFocused: true,
         newMessages: 0,
+    }
+
+    this.cookie = function(key, val) {
+        if($.cookie('teaorbit')) {
+            var cookie = JSON.parse($.cookie('teaorbit'));
+        } else {
+            var cookie = {};
+        }
+
+        if(val === undefined) {
+            if(window.chatroom in cookie && key in cookie[window.chatroom]) {
+                return cookie[window.chatroom][key];
+            } else {
+                return undefined;
+            }
+        } else {
+            if(!(window.chatroom in cookie)) {
+                cookie[window.chatroom] = {}
+            }
+            cookie[window.chatroom][key] = val;
+            return $.cookie('teaorbit', JSON.stringify(cookie), { expires: 1000, path: '/' });
+        }
     }
 
     this.init = function() {
@@ -35,13 +55,13 @@ function UI() {
             }
         });
 
-        var name = $.cookie("name");
+        var name = this_ui.cookie("name");
         if(name) {
             $('#name').val(name);
         }
         $('#name').change(function(e){
             var name = $('input[name="name"]').val();
-            $.cookie("name", name);
+            this_ui.cookie("name", name);
         });
 
         $('#show-map').click(function(e){
