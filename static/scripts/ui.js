@@ -1,10 +1,23 @@
 function UI() {
     var this_ui = this;
 
+    function toHashtagUrl(hashtag) {
+        var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+        return full + '/' + hashtag;
+    }
+
     this.flags = {
         chatCssUpdated: false,
         windowFocused: true,
         newMessages: 0,
+    }
+
+    this.global_cookie = function(key, val) {
+        if(val === undefined) {
+            return JSON.parse(window.localStorage.getItem(key));
+        } else {
+            window.localStorage.setItem(key, JSON.stringify(val));
+        }
     }
 
     this.cookie = function(key, val) {
@@ -32,7 +45,30 @@ function UI() {
     this.init = function() {
         $('<audio id="notification"><source src="/static/notification.ogg" type="audio/ogg"><source src="/static/notification.mp3" type="audio/mpeg"><source src="/static/notification.wav" type="audio/wav"></audio>').appendTo('body');
 
-        $('#chat .inner').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+        if(window.chatroom) {
+            window.networking = Networking();
+
+            window.latitude = 0;
+            window.longitude = 0;
+            window.gps_accuracy = 0;
+
+            $('#loader').hide();
+            var recent = this.global_cookie('recent_channels');
+            if(!recent){ recent = {}; }
+            recent[window.chatroom] = true;
+            this.global_cookie('recent_channels', recent);
+        } else {
+            navigator.geolocation.getCurrentPosition(function(position){
+                window.latitude = position.coords.latitude;
+                window.longitude = position.coords.longitude;
+                window.gps_accuracy = position.coords.accuracy;
+
+                window.networking = Networking();
+                $('#loader').hide();
+            });
+        }
+
+        $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
         $('#post form').on('submit', function(e){
             e.preventDefault();
@@ -77,7 +113,39 @@ function UI() {
         $(window).blur(function(e){
             this_ui.flags.windowFocused = false;
         });
-    }   
+
+        this.show_recent_channels();
+    }
+
+    this.show_recent_channels = function() {
+        var container = $('#channels .inner').html('');
+        var recent_channels = this.global_cookie('recent_channels');
+        $.each(recent_channels, function(channel, enabled) {
+            if(enabled == true) {
+                var channelelem = $('<div>').addClass('channel');
+
+                var nameelem = $('<span>').html('#'+channel).appendTo(channelelem);
+
+                if(channel == window.chatroom) {
+                    $('<span>').addClass('current').html("[current]").appendTo(channelelem);
+                } else {
+                    var remove = $('<a>').attr('href', '#').addClass('remove').html("&times;").appendTo(channelelem);
+                }
+                channelelem.appendTo(container);
+
+            }
+        });
+        var removes = container.find('.remove');
+        console.log(removes);
+        removes.bind('click', function(e){
+            console.log('??');
+            var channel = $(this).data('name');
+            delete recent_channels[channel];
+            this_ui.global_cookie('recent_channels', recent_channels);
+
+        });
+        container.linkify(toHashtagUrl);
+    }
 
     this.add_spiel = function(spiel) {
         var chat = $('#chat .inner');
@@ -106,9 +174,6 @@ function UI() {
         row.append( $('<div>').addClass('date').attr('title', datestring).html(spiel.date) );
         chat.append(row);
 
-        function toHashtagUrl(hashtag) {
-            return "http://teaorbit.com/" + hashtag;
-        }
         row.linkify(toHashtagUrl);
 
         if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height()) {

@@ -2,19 +2,20 @@
 <html>
     <head>
         <link rel='shortcut icon' href='#' />
-        <meta name="viewport" content="width=device-width, user-scalable=no">
-        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+        <meta name='viewport' content='width=device-width, user-scalable=no'>
+        <link rel='shortcut icon' href='data:image/x-icon;,' type='image/x-icon'> 
 
         <title>tea orbit</title>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.cookie.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.linkify.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/jquery.timeago.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/modernizr.min.js'></script>
+        <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css' type='text/css'> 
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.cookie.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.linkify.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.timeago.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/modernizr.min.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/sockjs.min.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js'></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}scripts/sockjs.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}scripts/ui.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}scripts/network.js"></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/ui.js'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/network.js'></script>
         <script type='text/javascript'>
 
             window.networking = null;
@@ -27,9 +28,12 @@
 
             {% if room_name %}
                 window.chatroom = '{{ room_name }}';
+                window.title = "tea orbit #" + window.chatroom;
+                document.title = window.title;
                 $(document).ready(function() {
                     $('img.map').hide();
                     $('.contextual-info').html('You are seeing messages from anyone who opened teaorbit.com/{{ room_name }}');
+                    $('#show-hide-details').html('#'+window.chatroom);
                 });
             {% else %}
                 window.chatroom = '';
@@ -40,92 +44,22 @@
                 window.ui = new UI();
                 window.ui.init();
 
-                if(window.chatroom) {
-                    window.networking = Networking();
-
-                    window.latitude = 0;
-                    window.longitude = 0;
-                    window.gps_accuracy = 0;
-
-                    $('#loader').hide();
-                } else {
-                    navigator.geolocation.getCurrentPosition(function(position){
-                        window.latitude = position.coords.latitude;
-                        window.longitude = position.coords.longitude;
-                        window.gps_accuracy = position.coords.accuracy;
-
-                        window.networking = Networking();
-                        $('#loader').hide();
-                    });
-                }
             });
         </script>
-        <style type='text/css'>
-            body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: monospace; position: relative; overflow: hidden; }
-
-            a, a:visited { color: #fff; text-decoration: none; }
-            a:hover { border-bottom: 1px solid #666; }
-
-            #loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.3); height: 100%; width: 100%; text-align: center; }
-            #loader .loader-icon { position: absolute; line-height: 100px; top: 50%; margin-top: -50px; left: 50%; margin-left: -200px; width: 400px; background: rgba(255,255,255,0.5); font-size: 30px; color: #fff; text-shadow: 2px 2px 0 #000; box-shadow: 2px 2px 0 #000; }
-
-            #header { position: absolute; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; z-index: 100; }
-            #header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
-
-            #show-map { float: right; line-height: 50px; background: #444; padding: 0 20px 0 20px;}
-            #show-map:hover, #show-map.show { border: none; background: #777; }
-            #show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-right: 10px; }
-
-            #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
-            #post .inner { margin: 20px; position: relative; }
-            #post input { background: #444; border: 1px solid #aaa; line-height: 20px; color: #fff; border-radius: 2px; text-indent: 5px; padding: 3px; }
-
-            input#type-here { width: 60% }
-            input#name { width: 20%; }
-            input#submit { padding-right: 8px; }
-
-            #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; }
-            #chat .inner { padding: 30px; }
-            #chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 25px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
-            #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
-            #chat .row:hover .date { color: #aaa; }
-            #chat .name { color: #888; margin-right: 5px; }
-            #chat .name:before { content: "[" }
-            #chat .name:after { content: "] " }
-            #chat .color { display: inline-block; height: 16px; width: 16px; position: absolute; left: 5px; top: 50%; margin-top: -8px; border-radius: 8px;}
-
-            #map-expanded { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; z-index: 100; color: #ddd; }
-            #map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; box-shadow: 0 0 5px 0 rgba(0,0,0,0.5); }
-            #map-expanded.show { display: block; }
-
-            
-            @media only screen 
-            and (min-device-width : 320px) 
-            and (max-device-width : 568px) { 
-                #header { height: 30px; padding: 0; }
-                #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; }
-                #show-map { line-height: 30px; font-size: 12px; padding: 0 20px; }
-                #show-map img.map { display: none; }
-                #map-expanded { top: 30px; }
-                #map-expanded img.map { width: 250px; height: 250px; }
-
-                #post .inner { margin: 5px 10px; }
-                #post input { display: block; }
-                #post input[type='submit'] { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
-                #post input[name='spiel'] {  width: 95%; }
-                #post input[name='name'] {  width: 60%; }
-            }
-
-
-        </style>
     </head>
     <body>
         <div id='container'>
             <div id='header'>
-                <a id='show-map' href='#'><img class='map' align='middle' /><span id='show-hide-details'>Info</span></a>
+                <a id='show-map' href='#' class='button'><span id='show-hide-details'>channel: nearby</span><img class='map desaturate' align='middle' /></a>
+                <span id='show-users' href='#' class='info'><span id='show-hide-users'>6 online</span></span>
                 <h1><a href='/'>tea orbit</a></h1>
             </div>
             <div id='chat'>
+                <div class='inner'>
+                </div>
+            </div>
+            <div id='channels'>
+                <a href='#' class='toggle'>▼ recent channels</a>
                 <div class='inner'>
                 </div>
             </div>
@@ -145,24 +79,27 @@
             </div>
         </div>
         <div id='loader'>
-            <div class='loader-icon'>Getting location...</div>
+            <div class='loader-icon'>
+                <div class='inner'>
+                    <div class='title'>
+                        Getting location...
+                    </div>
+                    <div class='details'>
+                        The front page needs your location<br/>to show you messages from people nearby.
+                    </div>
+                </div>
+            </div>
         </div>
-        <!--
-        <script type="text/javascript">
-        
-          var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-28051023-1']);
-          _gaq.push(['_setDomainName', 'muratayfer.com']);
-          _gaq.push(['_trackPageview']);
-        
-          (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-          })();
-        
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-46162095-1', 'teaorbit.com');
+            ga('send', 'pageview');
+
         </script>
-        -->
         <div id='map-expanded'>
             <div class='contextual-info'>You are seeing messages from the area shown<div>
             <div><img class='map' /></div>

@@ -1,0 +1,79 @@
+
+body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa; font-family: monospace; position: relative; overflow: hidden; }
+
+a, a:visited { color: #fff; text-decoration: none; }
+a:hover { border-bottom: 1px solid #666; }
+
+#loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.8); height: 100%; width: 100%; text-align: center; z-index: 200; }
+#loader .loader-icon { position: absolute; height: 150px; top: 50%; margin-top: -75px; left: 50%; margin-left: -250px; width: 500px; background: rgba(255,255,255,0.5); color: #fff; text-shadow: 2px 2px 0 #000; box-shadow: 2px 2px 0 #000; }
+#loader .inner { padding: 30px; }
+#loader .details { font-size: 12px; line-height: 20px; text-shadow: 1px 1px 0 #000; }
+#loader .title { line-height: 30px; font-size: 30px; margin-bottom: 20px; }
+
+#header { position: absolute; top: 0; left: 0; width: 100%; background: #000;  font-family: monospace; z-index: 100; }
+#header h1 { margin: 0; padding: 0 30px; line-height: 50px; }
+
+#header .button, #header .info { float: right; line-height: 50px; padding: 0 20px 0 20px; margin-left: 1px; }
+#header .button { background: #444; }
+#header .button:hover, #header .button.show { background: #777; }
+
+#show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-left: 20px; margin-right: -20px; }
+
+#post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
+#post .inner { margin: 20px; position: relative; }
+#post input { background: #444; border: 1px solid #aaa; line-height: 20px; color: #fff; border-radius: 2px; text-indent: 5px; padding: 3px; }
+
+input#type-here { width: 60% }
+input#name { width: 20%; }
+input#submit { padding-right: 8px; }
+
+#chat { position: absolute; left: 0; right: 200px; bottom: 0; overflow: auto; z-index: 50; }
+#chat .inner { padding: 30px; }
+#chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 25px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
+#chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
+#chat .row:hover .date { color: #aaa; }
+#chat .name { color: #888; margin-right: 5px; }
+#chat .name:before { content: "[" }
+#chat .name:after { content: "] " }
+#chat .color { display: inline-block; height: 16px; width: 16px; position: absolute; left: 5px; top: 50%; margin-top: -8px; border-radius: 8px;}
+
+#channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 200px; background: rgba(0,0,0,1); }
+#channels .inner { padding: 10px;  }
+#channels a.toggle { line-height: 30px; padding: 0 10px; color: #999; margin: 0; border-bottom: 1px solid #777; display: block; }
+#channels a.toggle:hover { color: #fff; }
+
+#channels .channel { line-height: 20px; }
+#channels .channel:hover { border-bottom: 1px solid #fff; margin-bottom: -1px; }
+#channels .channel .current { float: right; }
+#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 15px; width: 15px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; }
+#channels .channel .remove:hover { color: #faa; background: rgba(255,255,255,0.5); cursor: pointer; }
+
+
+
+#map-expanded { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; z-index: 100; color: #ddd; }
+#map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; box-shadow: 0 0 5px 0 rgba(0,0,0,0.5); }
+#map-expanded.show { display: block; }
+
+
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 568px) { 
+    #header { height: 30px; padding: 0; }
+    #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; }
+    #show-map { line-height: 30px; font-size: 12px; padding: 0 20px; }
+    #show-map img.map { display: none; }
+    #map-expanded { top: 30px; }
+    #map-expanded img.map { width: 250px; height: 250px; }
+
+    #post .inner { margin: 5px 10px; }
+    #post input { display: block; }
+    #post input[type='submit'] { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
+    #post input[name='spiel'] {  width: 95%; }
+    #post input[name='name'] {  width: 60%; }
+}
+
+img.desaturate {
+    -webkit-filter: grayscale(1); -webkit-filter: grayscale(100%); -moz-filter: grayscale(100%);
+    filter: gray; filter: grayscale(100%);
+    filter: url(desaturate.svg#greyscale);
+}
