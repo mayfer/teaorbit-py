@@ -64,8 +64,9 @@ and (min-device-width : 320px)
 and (max-device-width : 568px) { 
     #header { height: 30px; padding: 0; }
     #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; }
-    #show-map { line-height: 30px; font-size: 12px; padding: 0 20px; }
-    #show-map img.map { display: none; }
+    #num-users { display: inline-block; line-height: 30px; } 
+    #header .button, #header .info { line-height: 30px; font-size: 12px; padding: 0 20px; }
+    #header img.map {  height: 30px; width: 30px; }
     #map-expanded { top: 30px; }
     #map-expanded img.map { width: 250px; height: 250px; }
 
@@ -79,7 +80,7 @@ and (max-device-width : 568px) {
     #chat .row:hover .date { color: #aaa; display: inline-block; }
 }
 
-img.desaturate {
+img.disabled-desaturate {
     -webkit-filter: grayscale(1); -webkit-filter: grayscale(100%); -moz-filter: grayscale(100%);
     filter: gray; filter: grayscale(100%);
     filter: url(desaturate.svg#greyscale);
