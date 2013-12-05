@@ -2,7 +2,7 @@ from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
-from dto import DTO, Response, Spiel, Session, Block
+from dto import DTO, Response, Spiel, Session, Block, OnlineUsers
 
 class Connection(SockJSConnection):
     participants = set()
@@ -35,10 +35,26 @@ class Connection(SockJSConnection):
 
     def on_message(self, text):
         message = json_decode(text)
-        session = message['session']
+        session = message.get('session', None);
+
+        if message['action'] == 'hello':
+            chatroom = message['body'].get('chatroom', '')
+            latitude = message['body'].get('latitude', 0)
+            longitude = message['body'].get('longitude', 0)
+
+            if chatroom:
+                block_id = chatroom
+            else:
+                block_id = self.game.get_block_id(latitude, longitude)
+
+            if block_id not in self.rooms.keys():
+                self.rooms[block_id] = set()
+            self.rooms[block_id].add(self)
+
+            self.send_obj(Block(block_id))
+            self.send_obj(OnlineUsers(len(self.rooms.get(block_id, []))))
 
         if message['action'] == 'get_spiels':
-            session = message['session']
             chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
@@ -53,14 +69,8 @@ class Connection(SockJSConnection):
             for spiel in spiels:
                 self.send_obj(spiel)
 
-            if block_id not in self.rooms.keys():
-                self.rooms[block_id] = set()
-            self.rooms[block_id].add(self)
-
-            self.send_obj(Block(block_id))
 
         if message['action'] == 'post_spiel':
-            session = message['session']
             name = message['body']['name']
             spiel = message['body']['spiel']
             latitude = message['body'].get('latitude', 0)

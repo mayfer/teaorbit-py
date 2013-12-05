@@ -27,9 +27,9 @@ input#type-here { width: 60% }
 input#name { width: 20%; }
 input#submit { padding-right: 8px; }
 
-#chat { position: absolute; left: 0; right: 200px; bottom: 0; overflow: auto; z-index: 50; }
+#chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; }
 #chat .inner { padding: 30px; }
-#chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 25px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
+#chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 25px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; max-width: 600px; }
 #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
 #chat .row:hover .date { color: #aaa; }
 #chat .name { color: #888; margin-right: 5px; }
@@ -38,9 +38,13 @@ input#submit { padding-right: 8px; }
 #chat .color { display: inline-block; height: 16px; width: 16px; position: absolute; left: 5px; top: 50%; margin-top: -8px; border-radius: 8px;}
 
 #channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 200px; background: rgba(0,0,0,1); }
-#channels .inner { padding: 10px;  }
-#channels a.toggle { line-height: 30px; padding: 0 10px; color: #999; margin: 0; border-bottom: 1px solid #777; display: block; }
+#channels .inner { padding: 10px; display: none; }
+#channels a.toggle { line-height: 30px; padding: 0 10px; color: #999; margin: 0; display: block; }
 #channels a.toggle:hover { color: #fff; }
+#channels a.toggle.expanded { border-bottom: 1px solid #777; }
+
+#channels .toggle:before { content: "▲";margin-right: 10px; }
+#channels .toggle.expanded:before { content: "▼"; margin-right: 10px;  }
 
 #channels .channel { line-height: 20px; }
 #channels .channel:hover { border-bottom: 1px solid #fff; margin-bottom: -1px; }
@@ -70,6 +74,9 @@ and (max-device-width : 568px) {
     #post input[type='submit'] { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
     #post input[name='spiel'] {  width: 95%; }
     #post input[name='name'] {  width: 60%; }
+
+    #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
+    #chat .row:hover .date { color: #aaa; display: inline-block; }
 }
 
 img.desaturate {

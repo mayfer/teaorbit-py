@@ -16,6 +16,11 @@ function Networking() {
             window.session_id = message.body.session_id;
             $.cookie("session", window.session_id);
             console.log("Logged in, session ID: " + window.session_id);
+            that.send('hello', {
+                'latitude': window.latitude,
+                'longitude': window.longitude,
+                'chatroom': window.chatroom,
+            });
             that.send('get_spiels', {
                 'latitude': window.latitude,
                 'longitude': window.longitude,
@@ -32,6 +37,12 @@ function Networking() {
         // general activity log
         if(message.action == 'log') {
             console.log("Log: " + message.body.message);
+        }
+
+        // online users
+        if(message.action == 'online') {
+            var num_online = message.body.num_online;
+            $('#num-online').html(num_online + " online");
         }
 
         // area info

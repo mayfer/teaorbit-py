@@ -105,6 +105,11 @@ function UI() {
             this_ui.toggle_map();
         });
 
+        $('#channels .toggle').click(function(e){
+            $(this).toggleClass('expanded');
+            $('#channels .inner').toggle();
+        });
+
         $(window).focus(function(e){
             document.title = window.title;
             this_ui.flags.windowFocused = true;
@@ -129,7 +134,7 @@ function UI() {
                 if(channel == window.chatroom) {
                     $('<span>').addClass('current').html("[current]").appendTo(channelelem);
                 } else {
-                    var remove = $('<a>').attr('href', '#').addClass('remove').html("&times;").appendTo(channelelem);
+                    //var remove = $('<a>').attr('href', '#').addClass('remove').html("&times;").appendTo(channelelem);
                 }
                 channelelem.appendTo(container);
 
