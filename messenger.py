@@ -50,9 +50,10 @@ class Connection(SockJSConnection):
             if block_id not in self.rooms.keys():
                 self.rooms[block_id] = set()
             self.rooms[block_id].add(self)
+            self.block_id = block_id
 
             self.send_obj(Block(block_id))
-            self.send_obj(OnlineUsers(len(self.rooms.get(block_id, []))))
+            self.broadcast_obj(OnlineUsers(len(self.rooms.get(block_id, [] ))), self.rooms.get(block_id, () ))
 
         if message['action'] == 'get_spiels':
             chatroom = message['body'].get('chatroom', '')
@@ -65,6 +66,7 @@ class Connection(SockJSConnection):
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
                 spiels = self.game.get_spiels_by_block_id(block_id)
+            self.block_id = block_id
 
             for spiel in spiels:
                 self.send_obj(spiel)
@@ -93,6 +95,7 @@ class Connection(SockJSConnection):
 
     def on_close(self):
         session_id = self.session_id
+        block_id = self.block_id
         # Remove client from the clients list and broadcast leave message
         # self.game.remove_player(session_id)
         self.participants.remove(self)
@@ -100,6 +103,7 @@ class Connection(SockJSConnection):
         for block, room in self.rooms.iteritems():
             room.remove(self)
 
+        self.broadcast_obj(OnlineUsers(len(self.rooms.get(block_id, [] ))), self.rooms.get(block_id, () ))
         self.broadcast_text("{id} left.".format(id=session_id))
 
     def debug(self, log):
@@ -118,4 +122,7 @@ class Connection(SockJSConnection):
     def broadcast_text(self, text):
         json_message = json_encode({'action': 'log', 'body': {'message': text}})
         self.broadcast(self.participants, json_message)
+
+    def broadcast_obj(self, dto, recipients):
+        self.broadcast(recipients, self.response(dto))
 

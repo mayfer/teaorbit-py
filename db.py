@@ -28,11 +28,11 @@ class History(object):
 
     def insert_spiel(self, block_id, spiel_json, timestamp):
         # spiel_id = self.redis.get last id amk
-        self.redis.zadd(block_id, spiel_json, timestamp)
+        self.redis.zadd("block:{b}".format(b=block_id), spiel_json, timestamp)
 
     def get_spiels(self, block_id):
         # since = datetime_to_unix(datetime_now() - timedelta(days=2))
-        spiel_jsons = self.redis.zrevrangebyscore(block_id, '+inf', '-inf', start=0, num=30)
+        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), '+inf', '-inf', start=0, num=30)
         spiel_jsons.reverse()
         return spiel_jsons
 
