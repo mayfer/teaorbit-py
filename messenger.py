@@ -15,10 +15,10 @@ class Connection(SockJSConnection):
         else:
             session_id = self.session.session_id
 
-        if session_id not in self.game.players.keys():
+        player = self.game.get_player(session_id)
+        if player is None:
             player = self.game.add_player(session_id)
-        else:
-            player = self.game.players[session_id]
+        print player.json()
 
         self.session_id = session_id
 
@@ -86,7 +86,7 @@ class Connection(SockJSConnection):
                 elif latitude and longitude:
                     block_id = self.game.get_block_id(latitude, longitude)
 
-                player = self.game.players[session]
+                player = self.game.get_player(session)
                 color = player.color
 
                 spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date, color=color)

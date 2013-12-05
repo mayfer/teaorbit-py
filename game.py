@@ -2,7 +2,7 @@ from random import choice
 from common import json_encode
 from db import History
 from geo import Geo
-from dto import Spiel
+from dto import Spiel, Session
 import random
 
 class GameState(object):
@@ -15,12 +15,18 @@ class GameState(object):
     def add_player(self, session_id):
         r = lambda: random.randint(0,255)
         color = '#%02X%02X%02X' % (r(),r(),r())
-        player = Player(color=color)
-        self.players[session_id] = player
-        return player
+
+        player_dto = Session(session_id, color)
+        # self.players[session_id] = player_dto
+        self.history.set_player(session_id, player_dto)
+        return player_dto
 
     def remove_player(self, session_id):
+        self.history.remove_player(session_id)
         del self.players[session_id]
+
+    def get_player(self, session_id):
+        return self.history.get_player(session_id)
 
     def get_block_id(self, latitude, longitude):
         return self.geo.get_block_id(latitude, longitude)
@@ -45,6 +51,3 @@ class GameState(object):
 
         return spiels
 
-class Player(object):
-    def __init__(self, color):
-        self.color = color

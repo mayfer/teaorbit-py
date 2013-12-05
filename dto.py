@@ -70,3 +70,4 @@ class OnlineUsers(DTO):
 
     def __init__(self, num_online):
         self.num_online = num_online
+

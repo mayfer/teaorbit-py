@@ -1,6 +1,6 @@
 from redis import Redis
 from redis.exceptions import ConnectionError
-from dto import Spiel
+from dto import Spiel, Session
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
 
@@ -36,6 +36,18 @@ class History(object):
         spiel_jsons.reverse()
         return spiel_jsons
 
+    def set_player(self, session_id, player):
+        self.redis.set('player:{s}'.format(s=session_id), player.json())
+
+    def get_player(self, session_id):
+        player_json = self.redis.get('player:{s}'.format(s=session_id))
+        if player_json is not None:
+            return Session.from_json(player_json)
+        else:
+            return None
+
+    def remove_player(self, session_id):
+        self.redis.delete('player:{s}'.format(s=session_id))
 """
 
 Notes
