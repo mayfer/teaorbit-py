@@ -100,8 +100,7 @@ class Connection(SockJSConnection):
         # self.game.remove_player(session_id)
         self.participants.remove(self)
 
-        for block, room in self.rooms.iteritems():
-            room.remove(self)
+        self.rooms.get(block_id, () ).remove(self)
 
         self.broadcast_obj(OnlineUsers(len(self.rooms.get(block_id, [] ))), self.rooms.get(block_id, () ))
         self.broadcast_text("{id} left.".format(id=session_id))
