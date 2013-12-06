@@ -7,6 +7,7 @@ from dto import DTO, Response, Spiel, Session, Block, OnlineUsers
 class Connection(SockJSConnection):
     participants = set()
     rooms = {}
+    sessions = {}
     game = GameState()
 
     def on_open(self, info):
@@ -18,7 +19,6 @@ class Connection(SockJSConnection):
         player = self.game.get_player(session_id)
         if player is None:
             player = self.game.add_player(session_id)
-        print player.json()
 
         self.session_id = session_id
 
@@ -49,11 +49,15 @@ class Connection(SockJSConnection):
 
             if block_id not in self.rooms.keys():
                 self.rooms[block_id] = set()
+            if block_id not in self.sessions.keys():
+                self.sessions[block_id] = set()
+
             self.rooms[block_id].add(self)
+            self.sessions[block_id].add(session)
             self.block_id = block_id
 
             self.send_obj(Block(block_id))
-            self.broadcast_obj(OnlineUsers(len(self.rooms.get(block_id, [] ))), self.rooms.get(block_id, () ))
+            self.broadcast_obj(OnlineUsers(len(self.sessions.get(block_id, () ))), self.rooms.get(block_id, () ))
 
         if message['action'] == 'get_spiels':
             chatroom = message['body'].get('chatroom', '')
@@ -101,8 +105,9 @@ class Connection(SockJSConnection):
         self.participants.remove(self)
 
         self.rooms.get(block_id, () ).remove(self)
+        self.sessions.get(block_id, () ).remove(session_id)
 
-        self.broadcast_obj(OnlineUsers(len(self.rooms.get(block_id, [] ))), self.rooms.get(block_id, () ))
+        self.broadcast_obj(OnlineUsers(len(self.sessions.get(block_id, () ))), self.rooms.get(block_id, () ))
         self.broadcast_text("{id} left.".format(id=session_id))
 
     def debug(self, log):
