@@ -44,11 +44,11 @@ input#submit { padding-right: 8px; }
 #channels a.toggle.expanded { border-bottom: 1px solid #777; }
 
 #channels .toggle:before { content: "▲";margin-right: 10px; }
-#channels .toggle.expanded:before { content: "▼"; margin-right: 10px;  }
+#channels .toggle.expanded:before { content: "▼ recent channels"; margin-right: 10px;  }
 
 #channels .channel { line-height: 20px; }
 #channels .channel:hover { border-bottom: 1px solid #fff; margin-bottom: -1px; }
-#channels .channel .current { float: right; }
+#channels .channel .current { float: right; margin-left: 5px;}
 #channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 15px; width: 15px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; }
 #channels .channel .remove:hover { color: #faa; background: rgba(255,255,255,0.5); cursor: pointer; }
 
