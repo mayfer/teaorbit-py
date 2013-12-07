@@ -7,6 +7,7 @@
 
         <title>tea orbit</title>
         <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css' type='text/css'> 
+        <link rel='stylesheet' href='{{ STATIC_URL }}styles/icons.css' type='text/css'> 
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.min.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.cookie.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.linkify.min.js'></script>
@@ -52,7 +53,8 @@
             <div id='header'>
                 <a id='show-map' href='#' class='button'><span id='show-hide-details'>nearby</span><img class='map desaturate' align='middle' /></a>
                 <span class='info' id='num-online'>? online</span>
-                <h1><a href='/'>tea orbit</a></h1>
+                <span id='audio'></span>
+                <h1 id='logo'><a href='/'>tea orbit</a></h1>
             </div>
             <div id='chat'>
                 <div class='inner'>

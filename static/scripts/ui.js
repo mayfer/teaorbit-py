@@ -42,8 +42,34 @@ function UI() {
         }
     }
 
+    this.mute = function() {
+        $('#audio').addClass('icon-volume-mute').removeClass('icon-volume-medium');
+        this_ui.flags.mute = true;
+        this_ui.global_cookie('mute', this_ui.flags.mute);
+    }
+    this.unmute = function() {
+        $('#audio').addClass('icon-volume-medium').removeClass('icon-volume-mute');
+        this_ui.flags.mute = false;
+        this_ui.global_cookie('mute', this_ui.flags.mute);
+    }
+
     this.init = function() {
         $('<audio id="notification"><source src="/static/notification.ogg" type="audio/ogg"><source src="/static/notification.mp3" type="audio/mpeg"><source src="/static/notification.wav" type="audio/wav"></audio>').appendTo('body');
+
+        var mute = this_ui.global_cookie('mute');
+        if(mute === true) {
+            this_ui.mute()
+        } else {
+            this_ui.unmute()
+        }
+        $('#audio').bind('touchstart click', function(e){
+            e.preventDefault();
+            if(this_ui.flags.mute === true) {
+                this_ui.unmute()
+            } else {
+                this_ui.mute()
+            }
+        });
 
         if(window.chatroom) {
             window.networking = Networking();
@@ -170,7 +196,7 @@ function UI() {
         var datestring = date.toLocaleString()
         var text;
 
-        if(this.flags.windowFocused == false) {
+        if(this.flags.windowFocused == false && this.flags.mute == false) {
             $('#notification')[0].play();
         }
 
