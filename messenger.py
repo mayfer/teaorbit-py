@@ -23,7 +23,7 @@ class Connection(SockJSConnection):
         self.session_id = session_id
 
         # Send that someone joined
-        self.broadcast_text("{id} joined.".format(id=session_id))
+        # self.broadcast_text("{id} joined.".format(id=session_id))
 
         self.send_obj(Session(session_id, color=player.color))
 
@@ -57,7 +57,8 @@ class Connection(SockJSConnection):
             self.block_id = block_id
 
             self.send_obj(Block(block_id))
-            self.broadcast_obj(OnlineUsers(len(self.sessions.get(block_id, () ))), self.rooms.get(block_id, () ))
+            online = OnlineUsers(len(self.sessions.get(block_id, () )))
+            self.broadcast_obj(online, self.rooms.get(block_id, () ))
 
         if message['action'] == 'get_spiels':
             chatroom = message['body'].get('chatroom', '')
@@ -107,8 +108,9 @@ class Connection(SockJSConnection):
         self.rooms.get(block_id, () ).remove(self)
         self.sessions.get(block_id, () ).remove(session_id)
 
-        self.broadcast_obj(OnlineUsers(len(self.sessions.get(block_id, () ))), self.rooms.get(block_id, () ))
-        self.broadcast_text("{id} left.".format(id=session_id))
+        online = OnlineUsers(len(self.sessions.get(block_id, () )))
+        self.broadcast_obj(online, self.rooms.get(block_id, () ))
+        # self.broadcast_text("{id} left.".format(id=session_id))
 
     def debug(self, log):
         print log

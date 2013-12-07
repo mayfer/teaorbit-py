@@ -106,6 +106,7 @@ function UI() {
         });
 
         $('#channels .toggle').click(function(e){
+            e.preventDefault();
             $(this).toggleClass('expanded');
             $('#channels .inner').toggle();
         });
