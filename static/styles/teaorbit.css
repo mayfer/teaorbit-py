@@ -29,15 +29,15 @@ input#submit { padding-right: 8px; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; font-size: 13px; }
 #chat .inner { padding: 30px; }
-#chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 25px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
+#chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
 #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
 #chat .row:hover .date { color: #aaa; }
-#chat .name { color: #888; margin-right: 5px; }
+#chat .name { color: #888; margin-right: 3px; }
 #chat .name:before { content: "[" }
 #chat .name:after { content: "] " }
 #chat .color { display: inline-block; height: 16px; width: 16px; position: absolute; left: 5px; top: 50%; margin-top: -8px; border-radius: 8px;}
 
-#channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 200px; background: rgba(0,0,0,1); }
+#channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 30px; background: rgba(0,0,0,1); }
 #channels .inner { padding: 10px; display: none; }
 #channels a.toggle { line-height: 30px; padding: 0 10px; color: #999; margin: 0; display: block; }
 #channels a.toggle:hover { color: #fff; }
@@ -63,7 +63,9 @@ input#submit { padding-right: 8px; }
 and (min-device-width : 320px) 
 and (max-device-width : 568px) { 
     #header { height: 30px; padding: 0; }
-    #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; }
+    #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; padding: 0 15px; }
+    #header h1 a { display: inline-block; width: 80px; }
+    #show-map { display: inline-block; max-width: 80px; overflow: hidden; text-overflow:ellipsis; }
     #num-users { display: inline-block; line-height: 30px; } 
     #header .button, #header .info { line-height: 30px; font-size: 12px; padding: 0 20px; }
     #header img.map {  height: 30px; width: 30px; }
@@ -77,6 +79,7 @@ and (max-device-width : 568px) {
     #post input[name='name'] {  width: 60%; }
 
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
+    #chat .inner { padding: 15px; }
 }
 
 img.disabled-desaturate {

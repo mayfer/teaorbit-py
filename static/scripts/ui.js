@@ -100,14 +100,19 @@ function UI() {
             this_ui.cookie("name", name);
         });
 
-        $('#show-map').click(function(e){
+        $('#show-map').bind('click touchstart', function(e){
             e.preventDefault();
             this_ui.toggle_map();
         });
 
-        $('#channels .toggle').click(function(e){
+        $('#channels .toggle').bind('click touchstart', function(e){
             e.preventDefault();
             $(this).toggleClass('expanded');
+            if($(this).hasClass('expanded')) {
+                this_ui.global_cookie('channels_expanded', true);
+            } else {
+                this_ui.global_cookie('channels_expanded', false);
+            }
             $('#channels .inner').toggle();
         });
 
@@ -121,6 +126,10 @@ function UI() {
         });
 
         this.show_recent_channels();
+        var show_channels = this_ui.global_cookie('channels_expanded');
+        if(show_channels) {
+            $('#channels .toggle').click();
+        }
     }
 
     this.show_recent_channels = function() {
