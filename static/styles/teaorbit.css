@@ -53,7 +53,7 @@ input#submit { padding-right: 8px; }
 #channels .channel .remove:hover { color: #faa; background: rgba(255,255,255,0.5); cursor: pointer; }
 
 
-#audio { position: absolute; left: 50%; margin-left: -15px; display: inline-block; line-height: 50px; cursor: pointer; }
+#audio { float: right; display: inline-block; line-height: 50px; cursor: pointer; }
 #audio:hover { color: #fff; }
 
 #map-expanded { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; z-index: 100; color: #ddd; }
