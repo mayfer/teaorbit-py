@@ -2,7 +2,7 @@ from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
-from dto import DTO, Response, Spiel, Session, Block, OnlineUsers
+from dto import DTO, Response, Spiel, Session, Block, OnlineUsers, InitialSpiels
 
 class Connection(SockJSConnection):
     participants = set()
@@ -68,14 +68,15 @@ class Connection(SockJSConnection):
 
             if chatroom:
                 block_id = chatroom
-                spiels = self.game.get_spiels_by_block_id(block_id)
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
-                spiels = self.game.get_spiels_by_block_id(block_id, since)
+
+            spiels = self.game.get_spiels_by_block_id(block_id, since=since)
+
+            spiels_dto = InitialSpiels(spiels)
+            self.send_obj(spiels_dto)
             self.block_id = block_id
 
-            for spiel in spiels:
-                self.send_obj(spiel)
 
 
         if message['action'] == 'post_spiel':

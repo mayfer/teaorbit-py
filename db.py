@@ -27,12 +27,11 @@ class History(object):
             self.redis = FakeRedis()
 
     def insert_spiel(self, block_id, spiel_json, timestamp):
-        # spiel_id = self.redis.get last id amk
         self.redis.zadd("block:{b}".format(b=block_id), spiel_json, timestamp)
 
-    def get_spiels(self, block_id, since):
-        # since = datetime_to_unix(datetime_now() - timedelta(days=2))
-        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), '+inf', since, start=0, num=30)
+    def get_spiels(self, block_id, since='-inf', until='+inf'):
+        print "since", since
+        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=30)
         spiel_jsons.reverse()
         return spiel_jsons
 

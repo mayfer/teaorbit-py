@@ -16,6 +16,7 @@ function Networking(since) {
     this.sock.onmessage = function(e) {
         //console.log('message', e.data);
         var message = JSON.parse(e.data);
+        console.log("new message,", message);
 
         // initial login
         if(message.action == 'session') {
@@ -38,7 +39,16 @@ function Networking(since) {
         // chat state
         if(message.action == 'new_spiel') {
             var spiel = message.body;
-            window.ui.add_spiel(spiel);
+            var notify = true;
+            window.ui.add_spiel(spiel, notify);
+        }
+        // chat state
+        if(message.action == 'initial_spiels') {
+            var spiels = message.body.spiels;
+            for(var i=0; i<spiels.length; i++) {
+                var notify = false;
+                window.ui.add_spiel(spiels[i], notify);
+            }
         }
 
         // general activity log
@@ -63,18 +73,20 @@ function Networking(since) {
         console.log('Connection closed');
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
-            var since = $('.date:last').attr('title');
+            var since = window.last_spiel_date;
             window.networking = new Networking(since);
             console.log("Since", since);
             ui.network = window.network
         }, 2000);
     };
     this.send = function(action, body) {
-        var json_data = JSON.stringify({
+        var data = {
             'action': action,
             'body': body,
             'session': window.session_id,
-        })
+        };
+        console.log('sending,', data);
+        var json_data = JSON.stringify(data);
         this.sock.send(json_data);
     }
     return this;

@@ -59,6 +59,12 @@ class Spiel(DTO):
         self._latitude = latitude
         self._longitude = longitude
 
+class InitialSpiels(DTO):
+    _action = 'initial_spiels'
+
+    def __init__(self, spiels=[]):
+        self.spiels = spiels
+
 class Block(DTO):
     _action = 'block'
 
