@@ -12,30 +12,57 @@ class Connection(SockJSConnection):
 
     def on_open(self, info):
         if 'session' in info.cookies:
-            session_id = info.cookies['session'].value
+            self.session_id = info.cookies['session'].value
         else:
-            session_id = self.session.session_id
+            self.session_id = self.session.session_id
 
-        player = self.game.get_player(session_id)
-        if player is None:
-            player = self.game.add_player(session_id)
+        # update online count every minute
+        periodic = ioloop.PeriodicCallback(self.check_online, 60000)
+        periodic.start()
 
-        self.session_id = session_id
-
-        # Send that someone joined
-        # self.broadcast_text("{id} joined.".format(id=session_id))
-
-        self.send_obj(Session(session_id, color=player.color))
-
-        # Add client to the clients list
+    def add_online(self, connection, block_id, session_id):
+        self.block_id = block_id
         self.participants.add(self)
 
-        #periodic = ioloop.PeriodicCallback(self.send_state, 50)
-        #periodic.start()
+        player = self.game.get_player(self.session_id)
+        if player is None:
+            player = self.game.add_player(self.session_id)
+
+        self.send_obj(Session(self.session_id, color=player.color))
+
+        if block_id not in self.rooms.keys():
+            self.rooms[block_id] = set()
+        if block_id not in self.sessions.keys():
+            self.sessions[block_id] = {}
+
+        self.rooms[block_id].add(self)
+
+        last_active = unix_now_ms()
+        self.sessions[block_id][session] = {
+            'last_active': last_active,
+        }
+
+        self.send_obj(Block(block_id))
+
+        self.broadcast_online_count(block_id)
+
+    def remove_online(self, block_id, session_id, connection):
+        self.participants.remove(connection)
+        self.rooms.get(block_id, () ).remove(connection)
+        self.sessions.get(block_id, () ).remove(session_id)
+
+    def check_online(self):
+        allowed_inactive = 120000
+        # ping = Ping()
+        pass
+
+    def broadcast_online_count(self, block_id):
+        online = OnlineUsers(len(self.sessions.get(block_id, () )))
+        self.broadcast_obj(online, self.rooms.get(block_id, () ))
 
     def on_message(self, text):
         message = json_decode(text)
-        session = message.get('session', None);
+        # session = message.get('session', None);
 
         if message['action'] == 'hello':
             chatroom = message['body'].get('chatroom', '')
@@ -47,18 +74,8 @@ class Connection(SockJSConnection):
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
 
-            if block_id not in self.rooms.keys():
-                self.rooms[block_id] = set()
-            if block_id not in self.sessions.keys():
-                self.sessions[block_id] = set()
+            self.add_online(connection=self, block_id=block_id, session_id=self.session_id)
 
-            self.rooms[block_id].add(self)
-            self.sessions[block_id].add(session)
-            self.block_id = block_id
-
-            self.send_obj(Block(block_id))
-            online = OnlineUsers(len(self.sessions.get(block_id, () )))
-            self.broadcast_obj(online, self.rooms.get(block_id, () ))
 
         if message['action'] == 'get_spiels':
             chatroom = message['body'].get('chatroom', '')
@@ -93,7 +110,7 @@ class Connection(SockJSConnection):
                 elif latitude and longitude:
                     block_id = self.game.get_block_id(latitude, longitude)
 
-                player = self.game.get_player(session)
+                player = self.game.get_player(self.session_id)
                 color = player.color
 
                 spiel_dto = Spiel(name=name, spiel=spiel, latitude=latitude, longitude=longitude, date=date, color=color)
@@ -105,14 +122,9 @@ class Connection(SockJSConnection):
         block_id = self.block_id
         # Remove client from the clients list and broadcast leave message
         # self.game.remove_player(session_id)
-        self.participants.remove(self)
 
-        self.rooms.get(block_id, () ).remove(self)
-        self.sessions.get(block_id, () ).remove(session_id)
-
-        online = OnlineUsers(len(self.sessions.get(block_id, () )))
-        self.broadcast_obj(online, self.rooms.get(block_id, () ))
-        # self.broadcast_text("{id} left.".format(id=session_id))
+        self.remove_online(block_id=block_id, session_id=session, connection=self)
+        self.broadcast_online_count(block_id)
 
     def debug(self, log):
         print log

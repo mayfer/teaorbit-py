@@ -18,6 +18,11 @@ function Networking(since) {
         var message = JSON.parse(e.data);
         console.log("new message,", message);
 
+        
+        if(message.action == 'ping') {
+            that.send("pong", {});
+        }
+
         // initial login
         if(message.action == 'session') {
             window.session_id = message.body.session_id;

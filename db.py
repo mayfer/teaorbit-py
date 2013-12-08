@@ -30,7 +30,7 @@ class History(object):
         self.redis.zadd("block:{b}".format(b=block_id), spiel_json, timestamp)
 
     def get_spiels(self, block_id, since='-inf', until='+inf'):
-        print "since", since
+        # the brackets mean exclude that exact value
         spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=30)
         spiel_jsons.reverse()
         return spiel_jsons

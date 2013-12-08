@@ -25,6 +25,7 @@ def recursive_json(obj):
             return repr(obj) # convert to string
     return json_encode(serialize(obj))
 
+
 # data transfer object. defines attributes and serializes to json.
 class DTO:
     def json(self):
@@ -34,6 +35,10 @@ class DTO:
     def from_json(cls, json_text):
         kwargs = json_decode(json_text)
         return cls(**kwargs)
+
+class Ping(DTO):
+    def __init__(self):
+        pass
 
 class Response(DTO):
     def __init__(self, action=None, body=None, errors=None):
