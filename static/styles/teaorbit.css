@@ -21,7 +21,8 @@ a:hover { border-bottom: 1px solid #666; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 20px; position: relative; }
-#post input { background: #444; border: 1px solid #aaa; line-height: 20px; color: #fff; border-radius: 2px; text-indent: 5px; padding: 3px; }
+#post input, #post textarea { background: #444; border: 1px solid #aaa; line-height: 20px; color: #fff; border-radius: 2px; text-indent: 5px; padding: 3px; }
+#post textarea { display: inline-block; width: 60%; vertical-align: bottom; }
 
 input#type-here { width: 60% }
 input#name { width: 20%; }
@@ -67,9 +68,10 @@ and (max-device-width : 568px) {
     #header { height: 30px; padding: 0; }
     #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; padding: 0 15px; }
     #header h1 a { display: inline-block; width: 80px; }
+    #audio { line-height: 30px; }
     #show-map { display: inline-block; max-width: 80px; overflow: hidden; text-overflow:ellipsis; }
     #num-users { display: inline-block; line-height: 30px; } 
-    #header .button, #header .info { line-height: 30px; font-size: 12px; padding: 0 20px; }
+    #header .button, #header .info { line-height: 30px; font-size: 12px; padding: 0 10px; }
     #header img.map {  height: 30px; width: 30px; }
     #map-expanded { top: 30px; }
     #map-expanded img.map { width: 250px; height: 250px; }

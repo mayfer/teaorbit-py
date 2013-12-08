@@ -1,11 +1,17 @@
 
-function Networking() {
+function Networking(since) {
     var that = this;
+
+    if(since === undefined) {
+        this.since = 0;
+    } else {
+        this.since = since;
+    }
 
     this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
         console.log('Connected');
-        window.ui.reset();
+        //window.ui.reset();
     };
     this.sock.onmessage = function(e) {
         //console.log('message', e.data);
@@ -25,6 +31,7 @@ function Networking() {
                 'latitude': window.latitude,
                 'longitude': window.longitude,
                 'chatroom': window.chatroom,
+                'since': that.since,
             });
         }
 
@@ -56,7 +63,9 @@ function Networking() {
         console.log('Connection closed');
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
-            window.networking = new Networking();
+            var since = $('.date:last').attr('title');
+            window.networking = new Networking(since);
+            console.log("Since", since);
             ui.network = window.network
         }, 2000);
     };

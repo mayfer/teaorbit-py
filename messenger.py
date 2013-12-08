@@ -64,13 +64,14 @@ class Connection(SockJSConnection):
             chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
+            since = message['body'].get('since', 0)
 
             if chatroom:
                 block_id = chatroom
                 spiels = self.game.get_spiels_by_block_id(block_id)
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
-                spiels = self.game.get_spiels_by_block_id(block_id)
+                spiels = self.game.get_spiels_by_block_id(block_id, since)
             self.block_id = block_id
 
             for spiel in spiels:

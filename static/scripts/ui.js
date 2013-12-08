@@ -52,8 +52,8 @@ function UI() {
         this_ui.flags.mute = false;
         this_ui.global_cookie('mute', this_ui.flags.mute);
     }
-
-    this.init = function() {
+    
+    this.setup_audio = function() {
         $('<audio id="notification"><source src="/static/notification.ogg" type="audio/ogg"><source src="/static/notification.mp3" type="audio/mpeg"><source src="/static/notification.wav" type="audio/wav"></audio>').appendTo('body');
 
         var mute = this_ui.global_cookie('mute');
@@ -70,6 +70,10 @@ function UI() {
                 this_ui.mute()
             }
         });
+    }
+
+    this.init = function() {
+        this.setup_audio();
 
         if(window.chatroom) {
             window.networking = Networking();
@@ -96,6 +100,16 @@ function UI() {
 
         $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
+
+        $('#type-here').keydown(function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                console.log('asd');
+                $(this.form).submit();
+                return false;
+             }
+        });
+
         $('#post form').on('submit', function(e){
             e.preventDefault();
             var latitude = window.latitude;
@@ -110,7 +124,7 @@ function UI() {
                 var form = $(this).serializeJSON();
                 window.networking.send('post_spiel', form);
 
-                $(this).find('input[name="spiel"]').val('');
+                $(this).find('textarea[name="spiel"]').val('');
             }
             else {
                 alert("No location data. Please allow the browser geolocation access.");
@@ -137,9 +151,15 @@ function UI() {
             if($(this).hasClass('expanded')) {
                 this_ui.global_cookie('channels_expanded', true);
             } else {
+                $('#channels').css('top', '');
                 this_ui.global_cookie('channels_expanded', false);
             }
-            $('#channels .inner').toggle();
+            $('#channels .inner').toggle(0, function(){
+                if($('#channels').height() >= ($(window).height() - $('#header').height() - $('#post').height() )) {
+                    $('#channels').css('top', '0px');
+                }
+            });
+
         });
 
         $(window).focus(function(e){
@@ -212,7 +232,7 @@ function UI() {
         
 
         row.append(message);
-        row.append( $('<div>').addClass('date').attr('title', datestring).html(spiel.date) );
+        row.append( $('<div>').addClass('date').attr('title', datestring).data('timestamp', datestring).html(spiel.date).timeago() );
         chat.append(row);
 
         row.linkify(toHashtagUrl);
@@ -222,7 +242,6 @@ function UI() {
             this.flags.chatCssUpdated = true;
         }
 
-        $('.date').timeago();
         window.last_id = spiel.id;
 
         if(this.flags.windowFocused == false) {
