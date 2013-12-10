@@ -31,6 +31,10 @@ class History(object):
 
     def get_spiels(self, block_id, since='-inf', until='+inf'):
         # the brackets mean exclude that exact value
+        if since != '-inf' and since != '+inf':
+            since = '%f' % since
+        if until != '-inf' and until != '+inf':
+            until = '%f' % until
         spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=30)
         spiel_jsons.reverse()
         return spiel_jsons
