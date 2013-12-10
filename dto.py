@@ -37,6 +37,8 @@ class DTO:
         return cls(**kwargs)
 
 class Ping(DTO):
+    _action = 'ping'
+
     def __init__(self):
         pass
 

@@ -33,6 +33,8 @@ input#submit { padding-right: 8px; }
 #chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
 #chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
 #chat .row:hover .date { color: #aaa; }
+#chat .row:hover .message { color: #eee; }
+#chat .row:hover .name { color: #aaa; }
 #chat .name { color: #888; margin-right: 3px; }
 #chat .name:before { content: "[" }
 #chat .name:after { content: "] " }

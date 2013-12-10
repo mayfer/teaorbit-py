@@ -2,7 +2,7 @@ from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
-from dto import DTO, Response, Spiel, Session, Block, OnlineUsers, InitialSpiels
+from dto import DTO, Response, Spiel, Session, Block, OnlineUsers, InitialSpiels, Ping
 
 class Connection(SockJSConnection):
     participants = set()
@@ -17,7 +17,7 @@ class Connection(SockJSConnection):
             self.session_id = self.session.session_id
 
         # update online count every minute
-        periodic = ioloop.PeriodicCallback(self.check_online, 60000)
+        periodic = ioloop.PeriodicCallback(self.update_online, 60000)
         periodic.start()
 
     def add_online(self, connection, block_id, session_id):
@@ -38,8 +38,9 @@ class Connection(SockJSConnection):
         self.rooms[block_id].add(self)
 
         last_active = unix_now_ms()
-        self.sessions[block_id][session] = {
+        self.sessions[block_id][session_id] = {
             'last_active': last_active,
+            'name': '',
         }
 
         self.send_obj(Block(block_id))
@@ -49,15 +50,20 @@ class Connection(SockJSConnection):
     def remove_online(self, block_id, session_id, connection):
         self.participants.remove(connection)
         self.rooms.get(block_id, () ).remove(connection)
-        self.sessions.get(block_id, () ).remove(session_id)
+        self.sessions[block_id].pop(session_id, None)
 
-    def check_online(self):
+    def update_online(self):
+        ping = Ping()
+        self.send_obj(ping)
         allowed_inactive = 120000
-        # ping = Ping()
-        pass
+        now = unix_now_ms()
+        for block_id, sess in self.sessions.items():
+            for session_id, details in sess.items():
+                if details.get('last_active', 0) < now - allowed_inactive:
+                    self.remove_online(block_id, session_id, self)
 
     def broadcast_online_count(self, block_id):
-        online = OnlineUsers(len(self.sessions.get(block_id, () )))
+        online = OnlineUsers(len(self.sessions.get(block_id, {} ).keys()))
         self.broadcast_obj(online, self.rooms.get(block_id, () ))
 
     def on_message(self, text):
@@ -76,6 +82,17 @@ class Connection(SockJSConnection):
 
             self.add_online(connection=self, block_id=block_id, session_id=self.session_id)
 
+        if message['action'] == 'pong':
+            chatroom = message['body'].get('chatroom', '')
+            latitude = message['body'].get('latitude', 0)
+            longitude = message['body'].get('longitude', 0)
+
+            if chatroom:
+                block_id = chatroom
+            else:
+                block_id = self.game.get_block_id(latitude, longitude)
+
+            self.sessions[block_id][self.session_id]['last_active'] = unix_now_ms()
 
         if message['action'] == 'get_spiels':
             chatroom = message['body'].get('chatroom', '')
@@ -93,8 +110,6 @@ class Connection(SockJSConnection):
             spiels_dto = InitialSpiels(spiels)
             self.send_obj(spiels_dto)
             self.block_id = block_id
-
-
 
         if message['action'] == 'post_spiel':
             name = message['body']['name']
@@ -117,13 +132,12 @@ class Connection(SockJSConnection):
                 self.notify_recipients(block_id, spiel_dto)
                 self.game.post_spiel_to_block(block_id, spiel_dto)
 
+                self.sessions[block_id][self.session_id]['name'] = name
+
     def on_close(self):
         session_id = self.session_id
         block_id = self.block_id
-        # Remove client from the clients list and broadcast leave message
-        # self.game.remove_player(session_id)
-
-        self.remove_online(block_id=block_id, session_id=session, connection=self)
+        self.remove_online(block_id=block_id, session_id=session_id, connection=self)
         self.broadcast_online_count(block_id)
 
     def debug(self, log):

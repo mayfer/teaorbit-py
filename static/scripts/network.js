@@ -11,7 +11,11 @@ function Networking(since) {
     this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
         console.log('Connected');
-        //window.ui.reset();
+        that.send('hello', {
+            'latitude': window.latitude,
+            'longitude': window.longitude,
+            'chatroom': window.chatroom,
+        });
     };
     this.sock.onmessage = function(e) {
         //console.log('message', e.data);
@@ -20,19 +24,20 @@ function Networking(since) {
 
         
         if(message.action == 'ping') {
-            that.send("pong", {});
+            if(window.chatroom || window.latitude) {
+                that.send('pong', {
+                    'latitude': window.latitude,
+                    'longitude': window.longitude,
+                    'chatroom': window.chatroom,
+                });
+            }
         }
 
         // initial login
         if(message.action == 'session') {
             window.session_id = message.body.session_id;
-            $.cookie("session", window.session_id);
+            $.cookie("session", window.session_id, {expires: 1000, path: '/'});
             console.log("Logged in, session ID: " + window.session_id);
-            that.send('hello', {
-                'latitude': window.latitude,
-                'longitude': window.longitude,
-                'chatroom': window.chatroom,
-            });
             that.send('get_spiels', {
                 'latitude': window.latitude,
                 'longitude': window.longitude,
