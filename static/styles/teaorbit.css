@@ -30,15 +30,16 @@ input#submit { padding-right: 8px; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; font-size: 13px; }
 #chat .inner { padding: 30px; }
-#chat .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
-#chat .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
-#chat .row:hover .date { color: #aaa; }
-#chat .row:hover .message { color: #eee; }
-#chat .row:hover .name { color: #aaa; }
-#chat .name { color: #888; margin-right: 3px; }
-#chat .name:before { content: "[" }
-#chat .name:after { content: "] " }
-#chat .color { display: inline-block; height: 16px; width: 16px; position: absolute; left: 5px; top: 50%; margin-top: -8px; border-radius: 8px;}
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
+.date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
+.row:hover .date { color: #aaa; }
+.row:hover .message { color: #eee; }
+.row:hover .name { color: #aaa; }
+.name { color: #888; margin-right: 3px; }
+.name:before { content: "[" }
+.name:after { content: "] " }
+
+.color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 50%; margin-top: -8px; }
 
 #channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 30px; background: rgba(0,0,0,1); }
 #channels .inner { padding: 10px; display: none; }
@@ -63,6 +64,9 @@ input#submit { padding-right: 8px; }
 #map-expanded img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; box-shadow: 0 0 5px 0 rgba(0,0,0,0.5); }
 #map-expanded.show { display: block; }
 
+#num-online { cursor: pointer; }
+#num-online:hover { color: #fff; }
+#online-users { padding: 10px 20px; background: #000; display: none; }
 
 @media only screen 
 and (min-device-width : 320px) 

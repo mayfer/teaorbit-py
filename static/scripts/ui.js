@@ -174,6 +174,19 @@ function UI() {
         if(show_channels) {
             $('#channels .toggle').click();
         }
+
+        var online_elem = $('#num-online');
+        var offset = online_elem.offset();
+        $('<div>').attr('id', 'online-users').css({
+            'position': 'absolute',
+            'top': (offset.top + online_elem.height()) + 'px',
+            'left': (offset.left) + 'px',
+            'width': (online_elem.outerWidth() + $('#show-map').outerWidth()) + "px",
+        }).appendTo('body');
+        $('#num-online').click(function(e){
+            e.preventDefault();
+            $('#online-users').toggle();
+        });
     }
 
     this.show_recent_channels = function() {

@@ -15,6 +15,7 @@ function Networking(since) {
             'latitude': window.latitude,
             'longitude': window.longitude,
             'chatroom': window.chatroom,
+            'name': $('#name').val(),
         });
     };
     this.sock.onmessage = function(e) {
@@ -69,7 +70,16 @@ function Networking(since) {
         // online users
         if(message.action == 'online') {
             var num_online = message.body.num_online;
+            var users = message.body.users;
             $('#num-online').html(num_online + " online");
+
+            var colors = [];
+            for(var i=0; i<users.length; i++) {
+                var color = '<div class="message"><div class="color" style="background-color: '+users[i].color+'"></div> <span class="name">'+users[i].name+'</span></div><br />';
+                colors.push(color);
+            }
+
+            $('#online-users').html(colors.join(''));
         }
 
         // area info

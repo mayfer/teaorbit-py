@@ -78,9 +78,17 @@ class Block(DTO):
     def __init__(self, block_id):
         self.block_id = block_id
 
+class User(DTO):
+    _action = 'user'
+
+    def __init__(self, color, name):
+        self.color = color
+        self.name = name
+
 class OnlineUsers(DTO):
     _action = 'online'
 
-    def __init__(self, num_online):
+    def __init__(self, num_online, users):
         self.num_online = num_online
+        self.users = users
 

@@ -2,7 +2,7 @@ from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
-from dto import DTO, Response, Spiel, Session, Block, OnlineUsers, InitialSpiels, Ping
+from dto import DTO, Response, Spiel, Session, Block, OnlineUsers, InitialSpiels, Ping, User
 
 class Connection(SockJSConnection):
     participants = set()
@@ -20,7 +20,7 @@ class Connection(SockJSConnection):
         periodic = ioloop.PeriodicCallback(self.update_online, 60000)
         periodic.start()
 
-    def add_online(self, connection, block_id, session_id):
+    def add_online(self, connection, block_id, session_id, name=''):
         self.block_id = block_id
         self.participants.add(self)
 
@@ -40,7 +40,8 @@ class Connection(SockJSConnection):
         last_active = unix_now_ms()
         self.sessions[block_id][session_id] = {
             'last_active': last_active,
-            'name': '',
+            'name': name,
+            'color': player.color,
         }
 
         self.send_obj(Block(block_id))
@@ -63,7 +64,8 @@ class Connection(SockJSConnection):
                     self.remove_online(block_id, session_id, self)
 
     def broadcast_online_count(self, block_id):
-        online = OnlineUsers(len(self.sessions.get(block_id, {} ).keys()))
+        users = [ User(color=user['color'], name=user['name']) for user in self.sessions.get(block_id, {} ).values() ]
+        online = OnlineUsers(len(users), users)
         self.broadcast_obj(online, self.rooms.get(block_id, () ))
 
     def on_message(self, text):
@@ -74,13 +76,14 @@ class Connection(SockJSConnection):
             chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
+            name = message['body'].get('name', '')
 
             if chatroom:
                 block_id = chatroom
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
 
-            self.add_online(connection=self, block_id=block_id, session_id=self.session_id)
+            self.add_online(connection=self, block_id=block_id, session_id=self.session_id, name=name)
 
         if message['action'] == 'pong':
             chatroom = message['body'].get('chatroom', '')
