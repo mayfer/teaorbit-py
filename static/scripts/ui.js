@@ -187,6 +187,8 @@ function UI() {
             e.preventDefault();
             $('#online-users').toggle();
         });
+
+        $.timeago.settings.allowFuture = true;
     }
 
     this.show_recent_channels = function() {
@@ -248,18 +250,23 @@ function UI() {
         message.append(escapeHtml(spiel.spiel));
         
 
+        var date_elem = $('<time>').addClass('date').attr('datetime', datestring).data('timestamp', spiel.date).html(datestring);
+
         row.append(message);
-        row.append( $('<div>').addClass('date').attr('title', datestring).data('timestamp', datestring).html(spiel.date).timeago() );
+        row.append(date_elem);
         chat.append(row);
 
         row.linkify(toHashtagUrl);
+        row.find('time').timeago();
 
         if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height()) {
             $('#chat').css('top', '0');
             this.flags.chatCssUpdated = true;
         }
 
-        window.last_spiel_date = spiel.date;
+        if(window.last_spiel_date < spiel.date) {
+            window.last_spiel_date = spiel.date;
+        }
         this_ui.scroll();
     }
 

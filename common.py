@@ -29,4 +29,4 @@ def datetime_now():
 
 def unix_now_ms():
     date = datetime_now()
-    return time.mktime(date.utctimetuple())*1e3 + date.microsecond/1e3
+    return calendar.timegm(date.utctimetuple())*1e3 + date.microsecond/1e3
