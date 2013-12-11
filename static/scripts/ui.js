@@ -122,7 +122,7 @@ function UI() {
                 var form = $(this).serializeJSON();
                 window.networking.send('post_spiel', form);
 
-                $(this).find('textarea[name="spiel"]').val('');
+                $(this).find('textarea[name="spiel"]').val('').trigger('autosize.resize');
             }
             else {
                 alert("No location data. Please allow the browser geolocation access.");
@@ -189,6 +189,7 @@ function UI() {
         });
 
         $.timeago.settings.allowFuture = true;
+        $('textarea').autosize();
     }
 
     this.show_recent_channels = function() {
@@ -258,6 +259,7 @@ function UI() {
 
         row.linkify(toHashtagUrl);
         row.find('time').timeago();
+
 
         if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height()) {
             $('#chat').css('top', '0');
