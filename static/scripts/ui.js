@@ -101,13 +101,6 @@ function UI() {
         $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
 
-        $('#type-here').keydown(function(e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                $(this.form).submit();
-             }
-        });
-
         $('#post form').on('submit', function(e){
             e.preventDefault();
             var latitude = window.latitude;
@@ -123,6 +116,7 @@ function UI() {
                 window.networking.send('post_spiel', form);
 
                 $(this).find('textarea[name="spiel"]').val('').trigger('autosize.resize');
+                $('#type-here').focus();
             }
             else {
                 alert("No location data. Please allow the browser geolocation access.");
@@ -190,6 +184,13 @@ function UI() {
 
         $.timeago.settings.allowFuture = true;
         $('textarea').autosize();
+        $('textarea').keydown(function (e) {
+            if (e.keyCode == 13 && !e.shiftKey) {
+                $(this.form).submit();
+                e.preventDefault();
+                e.stopPropagation();
+            }
+         });
     }
 
     this.show_recent_channels = function() {
@@ -248,7 +249,7 @@ function UI() {
         if(spiel.name) {
             message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
         }
-        message.append(escapeHtml(spiel.spiel));
+        message.append(escapeHtml(spiel.spiel).replace(/ /g, '&nbsp;').replace(/\n/g, "<br />"));
         
 
         var date_elem = $('<time>').addClass('date').attr('datetime', datestring).data('timestamp', spiel.date).html(datestring);
