@@ -249,7 +249,7 @@ function UI() {
         if(spiel.name) {
             message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
         }
-        message.append(escapeHtml(spiel.spiel).replace(/ /g, '&nbsp;').replace(/\n/g, "<br />"));
+        message.append(escapeHtml(spiel.spiel).replace(/  /g, '&nbsp;&nbsp;').replace(/\n/g, "<br />"));
         
 
         var date_elem = $('<time>').addClass('date').attr('datetime', datestring).data('timestamp', spiel.date).html(datestring);
