@@ -191,6 +191,7 @@ function UI() {
                 e.stopPropagation();
             }
          });
+        drawingCanvas($('#drawing'));
     }
 
     this.show_recent_channels = function() {
@@ -205,7 +206,7 @@ function UI() {
                 if(channel == window.chatroom) {
                     $('<span>').addClass('current').html("[current]").appendTo(channelelem);
                 } else {
-                    //var remove = $('<a>').attr('href', '#').addClass('remove').html("&times;").appendTo(channelelem);
+                    $('<a>').addClass('remove').html("&times;").appendTo(channelelem);
                 }
                 channelelem.appendTo(container);
 

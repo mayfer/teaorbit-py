@@ -21,7 +21,8 @@ a:hover { border-bottom: 1px solid #666; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 20px; position: relative; }
-#post input, #post textarea { background: #444; border: 1px solid #aaa; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: monospace; line-height: 12px; display: inline-block; vertical-align: middle; }
+#post input, #post textarea { background: #444; border: 1px solid #aaa; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 12px; }
+#post textarea.expanding { line-height: 17px; }
 #post textarea { width: 60%; vertical-align: bottom; }
 #post .submit { height: 30px; }
 textarea { line-height: 1; }
@@ -32,19 +33,21 @@ input#submit { padding-right: 8px; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; font-size: 13px; }
 #chat .inner { padding: 30px; }
-.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; }
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
 .row:hover .date { color: #aaa; }
-.row:hover .message { color: #eee; }
+.row:hover .message { color: #ccc; }
 .row:hover .name { color: #aaa; }
+.row:hover a { border-bottom: 1px solid #aaa; }
+.row a:hover { border-bottom: 1px solid #fff; }
 .name { color: #888; margin-right: 3px; }
 .name:before { content: "[" }
 .name:after { content: "] " }
 
-.color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 50%; margin-top: -8px; }
+.color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
 
 #channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 30px; background: rgba(0,0,0,1); }
-#channels .inner { padding: 10px; display: none; }
+#channels .inner { padding: 10px 0; display: none; }
 #channels a.toggle { line-height: 30px; padding: 0 10px; color: #999; margin: 0; display: block; }
 #channels a.toggle:hover { color: #fff; }
 #channels a.toggle.expanded { border-bottom: 1px solid #777; }
@@ -52,11 +55,13 @@ input#submit { padding-right: 8px; }
 #channels .toggle:before { content: "▲";margin-right: 10px; }
 #channels .toggle.expanded:before { content: "▼ recent channels"; margin-right: 10px;  }
 
-#channels .channel { line-height: 20px; }
-#channels .channel:hover { border-bottom: 1px solid #fff; margin-bottom: -1px; }
+#channels .channel { line-height: 20px; padding: 0 10px;}
+#channels .channel:hover { border-bottom: 1px solid #444; margin: -1px 0 -1px 0; border-top: 1px solid #444; background: #222; }
 #channels .channel .current { float: right; margin-left: 5px;}
-#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 15px; width: 15px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; }
+#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 15px; width: 14px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; margin: 3px 5px 2px 5px; }
 #channels .channel .remove:hover { color: #faa; background: rgba(255,255,255,0.5); cursor: pointer; }
+#channels .channel a { color: #999; }
+#channels .channel a:hover { color: #fff; border: none; }
 
 
 #audio { float: right; display: inline-block; line-height: 50px; cursor: pointer; }
@@ -69,6 +74,8 @@ input#submit { padding-right: 8px; }
 #num-online { cursor: pointer; }
 #num-online:hover { color: #fff; }
 #online-users { padding: 10px 20px; background: #000; display: none; }
+
+#drawing {  background: #fff; }
 
 @media only screen 
 and (min-device-width : 320px) 
