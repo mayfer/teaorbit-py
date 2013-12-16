@@ -34,7 +34,7 @@
 
             {% if room_name %}
                 window.chatroom = '{{ room_name }}';
-                window.title = "tea orbit #" + window.chatroom;
+                window.title = "#" + window.chatroom;
                 document.title = window.title;
                 $(document).ready(function() {
                     $('img.map').hide();
