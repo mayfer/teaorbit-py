@@ -189,7 +189,6 @@ function UI() {
                 e.stopPropagation();
             }
          });
-        drawingCanvas($('#drawing'));
     }
 
     this.init_web_only_features = function() {
