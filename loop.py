@@ -18,21 +18,20 @@ STATIC_URL = '/static/'
 FILE_ROOT = os.path.dirname(__file__)
 
 
+class TeaOrbitHandler(tornado.web.RequestHandler):
+    def get(self, room_name=None):
+        if room_name is None:
+            room_name = ''
+        client = self.request.headers.get('X-Requested-By', 'Web')
+        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client)
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name='')
-
-class ChatroomHandler(tornado.web.RequestHandler):
-    def get(self, room_name):
-        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name)
 
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
     router = SockJSRouter(Connection, '/updates')
     handlers = router.urls + [
-        (r'/', MainHandler),
+        (r'/', TeaOrbitHandler),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(FILE_ROOT, 'static/')}),
-        (r'/(?P<room_name>.*)', ChatroomHandler),
+        (r'/(?P<room_name>.*)', TeaOrbitHandler),
     ]
     tornado_app = tornado.web.Application(handlers)
 

@@ -6,7 +6,10 @@
         <link rel='shortcut icon' href='data:image/x-icon;,' type='image/x-icon'> 
 
         <title>tea orbit</title>
-        <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css' type='text/css'> 
+        <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css' type='text/css'>
+        {% if client == 'iPhoneTeaOrbit' %}
+            <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit_ios_native.css' type='text/css'>
+        {% end %}
         <link rel='stylesheet' href='{{ STATIC_URL }}styles/icons.css' type='text/css'> 
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.min.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.cookie.js'></script>
@@ -45,9 +48,14 @@
             $(document).ready(function(){
                 $('#type-here').focus();
                 window.ui = new UI();
+                {% if client == 'iPhoneTeaOrbit' %}
+                    window.ui.init_ios_native_features();
+                {% else %}
+                    window.ui.init_web_only_features();
+                {% end %}
                 window.ui.init();
-
             });
+
         </script>
     </head>
     <body>

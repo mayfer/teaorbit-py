@@ -49,8 +49,14 @@ class Connection(SockJSConnection):
         self.broadcast_online_count(block_id)
 
     def remove_online(self, block_id, session_id, connection):
-        self.participants.remove(connection)
-        self.rooms.get(block_id, () ).remove(connection)
+        try:
+            self.participants.remove(connection)
+        except:
+            pass
+        try:
+            self.rooms.get(block_id, () ).remove(connection)
+        except:
+            pass
         self.sessions[block_id].pop(session_id, None)
 
     def update_online(self):
@@ -95,7 +101,7 @@ class Connection(SockJSConnection):
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
 
-            self.sessions[block_id][self.session_id]['last_active'] = unix_now_ms()
+            self.sessions.setdefault(block_id, {}).setdefault(self.session_id, {})['last_active'] = unix_now_ms()
 
         if message['action'] == 'get_spiels':
             chatroom = message['body'].get('chatroom', '')

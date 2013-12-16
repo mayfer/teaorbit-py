@@ -72,7 +72,7 @@ function UI() {
         });
     }
 
-    this.init = function() {
+    this.init = function(client) {
         this.setup_audio();
 
         if(window.chatroom) {
@@ -97,8 +97,6 @@ function UI() {
                 $('#loader').hide();
             });
         }
-
-        $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
 
         $('#post form').on('submit', function(e){
@@ -192,6 +190,39 @@ function UI() {
             }
          });
         drawingCanvas($('#drawing'));
+    }
+
+    this.init_web_only_features = function() {
+        $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+
+    }
+
+    this.init_ios_native_features = function() {
+        function connectWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                callback(WebViewJavascriptBridge)
+            } else {
+                document.addEventListener('WebViewJavascriptBridgeReady', function() {
+                    callback(WebViewJavascriptBridge)
+                }, false)
+            }
+        }
+
+        connectWebViewJavascriptBridge(function(bridge) {
+
+            /* Init your app here */
+
+            bridge.init(function(message, responseCallback) {
+                alert('Received message: ' + message)   
+                if (responseCallback) {
+                    responseCallback("Right back atcha")
+                }
+            })
+            bridge.send('Hello from the javascript')
+            bridge.send('Please respond to this', function responseCallback(responseData) {
+                console.log("Javascript got its response", responseData)
+            })
+        })
     }
 
     this.show_recent_channels = function() {
