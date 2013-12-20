@@ -37,7 +37,7 @@ class History(object):
             until = '%f' % until
 
         # the brackets mean exclude that exact value
-        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=30)
+        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=100)
         spiel_jsons.reverse()
         return spiel_jsons
 
