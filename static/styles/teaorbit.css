@@ -84,9 +84,10 @@ and (min-device-width : 320px)
 and (max-device-width : 568px) { 
     #header { height: 30px; padding: 0; }
     #header h1 { margin: 0; padding: 0 30px; line-height: 30px; font-size: 12px; padding: 0 15px; }
-    #header h1 a { display: inline-block; width: 80px; }
+    #header h1 a { display: inline-block; width: 0px; height: 30px; overflow:hidden; }
     #audio { line-height: 30px; }
-    #show-map { display: inline-block; max-width: 80px; overflow: hidden; text-overflow:ellipsis; }
+    #show-map { display: inline-block; max-width: 120px; overflow: hidden; text-overflow:ellipsis; }
+    #show-map img.map { margin-right: -10px; margin-left: 10px; }
     #num-users { display: inline-block; line-height: 30px; } 
     #header .button, #header .info { line-height: 30px; font-size: 12px; padding: 0 10px; }
     #header img.map {  height: 30px; width: 30px; }
@@ -102,7 +103,6 @@ and (max-device-width : 568px) {
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
     #chat .inner { padding: 15px; }
 
-    #header h1 a { padding-left: 45px; width: 45px; overflow: hidden; }
 }
 
 img.disabled-desaturate {

@@ -314,11 +314,15 @@ function UI() {
         if(window.last_spiel_date < spiel.date) {
             window.last_spiel_date = spiel.date;
         }
-        this_ui.scroll();
+
+        if(notify) {
+            this_ui.scroll();
+        }
     }
 
     this.scroll = function() {
         $('#chat').scrollTop($('#chat')[0].scrollHeight);
+        //$("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight}, 1);
     }
 
     this.reset = function() {
