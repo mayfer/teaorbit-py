@@ -4,7 +4,7 @@
         <link href='http://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
         <link rel='shortcut icon' href='#' />
         <meta name='viewport' content='width=device-width, user-scalable=no'>
-        <link rel='shortcut icon' href='data:image/x-icon;,' type='image/x-icon'> 
+        <link rel='shortcut icon' href='{{ STATIC_URL }}assets/favicon.png' type='image/x-icon'> 
 
         <title>tea orbit</title>
         <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css' type='text/css'>
@@ -100,6 +100,8 @@
         <div id='loader'>
             <div class='loader-icon'>
                 <div class='inner'>
+                    <div class='logo'>
+                    </div>
                     <div class='title'>
                         Getting location...
                     </div>
