@@ -107,14 +107,15 @@ class Connection(SockJSConnection):
             chatroom = message['body'].get('chatroom', '')
             latitude = message['body'].get('latitude', 0)
             longitude = message['body'].get('longitude', 0)
-            since = message['body'].get('since', 0)
+            since = message['body'].get('since', None)
+            until = message['body'].get('until', None)
 
             if chatroom:
                 block_id = chatroom
             else:
                 block_id = self.game.get_block_id(latitude, longitude)
 
-            spiels = self.game.get_spiels_by_block_id(block_id, since=since)
+            spiels = self.game.get_spiels_by_block_id(block_id, since=since, until=until)
 
             spiels_dto = InitialSpiels(spiels)
             self.send_obj(spiels_dto)

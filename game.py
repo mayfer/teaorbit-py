@@ -38,8 +38,8 @@ class GameState(object):
     def post_spiel_to_block(self, block_id, spiel):
         self.history.insert_spiel(block_id, spiel.json(), spiel.date)
 
-    def get_spiels_by_block_id(self, block_id, since=0):
-        spiel_jsons = self.history.get_spiels(block_id, since)
+    def get_spiels_by_block_id(self, block_id, since=None, until=None):
+        spiel_jsons = self.history.get_spiels(block_id, since, until)
         spiels = []
         for spiel_json in spiel_jsons:
             spiel = Spiel.from_json(spiel_json)

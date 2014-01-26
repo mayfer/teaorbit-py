@@ -95,6 +95,9 @@ function UI() {
 
                 window.networking = Networking();
                 $('#loader').hide();
+            }, function(error){
+                $('#loader .inner .title').html('<span class="error">Failed</span> getting location');
+                $('#loader .inner .details').html('You probably have location services turned off.');
             });
         }
 
@@ -117,7 +120,7 @@ function UI() {
                 $('#type-here').focus();
             }
             else {
-                alert("No location data. Please allow the browser geolocation access.");
+                //alert("No location data. Please allow the browser geolocation access.");
             }
         });
 
@@ -167,22 +170,25 @@ function UI() {
             $('#channels .toggle').click();
         }
 
-        var online_elem = $('#num-online');
-        var offset = online_elem.offset();
-        $('<div>').attr('id', 'online-users').css({
-            'position': 'absolute',
-            'top': (offset.top + online_elem.height()) + 'px',
-            'left': (offset.left) + 'px',
-            'width': (online_elem.outerWidth() + $('#show-map').outerWidth()) + "px",
-        }).appendTo('body');
+        $('<div>').attr('id', 'online-users').appendTo('body');
         $('#num-online').click(function(e){
             e.preventDefault();
-            $('#online-users').toggle();
+            var online_elem = $('#num-online');
+            var offset = online_elem.offset();
+            $('#online-users')
+                .css({
+                    'position': 'absolute',
+                    'top': (offset.top + online_elem.height()) + 'px',
+                    'left': (offset.left) + 'px',
+                    'width': (online_elem.outerWidth() + $('#show-map').outerWidth()) + "px",
+                })
+                .toggle();
         });
 
         $.timeago.settings.allowFuture = true;
         $('textarea').autosize();
         $('textarea').keydown(function (e) {
+            // enter key
             if (e.keyCode == 13 && !e.shiftKey) {
                 $(this.form).submit();
                 e.preventDefault();
@@ -227,21 +233,23 @@ function UI() {
     this.show_recent_channels = function() {
         var container = $('#channels .inner').html('');
         var recent_channels = this.global_cookie('recent_channels');
-        $.each(recent_channels, function(channel, enabled) {
-            if(enabled == true) {
-                var channelelem = $('<div>').addClass('channel');
+        if(recent_channels) {
+            $.each(recent_channels, function(channel, enabled) {
+                if(enabled == true) {
+                    var channelelem = $('<div>').addClass('channel');
 
-                var nameelem = $('<span>').html('#'+channel).appendTo(channelelem);
+                    var nameelem = $('<span>').html('#'+channel).appendTo(channelelem);
 
-                if(channel == window.chatroom) {
-                    $('<span>').addClass('current').html("[current]").appendTo(channelelem);
-                } else {
-                    $('<a>').addClass('remove').html("&times;").appendTo(channelelem);
+                    if(channel == window.chatroom) {
+                        $('<span>').addClass('current').html("[current]").appendTo(channelelem);
+                    } else {
+                        $('<a>').addClass('remove').html("&times;").appendTo(channelelem);
+                    }
+                    channelelem.appendTo(container);
+
                 }
-                channelelem.appendTo(container);
-
-            }
-        });
+            });
+        }
         var removes = container.find('.remove');
         removes.bind('click', function(e){
             var channel = $(this).data('name');

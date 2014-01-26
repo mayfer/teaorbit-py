@@ -108,6 +108,10 @@ function Networking(since) {
         console.log('sending,', data);
         var json_data = JSON.stringify(data);
         this.sock.send(json_data);
-    }
+    };
+
+    this.get_older_messages = function() {
+    };
+
     return this;
 }

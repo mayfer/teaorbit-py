@@ -29,7 +29,13 @@ class History(object):
     def insert_spiel(self, block_id, spiel_json, timestamp):
         self.redis.zadd("block:{b}".format(b=block_id), spiel_json, timestamp)
 
-    def get_spiels(self, block_id, since='-inf', until='+inf'):
+    def get_spiels(self, block_id, since=None, until=None):
+        if since is None:
+            since = '-inf'
+
+        if until is None:
+            until = '+inf'
+
         # reduce the decimals to proper decimals instead of silly python exponentials
         if since != '-inf' and since != '+inf':
             since = '%f' % since
