@@ -171,7 +171,7 @@ function UI() {
         }
 
         $('<div>').attr('id', 'online-users').appendTo('body');
-        $('#num-online').click(function(e){
+        $('#num-online').bind('click touchstart', function(e){
             e.preventDefault();
             var online_elem = $('#num-online');
             var offset = online_elem.offset();

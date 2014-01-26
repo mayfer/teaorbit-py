@@ -33,7 +33,7 @@ input#type-here { width: 60% }
 input#name { width: 20%; }
 input#submit { padding-right: 8px; }
 
-#chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; z-index: 50; font-size: 13px; }
+#chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; }
 #chat .inner { padding: 30px; }
 .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
@@ -96,11 +96,13 @@ and (max-device-width : 568px) {
     #post .inner { margin: 5px 10px; }
     #post input { display: block; }
     #post input[type='submit'] { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
-    #post input[name='spiel'] {  width: 95%; }
+    #post textarea[name='spiel'] {  width: 95%; }
     #post input[name='name'] {  width: 60%; }
 
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
     #chat .inner { padding: 15px; }
+
+    #header h1 a { padding-left: 45px; width: 45px; overflow: hidden; }
 }
 
 img.disabled-desaturate {
