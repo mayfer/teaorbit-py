@@ -48,6 +48,11 @@
 
             $(document).ready(function(){
                 $('#type-here').focus();
+                $('body').on('click', function(e){
+                    if(!$(event.target).is('input') && !$(event.target).is('textarea')) {
+                        $('#type-here').focus();
+                    }
+                });
                 window.ui = new UI();
                 {% if client == 'iPhoneTeaOrbit' %}
                     window.ui.init_ios_native_features();
