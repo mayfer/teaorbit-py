@@ -11,7 +11,7 @@ a:hover { border-bottom: 1px solid #666; }
 #loader .title { line-height: 30px; font-size: 30px; margin-bottom: 20px; }
 #loader .title .error {  text-shadow: 2px 2px 0 #a00; }
 
-#header { position: absolute; top: 0; left: 0; width: 100%; background: #000; z-index: 100; font-size: 15px; }
+#header { position: absolute; top: 0; left: 0; width: 100%; background: #000; z-index: 100; font-size: 14px; }
 #header h1 { margin: 0; padding: 0 30px; line-height: 50px; font-size: 25px; }
 
 #header .button, #header .info { float: right; line-height: 50px; padding: 0 20px 0 20px; margin-left: 1px; }
@@ -58,8 +58,8 @@ input#submit { padding-right: 8px; }
 
 #channels .channel { line-height: 20px; padding: 0 10px;}
 #channels .channel:hover { border-bottom: 1px solid #444; margin: -1px 0 -1px 0; border-top: 1px solid #444; background: #222; }
-#channels .channel .current { float: right; margin-left: 5px;}
-#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 15px; width: 14px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; margin: 3px 5px 2px 5px; }
+#channels .channel .current { float: right; margin-left: 15px; margin-right: 25px; color: rgba(255,255,255,0.4); }
+#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 14px; font-size: 18px; width: 14px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; margin: 3px 5px 2px 15px; }
 #channels .channel .remove:hover { color: #faa; background: rgba(255,255,255,0.5); cursor: pointer; }
 #channels .channel a { color: #999; }
 #channels .channel a:hover { color: #fff; border: none; }

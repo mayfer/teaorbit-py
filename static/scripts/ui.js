@@ -236,28 +236,33 @@ function UI() {
         if(recent_channels) {
             $.each(recent_channels, function(channel, enabled) {
                 if(enabled == true) {
-                    var channelelem = $('<div>').addClass('channel');
+                    var channelelem = $('<div>')
+                        .addClass('channel')
+                        .data('channel', channel);
 
-                    var nameelem = $('<span>').html('#'+channel).appendTo(channelelem);
+                    var nameelem = $('<a>')
+                        .attr('href', '/'+channel)
+                        .html('#'+channel)
+                        .appendTo(channelelem);
 
                     if(channel == window.chatroom) {
                         $('<span>').addClass('current').html("[current]").appendTo(channelelem);
                     } else {
-                        $('<a>').addClass('remove').html("&times;").appendTo(channelelem);
+                        $('<a>').addClass('remove').html("&times;").appendTo(channelelem).click(function(e){
+                            e.preventDefault();
+                            var channel = $(this).parents('.channel').data('channel');
+                            console.log('clocked', channel);
+                            delete recent_channels[channel];
+                            this_ui.global_cookie('recent_channels', recent_channels);
+                            $(this).parents('.channel').remove();
+
+                        });
                     }
                     channelelem.appendTo(container);
 
                 }
             });
         }
-        var removes = container.find('.remove');
-        removes.bind('click', function(e){
-            var channel = $(this).data('name');
-            delete recent_channels[channel];
-            this_ui.global_cookie('recent_channels', recent_channels);
-
-        });
-        container.linkify(toHashtagUrl);
     }
 
     this.add_spiel = function(spiel, notify) {
