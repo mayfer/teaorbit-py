@@ -12,6 +12,7 @@
             <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit_ios_native.css' type='text/css'>
         {% end %}
         <link rel='stylesheet' href='{{ STATIC_URL }}styles/icons.css' type='text/css'> 
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/scrollfix.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.min.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.cookie.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.linkify.min.js'></script>
@@ -60,6 +61,7 @@
                     window.ui.init_web_only_features();
                 {% end %}
                 window.ui.init();
+                new ScrollFix($('#chat')[0]);
             });
 
         </script>
