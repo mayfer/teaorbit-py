@@ -57,6 +57,10 @@ class History(object):
         else:
             return None
 
+    def get_session_id_for_alias(self, alias):
+        session_id = self.redis.get('alias:{s}'.format(s=session_id))
+        return session_id
+
     def remove_player(self, session_id):
         self.redis.delete('player:{s}'.format(s=session_id))
 """

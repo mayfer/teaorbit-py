@@ -61,10 +61,7 @@ function Networking(since) {
                 window.ui.add_spiel(spiels[i], notify);
             }
 
-            // total hack. doesn't scroll properly on mobile due to elements not being ready yet.
-            setTimeout(function(){
-                window.ui.scroll();
-            }, 5);
+            window.ui.scroll();
         }
 
         // general activity log

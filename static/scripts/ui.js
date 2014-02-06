@@ -138,7 +138,7 @@ function UI() {
             this_ui.toggle_map();
         });
 
-        $('#channels .toggle').bind('click touchstart', function(e){
+        $('#channels .toggle').bind('click touchend', function(e){
             e.preventDefault();
             $(this).toggleClass('expanded');
             if($(this).hasClass('expanded')) {
@@ -195,6 +195,9 @@ function UI() {
                 e.stopPropagation();
             }
          });
+        $('input, textarea').bind('touchstart', function(e){
+            $(this).focus();
+        });
     }
 
     this.init_web_only_features = function() {
@@ -293,7 +296,7 @@ function UI() {
         if(spiel.name) {
             message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
         }
-        message.append(escapeHtml(spiel.spiel).replace(/  /g, '&nbsp;&nbsp;').replace(/\n/g, "<br />"));
+        message.append(escapeHtml(spiel.spiel));
         
 
         var date_elem = $('<time>').addClass('date').attr('datetime', datestring).data('timestamp', spiel.date).html(datestring);
@@ -306,7 +309,7 @@ function UI() {
         row.find('time').timeago();
 
 
-        if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height()) {
+        if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height() - $('#post').height()) {
             $('#chat').css('top', '0');
             this.flags.chatCssUpdated = true;
         }
@@ -315,14 +318,16 @@ function UI() {
             window.last_spiel_date = spiel.date;
         }
 
+        // optimization to not scroll at every step when loading initial messages
         if(notify) {
             this_ui.scroll();
         }
     }
 
     this.scroll = function() {
-        $('#chat').scrollTop($('#chat')[0].scrollHeight);
-        //$("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight}, 1);
+        var chat = $('#chat');
+        //chat.scrollTop(chat[0].scrollHeight);
+        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 10);
     }
 
     this.reset = function() {
@@ -334,6 +339,9 @@ function UI() {
     this.toggle_map = function() {
         $('#map-expanded').toggleClass('show');
         $('#show-map').toggleClass('show');
+    }
+
+    this.private_message = function() {
     }
 
     return this;

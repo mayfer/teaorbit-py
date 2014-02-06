@@ -23,7 +23,7 @@ a:hover { border-bottom: 1px solid #666; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 20px; position: relative; }
-#post input, #post textarea { background: #444; border: 1px solid #aaa; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 12px; }
+#post input, #post textarea, #post button { background: #444; border: 1px solid #aaa; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 12px; }
 #post textarea.expanding { line-height: 17px; }
 #post textarea { width: 60%; vertical-align: bottom; }
 #post .submit { height: 30px; }
@@ -31,12 +31,12 @@ textarea { line-height: 1; }
 
 input#type-here { width: 60% }
 input#name { width: 20%; }
-input#submit { padding-right: 8px; }
+#submit { padding-right: 8px; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; }
 #chat .inner { padding: 30px; }
-.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; }
-.date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
+.row .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-line; word-wrap: break-word; }
+.row .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
 .row:hover .name { color: #aaa; }
@@ -95,8 +95,8 @@ and (max-device-width : 568px) {
     #map-expanded img.map { width: 250px; height: 250px; }
 
     #post .inner { margin: 5px 10px; }
-    #post input { display: block; }
-    #post input[type='submit'] { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
+    #post input, button { display: block; }
+    #post button { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
     #post textarea[name='spiel'] {  width: 95%; }
     #post input[name='name'] {  width: 60%; }
 
