@@ -327,7 +327,7 @@ function UI() {
     this.scroll = function() {
         var chat = $('#chat');
         //chat.scrollTop(chat[0].scrollHeight);
-        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 10);
+        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 800);
     }
 
     this.reset = function() {
