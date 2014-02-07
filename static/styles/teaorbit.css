@@ -35,8 +35,8 @@ input#name { width: 20%; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; }
 #chat .inner { padding: 30px; }
-.row .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-line; word-wrap: break-word; }
-.row .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-line; word-wrap: break-word; }
+.date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
 .row:hover .name { color: #aaa; }
