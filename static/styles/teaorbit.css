@@ -4,7 +4,7 @@ body, html { height: 100%; background: #333; margin: 0; padding: 0; color: #aaa;
 a, a:visited { color: #fff; text-decoration: none; }
 a:hover { border-bottom: 1px solid #666; }
 
-#loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.8); height: 100%; width: 100%; text-align: center; z-index: 200; }
+#loader { position: fixed; top: 0; left: 0; background: rgba(100,100,100,0.8); height: 100%; width: 100%; text-align: center; z-index: 200; display: none; }
 #loader .loader-icon { position: absolute; height: 150px; top: 50%; margin-top: -75px; left: 50%; margin-left: -250px; width: 500px; background: rgba(255,255,255,0.5); color: #fff; text-shadow: 2px 2px 0 #000; box-shadow: 2px 2px 0 #000; }
 #loader .inner { padding: 30px; }
 #loader .details { font-size: 12px; line-height: 20px; text-shadow: 1px 1px 0 #000; }

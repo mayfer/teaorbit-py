@@ -6,6 +6,7 @@
         <meta name='viewport' content='width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1'>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link href="{{ STATIC_URL }}assets/icon-144x144.png" sizes="144x144" rel="apple-touch-icon">
         <link rel='shortcut icon' href='{{ STATIC_URL }}assets/favicon.png' type='image/x-icon'> 
 
         <title>tea orbit</title>
@@ -29,6 +30,7 @@
         <script type='text/javascript'>
 
             window.networking = null;
+            window.ui = null;
             window.title = "tea orbit";
 
             window.last_spiel_date = 0;
@@ -50,13 +52,20 @@
             {% end %}
 
             $(document).ready(function(){
-                $('#type-here').focus();
-                if(!$.browser.mobile) {
+                if($.browser.mobile == false) {
+                    $('#type-here').focus();
                     $('body').on('click', function(e){
                         if(!$(event.target).is('input') && !$(event.target).is('textarea')) {
                             $('#type-here').focus();
                         }
                     });
+                } else {
+                    $('#type-here').focus(function(e){
+                        window.ui.scroll();
+                    });
+                }
+                if(window.navigator.standalone) {
+                    $('#header').css('padding-top', '24px');
                 }
                 window.ui = new UI();
                 {% if client == 'iPhoneTeaOrbit' %}

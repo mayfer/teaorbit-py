@@ -88,6 +88,7 @@ function UI() {
             recent[window.chatroom] = true;
             this.global_cookie('recent_channels', recent);
         } else {
+            $('#loader').show();
             navigator.geolocation.getCurrentPosition(function(position){
                 window.latitude = position.coords.latitude;
                 window.longitude = position.coords.longitude;
@@ -179,8 +180,8 @@ function UI() {
                 .css({
                     'position': 'absolute',
                     'top': (offset.top + online_elem.height()) + 'px',
-                    'left': (offset.left) + 'px',
-                    'width': (online_elem.outerWidth() + $('#show-map').outerWidth()) + "px",
+                    'left': (offset.left - 100) + 'px',
+                    'width': (online_elem.outerWidth() + $('#show-map').outerWidth() + 100) + "px",
                 })
                 .toggle();
         });
@@ -327,7 +328,7 @@ function UI() {
     this.scroll = function() {
         var chat = $('#chat');
         //chat.scrollTop(chat[0].scrollHeight);
-        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 800);
+        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 400);
     }
 
     this.reset = function() {
@@ -339,6 +340,14 @@ function UI() {
     this.toggle_map = function() {
         $('#map-expanded').toggleClass('show');
         $('#show-map').toggleClass('show');
+            var toggler_elem = $('#show-map');
+            var offset = toggler_elem.offset();
+            $('#map-expanded')
+                .css({
+                    'position': 'absolute',
+                    'top': (offset.top + toggler_elem.height()) + 'px',
+                    'right': '0',
+                })
     }
 
     this.private_message = function() {
