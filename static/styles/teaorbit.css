@@ -11,7 +11,7 @@ a:hover { border-bottom: 1px solid #666; }
 #loader .title { line-height: 30px; font-size: 30px; margin-bottom: 15px; }
 #loader .title .error {  text-shadow: 2px 2px 0 #a00; }
 
-#header { position: absolute; top: 0; left: 0; width: 100%; background: #000; z-index: 100; font-size: 14px; }
+#header { position: absolute; top: 0; left: 0; width: 100%; background: #000; z-index: 100; font-size: 14px; font-weight: normal; }
 #header h1 { margin: 0 0 0 20px; padding: 0 30px 0 0; line-height: 50px; font-size: 25px; }
 #header h1 a { background: url(../assets/tea-white.png) center left no-repeat; background-size: 30px 30px; padding-left: 45px; }
 

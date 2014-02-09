@@ -51,18 +51,21 @@ function UI() {
         $('#audio').addClass('icon-volume-medium').removeClass('icon-volume-mute');
         this_ui.flags.mute = false;
         this_ui.global_cookie('mute', this_ui.flags.mute);
+        if(window.webkitNotifications !== undefined) {
+            window.webkitNotifications.requestPermission();
+        }
     }
     
     this.setup_audio = function() {
-        $('<audio id="notification"><source src="/static/notification.ogg" type="audio/ogg"><source src="/static/notification.mp3" type="audio/mpeg"><source src="/static/notification.wav" type="audio/wav"></audio>').appendTo('body');
+        $('<audio id="notification"><source src="'+window.static_url+'notification.ogg" type="audio/ogg"><source src="'+window.static_url+'notification.mp3" type="audio/mpeg"><source src="'+window.static_url+'notification.wav" type="audio/wav"></audio>').appendTo('body');
 
         var mute = this_ui.global_cookie('mute');
         if(mute === true) {
-            this_ui.mute()
+            this_ui.mute();
         } else {
-            this_ui.unmute()
+            this_ui.unmute();
         }
-        $('#audio').bind('touchstart click', function(e){
+        $('#audio').bind('touchend click', function(e){
             e.preventDefault();
             if(this_ui.flags.mute === true) {
                 this_ui.unmute()
@@ -119,8 +122,7 @@ function UI() {
 
                 $(this).find('textarea[name="spiel"]').val('').trigger('autosize.resize');
                 $('#type-here').focus();
-            }
-            else {
+            } else {
                 //alert("No location data. Please allow the browser geolocation access.");
             }
         });
@@ -282,10 +284,39 @@ function UI() {
         }
 
         if(notify === true && this.flags.windowFocused == false && this.flags.mute == false) {
-            $('#notification')[0].play();
             if(this.flags.windowFocused == false) {
                 this.flags.newMessages++;
                 document.title = "(" + this.flags.newMessages + ") " + window.title;
+            }
+            if(window.webkitNotifications !== undefined) {
+                var havePermission = window.webkitNotifications.checkPermission();
+                if (havePermission == 0) {
+                    // 0 is PERMISSION_ALLOWED
+                    var message = '';
+                    if(spiel.name) {
+                        message += '['+spiel.name+'] '
+                    }
+                    message += spiel.spiel;
+
+                    var notification = window.webkitNotifications.createNotification(
+                        window.static_url + 'assets/icon-144x144.png',
+                        '#'+window.chatroom,
+                        message
+                    );
+
+                    notification.onclick = function () {
+                        window.focus();
+                        notification.close();
+                    }
+                    setTimeout(function(){
+                        notification.close();
+                    }, 3000);
+                    notification.show();
+                } else {
+                    $('#notification')[0].play();
+                }
+            } else {
+                $('#notification')[0].play();
             }
         }
 
@@ -328,7 +359,7 @@ function UI() {
     this.scroll = function() {
         var chat = $('#chat');
         //chat.scrollTop(chat[0].scrollHeight);
-        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 400);
+        $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 200);
     }
 
     this.reset = function() {

@@ -7,6 +7,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link href="{{ STATIC_URL }}assets/icon-144x144.png" sizes="144x144" rel="apple-touch-icon">
+        <link href="{{ STATIC_URL }}assets/splash-1024x1024.png" rel="apple-touch-startup-image">
         <link rel='shortcut icon' href='{{ STATIC_URL }}assets/favicon.png' type='image/x-icon'> 
 
         <title>tea orbit</title>
@@ -28,6 +29,7 @@
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/network.js'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/draw.js'></script>
         <script type='text/javascript'>
+            window.static_url = '{{ STATIC_URL }}';
 
             window.networking = null;
             window.ui = null;
@@ -55,17 +57,26 @@
                 if($.browser.mobile == false) {
                     $('#type-here').focus();
                     $('body').on('click', function(e){
-                        if(!$(event.target).is('input') && !$(event.target).is('textarea')) {
+                        if(!$(e.target).is('input') && !$(e.target).is('textarea')) {
                             $('#type-here').focus();
                         }
                     });
                 } else {
-                    $('#type-here').focus(function(e){
+                    $('#type-here, #name').focus(function(e){
                         window.ui.scroll();
                     });
                 }
                 if(window.navigator.standalone) {
                     $('#header').css('padding-top', '24px');
+
+                    $('body').on('click', 'a', function(e){
+                        var hostname = $(this)[0].hostname
+                        console.log(hostname);
+                        if($.inArray(hostname, ['teaorbit.com', 'www.teaorbit.com', 'safinaz.local']) != -1) {
+                            e.preventDefault();
+                            document.location = $(this).attr('href');
+                        }
+                    });
                 }
                 window.ui = new UI();
                 {% if client == 'iPhoneTeaOrbit' %}
