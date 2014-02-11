@@ -1,6 +1,7 @@
 import simplejson as json
 from common import json_encode, json_decode
 from decimal import Decimal
+from geo import Geo
 
 def recursive_json(obj):
     def serialize(obj):
@@ -27,7 +28,7 @@ def recursive_json(obj):
 
 
 # data transfer object. defines attributes and serializes to json.
-class DTO:
+class DTO(object):
     def json(self):
         return recursive_json(self)
 
@@ -66,7 +67,7 @@ class Spiel(DTO):
         self._latitude = latitude
         self._longitude = longitude
 
-class InitialSpiels(DTO):
+class Spiels(DTO):
     _action = 'initial_spiels'
 
     def __init__(self, spiels=[]):
@@ -91,4 +92,38 @@ class OnlineUsers(DTO):
     def __init__(self, num_online, users):
         self.num_online = num_online
         self.users = users
+
+
+
+class ClientMessage(DTO):
+    def __init__(self, body):
+        self.chatroom = body.get('chatroom', '')
+        self.latitude = body.get('latitude', 0)
+        self.longitude = body.get('longitude', 0)
+
+        if self.chatroom:
+            self.room_id = self.chatroom
+        else:
+            self.room_id = Geo.get_room_id(self.latitude, self.longitude)
+
+class HelloCM(ClientMessage):
+    def __init__(self, body):
+        super(HelloCM, self).__init__(body)
+        self.name = body.get('name', '')
+
+class StillOnlineCM(ClientMessage):
+    def __init__(self, body):
+        super(StillOnlineCM, self).__init__(body)
+
+class GetSpielsCM(ClientMessage):
+    def __init__(self, body):
+        super(GetSpielsCM, self).__init__(body)
+        self.since = body.get('since', None)
+        self.until = body.get('until', None)
+
+class PostSpielCM(ClientMessage):
+    def __init__(self, body):
+        super(PostSpielCM, self).__init__(body)
+        self.name = body.get('name', '')
+        self.spiel = body.get('spiel', '')
 

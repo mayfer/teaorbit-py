@@ -2,11 +2,13 @@
 
 
 class Geo(object):
-    def _truncate(self, f, n):
+    @staticmethod
+    def _truncate(f, n):
         '''Truncates/pads a float f to n decimal places without rounding'''
         return float(('%.*f' % (n + 1, f))[:-1])
 
-    def get_block_id(self, latitude, longitude):
+    @staticmethod
+    def get_room_id(latitude, longitude):
         latitude = float(latitude)
         longitude = float(longitude)
 

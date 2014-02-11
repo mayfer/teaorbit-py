@@ -17,22 +17,21 @@ function Networking(since) {
             'chatroom': window.chatroom,
             'name': $('#name').val(),
         });
-    };
-    this.sock.onmessage = function(e) {
-        //console.log('message', e.data);
-        var message = JSON.parse(e.data);
-        console.log("new message,", message);
 
-        
-        if(message.action == 'ping') {
+        setInterval(function() {
             if(window.chatroom || window.latitude) {
-                that.send('pong', {
+                that.send('still_online', {
                     'latitude': window.latitude,
                     'longitude': window.longitude,
                     'chatroom': window.chatroom,
                 });
             }
-        }
+        }, 60000);
+    };
+    this.sock.onmessage = function(e) {
+        //console.log('message', e.data);
+        var message = JSON.parse(e.data);
+        console.log("new message,", message);
 
         // initial login
         if(message.action == 'session') {

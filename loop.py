@@ -6,7 +6,7 @@ sys.dont_write_bytecode = True
 
 import daemon
 from optparse import make_option, OptionParser
-from messenger import Connection
+from connection import Connection
 import os
 import sys
 

@@ -1,6 +1,6 @@
 from redis import Redis
 from redis.exceptions import ConnectionError
-from dto import Spiel, Session
+from messages import Spiel, Session
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
 
@@ -8,13 +8,13 @@ class FakeRedis(object):
     def __init__(self):
         self._blocks = {}
 
-    def zadd(self, block_id, spiel_json, timestamp):
-        if block_id not in self._blocks:
-            self._blocks[block_id] = []
-        self._blocks[block_id].append({'score': timestamp, 'data': spiel_json})
+    def zadd(self, room_id, spiel_json, timestamp):
+        if room_id not in self._blocks:
+            self._blocks[room_id] = []
+        self._blocks[room_id].append({'score': timestamp, 'data': spiel_json})
 
-    def zrevrangebyscore(self, block_id, since='-inf', until='+inf', start=None, limit=None):
-        return [ row['data'] for row in sorted(self._blocks.get(block_id, []), key=lambda d: d['score']) if row['score'] > float(since) and row['score'] < float(until) ]
+    def zrevrangebyscore(self, room_id, since='-inf', until='+inf', start=None, limit=None):
+        return [ row['data'] for row in sorted(self._blocks.get(room_id, []), key=lambda d: d['score']) if row['score'] > float(since) and row['score'] < float(until) ]
 
 class History(object):
     def __init__(self):
@@ -26,10 +26,10 @@ class History(object):
             print "*** [notice] Can't connect to Redis, using a fall-back in-memory database."
             self.redis = FakeRedis()
 
-    def insert_spiel(self, block_id, spiel_json, timestamp):
-        self.redis.zadd("block:{b}".format(b=block_id), spiel_json, timestamp)
+    def insert_spiel(self, room_id, spiel_json, timestamp):
+        self.redis.zadd("block:{b}".format(b=room_id), spiel_json, timestamp)
 
-    def get_spiels(self, block_id, since=None, until=None):
+    def get_spiels(self, room_id, since=None, until=None):
         if since is None:
             since = '-inf'
 
@@ -43,7 +43,7 @@ class History(object):
             until = '%f' % until
 
         # the brackets mean exclude that exact value
-        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=block_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=100)
+        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=room_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=100)
         spiel_jsons.reverse()
         return spiel_jsons
 
