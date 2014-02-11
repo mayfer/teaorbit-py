@@ -68,7 +68,7 @@ class Spiel(DTO):
         self._longitude = longitude
 
 class Spiels(DTO):
-    _action = 'initial_spiels'
+    _action = 'spiels'
 
     def __init__(self, spiels=[]):
         self.spiels = spiels

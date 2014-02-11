@@ -19,10 +19,6 @@ class GameState(object):
         self.history.set_player(session_id, player_dto)
         return player_dto
 
-    def remove_player(self, session_id):
-        self.history.remove_player(session_id)
-        del self.players[session_id]
-
     def get_player(self, session_id):
         return self.history.get_player(session_id)
 

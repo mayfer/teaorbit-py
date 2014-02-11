@@ -28,6 +28,8 @@ class FakeRedis(object):
         del self._blocks[key]
 
 class History(object):
+    spiels_per_request = 20
+
     def __init__(self):
         try:
             self.redis = Redis(host='localhost', port=6379, db=0, password=None, socket_timeout=None, connection_pool=None, charset='utf-8', errors='strict', decode_responses=False, unix_socket_path=None)
@@ -54,8 +56,11 @@ class History(object):
             until = '%f' % until
 
         # the brackets mean exclude that exact value
-        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=room_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=100)
-        spiel_jsons.reverse()
+        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=room_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=self.spiels_per_request)
+
+        if until is None:
+            spiel_jsons.reverse()
+
         return spiel_jsons
 
     def set_player(self, session_id, player):

@@ -1,6 +1,9 @@
 function UI() {
     var this_ui = this;
 
+    this.last_spiel_date = 0;
+    this.first_spiel_date = 2147483648000;
+
     function toHashtagUrl(hashtag) {
         var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
         return full + '/' + hashtag;
@@ -271,7 +274,7 @@ function UI() {
         }
     }
 
-    this.add_spiel = function(spiel, notify) {
+    this.add_spiel = function(spiel, is_initial_load) {
         var chat = $('#chat .inner');
         var row = $('<div>').addClass('row');
         var date = new Date(spiel.date);
@@ -279,11 +282,11 @@ function UI() {
         var datestring = date.toLocaleString()
         var text;
 
-        if(notify === undefined) {
-            notify == false;
+        if(is_initial_load === undefined) {
+            is_initial_load == false;
         }
 
-        if(notify === true && this.flags.windowFocused == false && this.flags.mute == false) {
+        if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
             if(this.flags.windowFocused == false) {
                 this.flags.newMessages++;
                 document.title = "(" + this.flags.newMessages + ") " + window.title;
@@ -335,7 +338,15 @@ function UI() {
 
         row.append(message);
         row.append(date_elem);
-        chat.append(row);
+
+        var is_new_message = (this_ui.last_spiel_date < spiel.date);
+        if(is_new_message) {
+            this_ui.last_spiel_date = spiel.date;
+            chat.append(row);
+        } else {
+            this_ui.first_spiel_date = spiel.date;
+            chat.prepend(row);
+        }
 
         row.linkify(toHashtagUrl);
         row.find('time').timeago();
@@ -344,15 +355,6 @@ function UI() {
         if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height() - $('#post').height()) {
             $('#chat').css('top', '0');
             this.flags.chatCssUpdated = true;
-        }
-
-        if(window.last_spiel_date < spiel.date) {
-            window.last_spiel_date = spiel.date;
-        }
-
-        // optimization to not scroll at every step when loading initial messages
-        if(notify) {
-            this_ui.scroll();
         }
     }
 

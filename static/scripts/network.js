@@ -53,11 +53,11 @@ function Networking(since) {
             window.ui.add_spiel(spiel, notify);
         }
         // chat state
-        if(message.action == 'initial_spiels') {
+        if(message.action == 'spiels') {
             var spiels = message.body.spiels;
             for(var i=0; i<spiels.length; i++) {
-                var notify = false;
-                window.ui.add_spiel(spiels[i], notify);
+                var is_initial_load = true;
+                window.ui.add_spiel(spiels[i], true);
             }
 
             window.ui.scroll();
@@ -96,7 +96,7 @@ function Networking(since) {
         clearInterval(that.keep_alive);
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
-            var since = window.last_spiel_date;
+            var since = window.ui.last_spiel_date;
             window.networking = new Networking(since);
             console.log("Since", since);
             ui.network = window.network
@@ -113,7 +113,13 @@ function Networking(since) {
         this.sock.send(json_data);
     };
 
-    this.get_older_messages = function() {
+    this.get_older_spiels = function(until) {
+        that.send('get_spiels', {
+            'latitude': window.latitude,
+            'longitude': window.longitude,
+            'chatroom': window.chatroom,
+            'until': until,
+        });
     };
 
     return this;
