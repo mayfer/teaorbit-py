@@ -92,6 +92,7 @@ function Networking(since) {
     };
     this.sock.onclose = function() {
         console.log('Connection closed');
+        window.ui.disconnected();
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
             var since = window.last_spiel_date;

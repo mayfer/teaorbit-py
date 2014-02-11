@@ -384,5 +384,9 @@ function UI() {
     this.private_message = function() {
     }
 
+    this.disconnected = function() {
+        $('#num-online').html("disconnected");
+    }
+
     return this;
 }

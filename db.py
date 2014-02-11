@@ -13,8 +13,19 @@ class FakeRedis(object):
             self._blocks[room_id] = []
         self._blocks[room_id].append({'score': timestamp, 'data': spiel_json})
 
-    def zrevrangebyscore(self, room_id, since='-inf', until='+inf', start=None, limit=None):
-        return [ row['data'] for row in sorted(self._blocks.get(room_id, []), key=lambda d: d['score']) if row['score'] > float(since) and row['score'] < float(until) ]
+    def zrevrangebyscore(self, room_id, max='+inf', min='-inf', start=None, limit=None, num=None):
+        max = max[1:] if max.startswith('(') else max
+        min = min[1:] if min.startswith('(') else min
+        return [ row['data'] for row in sorted(self._blocks.get(room_id, []), key=lambda d: d['score'], reverse=True) if row['score'] > float(min) and row['score'] < float(max) ]
+
+    def get(self, key):
+        return self._blocks.get(key, None)
+
+    def set(self, key, val):
+        self._blocks[key] = val
+
+    def delete(self, key):
+        del self._blocks[key]
 
 class History(object):
     def __init__(self):
@@ -63,32 +74,3 @@ class History(object):
 
     def remove_player(self, session_id):
         self.redis.delete('player:{s}'.format(s=session_id))
-"""
-
-Notes
-
-Add item with score/date
-zadd(name1, score1)
-
-Remove date range:
-zremrangebyscore(name, min, max)
-
-
-
-
-name = 'myset'
-        r.zadd(name, 'one', 1)
-        r.zadd(name, 'two', 2)
-        r.zadd(name, 'three', 3)
-        r.zadd(name, 'four', 4)
-
-        self.assertTrue(r.zrangebyscore(name, '-inf', '+inf') == ['one', 'two', 'three', 'four'])
-        self.assertTrue(r.zrangebyscore(name, 1, 1) == ['one'])
-        self.assertTrue(r.zrangebyscore(name, 1, 2) == ['one', 'two'])
-        self.assertTrue(r.zrangebyscore(name, 2, 3) == ['two', 'three'])
-        self.assertTrue(r.zrangebyscore(name, '(1', '(2') == [])
-        self.assertTrue(r.zrangebyscore(name, '(1', '(3') == ['two'])
-
-
-
-"""
