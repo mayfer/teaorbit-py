@@ -18,7 +18,7 @@ function Networking(since) {
             'name': $('#name').val(),
         });
 
-        setInterval(function() {
+        that.keep_alive = setInterval(function() {
             if(window.chatroom || window.latitude) {
                 that.send('still_online', {
                     'latitude': window.latitude,
@@ -93,6 +93,7 @@ function Networking(since) {
     this.sock.onclose = function() {
         console.log('Connection closed');
         window.ui.disconnected();
+        clearInterval(that.keep_alive);
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
             var since = window.last_spiel_date;
