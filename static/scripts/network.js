@@ -51,6 +51,7 @@ function Networking(since) {
             var spiel = message.body;
             var notify = true;
             window.ui.add_spiel(spiel, notify);
+            window.ui.scroll();
         }
         // chat state
         if(message.action == 'spiels') {
