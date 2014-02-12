@@ -46,6 +46,14 @@ function Networking(since) {
             });
         }
 
+        if(message.action == 'version') {
+            var version = parseInt(message.body.version);
+            if(window.teaorbit_version !== undefined && version > window.teaorbit_version) {
+                window.location.reload(true);
+            }
+            window.teaorbit_version = parseInt(message.body.version);
+        }
+
         // chat state
         if(message.action == 'new_spiel') {
             var spiel = message.body;
@@ -90,6 +98,7 @@ function Networking(since) {
             console.log("Block ID: " + block_id);
             window.ui.set_map_url("https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000aa|fillcolor:0x6666ff|weight:5|"+block_id+"&size=512x512&sensor=false");
         }
+
     };
     this.sock.onclose = function() {
         console.log('Connection closed');

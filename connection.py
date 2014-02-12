@@ -3,7 +3,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
-from messages import DTO, Response, Spiel, Session, Block, OnlineUsers, Spiels, Ping, User
+from messages import DTO, Response, Spiel, Session, Block, OnlineUsers, Spiels, Ping, User, KeepAlive, Version
 from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM
 
 class Connection(SockJSConnection):
@@ -43,9 +43,12 @@ class Connection(SockJSConnection):
 
         if message.__class__ == HelloCM:
             self.add_online(connection=self, room_id=message.room_id, session_id=self.session_id, name=message.name)
+            self.send_obj(Version())
 
         if message.__class__ == StillOnlineCM:
             self.sessions.setdefault(message.room_id, {}).setdefault(self.session_id, {})['last_active'] = unix_now_ms()
+            ack_dto = KeepAlive()
+            self.send_obj(ack_dto)
 
         if message.__class__ == GetSpielsCM:
             spiels = self.game.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
@@ -66,10 +69,11 @@ class Connection(SockJSConnection):
                 self._update_name(message.name)
 
     def _update_name(self, name):
-        prev_name = self.sessions[self.room_id][self.session_id]['name']
+        prev_name = self.sessions[self.room_id][self.session_id].get('name', '')
         if name != prev_name:
             self.sessions[self.room_id][self.session_id]['name'] = name
             # and then notify everyone of new name
+            self.broadcast_online_users(self.room_id)
 
     def add_online(self, connection, room_id, session_id, name=''):
         self.room_id = room_id
@@ -97,7 +101,7 @@ class Connection(SockJSConnection):
 
         self.send_obj(Block(room_id))
 
-        self.broadcast_online_count(room_id)
+        self.broadcast_online_users(room_id)
 
     def remove_online(self, room_id, session_id, connection):
         try:
@@ -109,7 +113,7 @@ class Connection(SockJSConnection):
         except:
             pass
         self.sessions[room_id].pop(session_id, None)
-        self.broadcast_online_count(room_id)
+        self.broadcast_online_users(room_id)
 
     def update_online(self):
         # ping = Ping()
@@ -121,7 +125,7 @@ class Connection(SockJSConnection):
                 if details.get('last_active', 0) < now - allowed_inactive:
                     self.remove_online(room_id, session_id, self)
 
-    def broadcast_online_count(self, room_id):
+    def broadcast_online_users(self, room_id):
         users = [ User(color=user['color'], name=user['name']) for user in self.sessions.get(room_id, {} ).values() ]
         online = OnlineUsers(len(users), users)
         self.broadcast_obj(online, self.rooms.get(room_id, () ))
@@ -130,7 +134,7 @@ class Connection(SockJSConnection):
         session_id = self.session_id
         room_id = self.room_id
         self.remove_online(room_id=room_id, session_id=session_id, connection=self)
-        self.broadcast_online_count(room_id)
+        self.broadcast_online_users(room_id)
 
     def debug(self, log):
         print log

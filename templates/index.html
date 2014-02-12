@@ -53,6 +53,13 @@
             {% end %}
 
             $(document).ready(function(){
+                $(window).bind('touchmove', function(e){
+                    e.preventDefault();
+                });
+                $("#chat").bind('touchmove', function(e){
+                    e.stopPropagation();
+                });
+
                 if($.browser.mobile == false) {
                     $('#type-here').focus();
                     $('body').on('click', function(e){
@@ -95,7 +102,7 @@
                 <a id='show-map' href='#' class='button'><span id='show-hide-details'>nearby</span><img class='map desaturate' align='middle' /></a>
                 <div class='info' id='num-online'>? online</div>
                 <span id='audio'></span>
-                <h1 id='logo'><a href='/'>tea orbit</a></h1>
+                <h1 id='logo'><a href='/'><img src='{{ STATIC_URL }}assets/tea-white.png' /><span>tea orbit</span></a></h1>
             </div>
             <div id='chat'>
                 <div class='inner'>

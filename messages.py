@@ -2,6 +2,7 @@ import simplejson as json
 from common import json_encode, json_decode
 from decimal import Decimal
 from geo import Geo
+import config
 
 def recursive_json(obj):
     def serialize(obj):
@@ -56,6 +57,12 @@ class Session(DTO):
         self.session_id = session_id
         self.color = color
 
+class Version(DTO):
+    _action = 'version'
+
+    def __init__(self):
+        self.version = config.version
+
 class Spiel(DTO):
     _action = 'new_spiel'
 
@@ -93,7 +100,11 @@ class OnlineUsers(DTO):
         self.num_online = num_online
         self.users = users
 
+class KeepAlive(DTO):
+    _action = 'keep_alive'
 
+    def __init__(self):
+        self.version = config.version
 
 class ClientMessage(DTO):
     def __init__(self, body):
