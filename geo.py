@@ -12,8 +12,8 @@ class Geo(object):
         latitude = float(latitude)
         longitude = float(longitude)
 
-        flat_lat = self._truncate(latitude, 2)
-        flat_long = self._truncate(longitude, 2)
+        flat_lat = Geo._truncate(latitude, 2)
+        flat_long = Geo._truncate(longitude, 2)
 
         poly = [
             ('%.2f' % (flat_lat + 0.00), '%.2f' % (flat_long - 0.00)),

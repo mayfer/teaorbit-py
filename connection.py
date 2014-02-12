@@ -14,7 +14,7 @@ class Connection(SockJSConnection):
 
     client_messages = {
         'hello': HelloCM,
-        'pong': StillOnlineCM,
+        'still_online': StillOnlineCM,
         'get_spiels': GetSpielsCM,
         'post_spiel': PostSpielCM,
     }
@@ -45,10 +45,10 @@ class Connection(SockJSConnection):
             self.add_online(connection=self, room_id=message.room_id, session_id=self.session_id, name=message.name)
 
         if message.__class__ == StillOnlineCM:
-            self.sessions.setdefault(self.room_id, {}).setdefault(self.session_id, {})['last_active'] = unix_now_ms()
+            self.sessions.setdefault(message.room_id, {}).setdefault(self.session_id, {})['last_active'] = unix_now_ms()
 
         if message.__class__ == GetSpielsCM:
-            spiels = self.game.get_spiels_by_room_id(self.room_id, since=message.since, until=message.until)
+            spiels = self.game.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
 
             spiels_dto = Spiels(spiels)
             self.send_obj(spiels_dto)
@@ -60,8 +60,8 @@ class Connection(SockJSConnection):
                 color = player.color
 
                 spiel_dto = Spiel(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
-                self.notify_recipients(self.room_id, spiel_dto)
-                self.game.post_spiel_to_room(self.room_id, spiel_dto)
+                self.notify_recipients(message.room_id, spiel_dto)
+                self.game.post_spiel_to_room(message.room_id, spiel_dto)
 
                 self._update_name(message.name)
 
