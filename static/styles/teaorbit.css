@@ -36,10 +36,10 @@ input#type-here { width: 60% }
 input#name { width: 20%; }
 #submit { padding-right: 8px; }
 
-#chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; -webkit-text-size-adjust: none; }
+#chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; }
 #chat .inner { padding: 30px; }
 .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-line; word-wrap: break-word; }
-.date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; }
+.date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
 .row:hover .name { color: #aaa; }
