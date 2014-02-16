@@ -283,15 +283,18 @@ function UI() {
         var text;
 
         if(is_initial_load === undefined) {
-            is_initial_load == false;
+            is_initial_load = false;
         }
 
+        console.log('---new msg', is_initial_load);
         if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
+            console.log('---notify');
             if(this.flags.windowFocused == false) {
                 this.flags.newMessages++;
                 document.title = "(" + this.flags.newMessages + ") " + window.title;
             }
             if(window.webkitNotifications !== undefined) {
+                console.log('---notify popup');
                 var havePermission = window.webkitNotifications.checkPermission();
                 if (havePermission == 0) {
                     // 0 is PERMISSION_ALLOWED
