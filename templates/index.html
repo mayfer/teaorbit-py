@@ -92,6 +92,8 @@
                 {% end %}
                 window.ui.init();
                 new ScrollFix($('#chat')[0]);
+
+                $('#channels-menu').click();
             });
 
         </script>
@@ -99,17 +101,12 @@
     <body>
         <div id='container'>
             <div id='header'>
-                <a id='show-map' href='#' class='button'><span id='show-hide-details'>nearby</span><img class='map desaturate' align='middle' /></a>
+                <a id='channels-menu' href='#' class='button'><span id='show-hide-details'>nearby</span><img class='map desaturate' align='middle' /></a>
                 <div class='info' id='num-online'>? online</div>
                 <span id='audio'></span>
                 <h1 id='logo'><a href='/'><img src='{{ STATIC_URL }}assets/tea-white.png' /><span>tea orbit</span></a></h1>
             </div>
             <div id='chat'>
-                <div class='inner'>
-                </div>
-            </div>
-            <div id='channels'>
-                <a href='#' class='toggle'></a>
                 <div class='inner'>
                 </div>
             </div>
@@ -123,7 +120,7 @@
                         <input type='hidden' name='session' value='' />
                         <input type='hidden' name='chatroom' value='' />
                         <textarea name='spiel' id='type-here' placeholder='Type your message'></textarea>
-                        <button type='submit' class='submit' id='submit' />Submit</button>
+                        <button type='submit' class='submit' id='submit' />Send</button>
                     </form>
                     <!--<canvas id='drawing' width="500" height="300"></canvas>-->
                 </div>
@@ -153,9 +150,9 @@
             ga('send', 'pageview');
 
         </script>
-        <div id='map-expanded'>
-            <div class='contextual-info'>You are seeing messages from the area shown<div>
-            <div><img class='map' /></div>
+        <div id='channels'>
+            <div class='inner'>
+            </div>
         </div>
     </body>
 </html>

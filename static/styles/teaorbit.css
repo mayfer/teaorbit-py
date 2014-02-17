@@ -22,7 +22,6 @@ a:hover { border-bottom: 1px solid #666; }
 #header .button { background: #444; }
 #header .button:hover, #header .button.show { background: #777; }
 
-#show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-left: 20px; margin-right: -20px; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 20px; position: relative; }
@@ -41,8 +40,9 @@ input#name { width: 20%; }
 .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-line; word-wrap: break-word; }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }
-.row:hover .message { color: #ccc; }
+/*.row:hover .message { color: #ccc; }
 .row:hover .name { color: #aaa; }
+*/
 .row:hover a { border-bottom: 1px solid #aaa; }
 .row a:hover { border-bottom: 1px solid #fff; }
 .name { color: #888; margin-right: 3px; }
@@ -51,22 +51,16 @@ input#name { width: 20%; }
 
 .color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
 
-#channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 30px; background: rgba(0,0,0,1); }
-#channels .inner { padding: 10px 0; display: none; }
-#channels a.toggle { line-height: 30px; padding: 0 10px; color: #999; margin: 0; display: block; }
-#channels a.toggle:hover { color: #fff; }
-#channels a.toggle.expanded { border-bottom: 1px solid #777; }
+#channels-menu img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-left: 20px; margin-right: -20px; }
 
-#channels .toggle:before { content: "▲";margin-right: 10px; }
-#channels .toggle.expanded:before { content: "▼ recent channels"; margin-right: 10px;  }
+#channels { position: absolute; overflow: auto; z-index: 50; min-width: 70px; max-width: 300px; background: #777; min-height: 50px; display: none; }
+#channels .inner { padding: 10px; }
 
-#channels .channel { line-height: 20px; padding: 0 10px;}
-#channels .channel:hover { border-bottom: 1px solid #444; margin: -1px 0 -1px 0; border-top: 1px solid #444; background: #222; }
-#channels .channel .current { float: right; margin-left: 15px; margin-right: 25px; color: rgba(255,255,255,0.4); }
-#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 14px; font-size: 18px; width: 14px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; margin: 3px 5px 2px 15px; }
-#channels .channel .remove:hover { color: #faa; background: rgba(255,255,255,0.5); cursor: pointer; }
-#channels .channel a { color: #999; }
-#channels .channel a:hover { color: #fff; border: none; }
+#channels .channel { padding: 0 5px; background: #555; margin: 2px; display: block; border: none; overflow: auto; }
+#channels .channel:hover { color: #fff; background: #222; border: none; }
+#channels .channel .remove { float: right; color: #aaa; display: inline-block; line-height: 14px; font-size: 18px; width: 14px; background: rgba(255,255,255,0.3); text-align: center; border-radius: 7px; margin: 6px 5px -10px 15px; }
+#channels .channel .remove:hover { color: #000; background: rgba(255,255,255,0.5); cursor: pointer; }
+#channels .channel .channel-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 200px; line-height: 26px; float: left; }
 
 
 #audio { float: right; display: inline-block; line-height: 50px; cursor: pointer; }
@@ -92,8 +86,8 @@ and (max-device-width : 568px) {
     #header h1 a img { width: 30px; height: 30px; background: #333; border-radius: 50%; display: block; float: left; border: 5px solid #000; margin: 0 0 -20px -10px; }
 
     #audio { line-height: 30px; }
-    #show-map { display: inline-block; max-width: 120px; overflow: hidden; text-overflow:ellipsis; }
-    #show-map img.map { margin-right: -10px; margin-left: 10px; }
+    #channels-menu { display: inline-block; max-width: 120px; overflow: hidden; text-overflow:ellipsis; }
+    #channels-menu img.map { margin-right: -10px; margin-left: 10px; }
     #num-users { display: inline-block; line-height: 30px; } 
     #header .button, #header .info { line-height: 30px; font-size: 12px; padding: 0 10px; }
     #header img.map {  height: 30px; width: 30px; }
@@ -102,11 +96,12 @@ and (max-device-width : 568px) {
 
     #post .inner { margin: 5px 10px; }
     #post input, button { display: block; }
-    #post button { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
-    #post textarea[name='spiel'] {  width: 95%; }
-    #post input[name='name'] {  width: 60%; }
+    #post button { position: absolute; top: 0; right: 0; text-align: center; color: #aaa; width: 70px; }
+    #post textarea[name='spiel'] {  width: 92%; }
+    #post input[name='name'] {  width: 70%; }
 
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
+    #chat .row.active .date { display: inline; color: #aaa; }
     #chat .inner { padding: 15px; }
 }
 

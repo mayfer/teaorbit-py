@@ -139,25 +139,23 @@ function UI() {
             this_ui.cookie("name", name);
         });
 
-        $('#show-map').bind('click touchstart', function(e){
+        $('#channels-menu').bind('click touchend', function(e){
             e.preventDefault();
-            this_ui.toggle_map();
-        });
 
-        $('#channels .toggle').bind('click touchend', function(e){
-            e.preventDefault();
-            $(this).toggleClass('expanded');
-            if($(this).hasClass('expanded')) {
-                this_ui.global_cookie('channels_expanded', true);
-            } else {
-                $('#channels').css('top', '');
-                this_ui.global_cookie('channels_expanded', false);
-            }
-            $('#channels .inner').toggle(0, function(){
-                if($('#channels').height() >= ($(window).height() - $('#header').height() - $('#post').height() )) {
-                    $('#channels').css('top', '0px');
-                }
-            });
+            $(this).toggleClass('show');
+            this_ui.global_cookie('channels_expanded', !$(this).hasClass('show'));
+            
+            var elem = $(this);
+            var offset = elem.offset();
+
+            $('#channels')
+                .css({
+                    'position': 'absolute',
+                    'top': (offset.top + elem.height()) + 'px',
+                    'right': (0) + 'px',
+                    'max-width': Math.min($(window).width(), 320) + "px",
+                })
+                .toggle();
 
         });
 
@@ -172,12 +170,12 @@ function UI() {
 
         this.show_recent_channels();
         var show_channels = this_ui.global_cookie('channels_expanded');
-        if(show_channels) {
-            $('#channels .toggle').click();
+        if(show_channels == true) {
+            $('#channels-menu').click();
         }
 
         $('<div>').attr('id', 'online-users').appendTo('body');
-        $('#num-online').bind('click touchstart', function(e){
+        $('#num-online').bind('click touchend', function(e){
             e.preventDefault();
             var online_elem = $('#num-online');
             var offset = online_elem.offset();
@@ -201,13 +199,13 @@ function UI() {
                 e.stopPropagation();
             }
          });
-        $('input, textarea').bind('touchstart', function(e){
+        $('input, textarea').bind('touchend', function(e){
             $(this).focus();
         });
     }
 
     this.init_web_only_features = function() {
-        $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+        $('#chat').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
 
     }
 
@@ -245,30 +243,28 @@ function UI() {
         if(recent_channels) {
             $.each(recent_channels, function(channel, enabled) {
                 if(enabled == true) {
-                    var channelelem = $('<div>')
-                        .addClass('channel')
-                        .data('channel', channel);
+                    if(channel != window.chatroom) {
+                        var channelelem = $('<a>')
+                            .addClass('channel')
+                            .data('channel', channel)
+                            .attr('href', '/'+channel)
 
-                    var nameelem = $('<a>')
-                        .attr('href', '/'+channel)
-                        .html('#'+channel)
-                        .appendTo(channelelem);
+                        var nameelem = $('<span>')
+                            .addClass('channel-name')
+                            .html('#'+channel)
+                            .appendTo(channelelem);
 
-                    if(channel == window.chatroom) {
-                        $('<span>').addClass('current').html("[current]").appendTo(channelelem);
-                    } else {
-                        $('<a>').addClass('remove').html("&times;").appendTo(channelelem).click(function(e){
+                        $('<a>').addClass('remove').html("&times;").appendTo(channelelem).bind('click touchend', function(e){
                             e.preventDefault();
+                            e.stopPropagation();
                             var channel = $(this).parents('.channel').data('channel');
-                            console.log('clocked', channel);
                             delete recent_channels[channel];
                             this_ui.global_cookie('recent_channels', recent_channels);
                             $(this).parents('.channel').remove();
 
                         });
+                        channelelem.appendTo(container);
                     }
-                    channelelem.appendTo(container);
-
                 }
             });
         }
@@ -286,15 +282,12 @@ function UI() {
             is_initial_load = false;
         }
 
-        console.log('---new msg', is_initial_load);
         if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
-            console.log('---notify');
             if(this.flags.windowFocused == false) {
                 this.flags.newMessages++;
                 document.title = "(" + this.flags.newMessages + ") " + window.title;
             }
             if(window.webkitNotifications !== undefined) {
-                console.log('---notify popup');
                 var havePermission = window.webkitNotifications.checkPermission();
                 if (havePermission == 0) {
                     // 0 is PERMISSION_ALLOWED
@@ -372,18 +365,6 @@ function UI() {
     }
     this.set_map_url = function(url) {
         $('.map').attr('src', url);
-    }
-    this.toggle_map = function() {
-        $('#map-expanded').toggleClass('show');
-        $('#show-map').toggleClass('show');
-            var toggler_elem = $('#show-map');
-            var offset = toggler_elem.offset();
-            $('#map-expanded')
-                .css({
-                    'position': 'absolute',
-                    'top': (offset.top + toggler_elem.height()) + 'px',
-                    'right': '0',
-                })
     }
 
     this.private_message = function() {

@@ -42,11 +42,11 @@ class Connection(SockJSConnection):
         message = self._parse_message(text)
 
         if message.__class__ == HelloCM:
-            self.add_online(connection=self, room_id=message.room_id, session_id=self.session_id, name=message.name)
+            self.add_online(room_id=message.room_id, session_id=self.session_id, name=message.name)
             self.send_obj(Version())
 
         if message.__class__ == StillOnlineCM:
-            self.sessions.setdefault(message.room_id, {}).setdefault(self.session_id, {})['last_active'] = unix_now_ms()
+            self._update_name(message.name)
             ack_dto = KeepAlive()
             self.send_obj(ack_dto)
 
@@ -68,14 +68,17 @@ class Connection(SockJSConnection):
 
                 self._update_name(message.name)
 
-    def _update_name(self, name):
-        prev_name = self.sessions[self.room_id][self.session_id].get('name', '')
-        if name != prev_name:
-            self.sessions[self.room_id][self.session_id]['name'] = name
-            # and then notify everyone of new name
-            self.broadcast_online_users(self.room_id)
+        self.keep_online(room_id=message.room_id, session_id=self.session_id)
 
-    def add_online(self, connection, room_id, session_id, name=''):
+    def _update_name(self, name):
+        if self.session_id in self.sessions[self.room_id].keys():
+            prev_name = self.sessions[self.room_id][self.session_id].get('name', '')
+            if name != prev_name:
+                self.sessions[self.room_id][self.session_id]['name'] = name
+                # and then notify everyone of new name
+                self.broadcast_online_users(self.room_id)
+
+    def add_online(self, room_id, session_id, name=''):
         self.room_id = room_id
         self.participants.add(self)
 
@@ -103,6 +106,16 @@ class Connection(SockJSConnection):
 
         self.broadcast_online_users(room_id)
 
+    def keep_online(self, room_id, session_id):
+        room = self.sessions.setdefault(room_id, {})
+        if session_id not in room.keys():
+            player = self.game.get_player(self.session_id)
+            room[session_id] = {
+                'color': player.color,
+                'name': '',
+            }
+        room[session_id]['last_active'] = unix_now_ms()
+
     def remove_online(self, room_id, session_id, connection):
         try:
             self.participants.remove(connection)
@@ -126,7 +139,8 @@ class Connection(SockJSConnection):
                     self.remove_online(room_id, session_id, self)
 
     def broadcast_online_users(self, room_id):
-        users = [ User(color=user['color'], name=user['name']) for user in self.sessions.get(room_id, {} ).values() ]
+        room_sessions = self.sessions.get(room_id, {} ).values()
+        users = [ User(color=user['color'], name=user['name']) for user in room_sessions ]
         online = OnlineUsers(len(users), users)
         self.broadcast_obj(online, self.rooms.get(room_id, () ))
 
