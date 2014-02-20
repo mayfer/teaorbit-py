@@ -244,14 +244,23 @@ function UI() {
             $.each(recent_channels, function(channel, enabled) {
                 if(enabled == true) {
                     if(channel != window.chatroom) {
-                        var channelelem = $('<a>')
+                        var channelelem = $('<div>')
                             .addClass('channel')
-                            .data('channel', channel)
-                            .attr('href', '/'+channel)
+                            .data('channel', channel);
 
-                        var nameelem = $('<span>')
+                        var notifyelem = $('<a>')
+                            .addClass('notify')
+                            .html('N')
+                            .attr('href', '#')
+                            .appendTo(channelelem)
+                            .bind('click touchend', function(e){
+                                e.preventDefault();
+                            });
+
+                        var nameelem = $('<a>')
                             .addClass('channel-name')
                             .html('#'+channel)
+                            .attr('href', '/'+channel)
                             .appendTo(channelelem);
 
                         $('<a>').addClass('remove').html("&times;").appendTo(channelelem).bind('click touchend', function(e){
