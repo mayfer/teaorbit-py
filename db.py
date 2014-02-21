@@ -39,8 +39,12 @@ class History(object):
             print "*** [notice] Can't connect to Redis, using a fall-back in-memory database."
             self.redis = FakeRedis()
 
+    def __encode(self, text):
+        return text.encode('utf-8')
+
     def insert_spiel(self, room_id, spiel_json, timestamp):
-        self.redis.zadd("block:{b}".format(b=room_id), spiel_json, timestamp)
+        key = "block:{b}".format(b=self.__encode(room_id))
+        self.redis.zadd(key, spiel_json, timestamp)
 
     def get_spiels(self, room_id, since=None, until=None):
         if since is None:
@@ -56,7 +60,8 @@ class History(object):
             until = '%f' % until
 
         # the brackets mean exclude that exact value
-        spiel_jsons = self.redis.zrevrangebyscore("block:{b}".format(b=room_id), max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=self.spiels_per_request)
+        key = "block:{b}".format(b=self.__encode(room_id))
+        spiel_jsons = self.redis.zrevrangebyscore(key, max="({u}".format(u=until), min="({s}".format(s=since), start=0, num=self.spiels_per_request)
 
         if until is None:
             spiel_jsons.reverse()
@@ -64,18 +69,22 @@ class History(object):
         return spiel_jsons
 
     def set_player(self, session_id, player):
-        self.redis.set('player:{s}'.format(s=session_id), player.json())
+        key = 'player:{s}'.format(s=session_id)
+        self.redis.set(key, player.json())
 
     def get_player(self, session_id):
-        player_json = self.redis.get('player:{s}'.format(s=session_id))
+        key = 'player:{s}'.format(s=session_id)
+        player_json = self.redis.get(key)
         if player_json is not None:
             return Session.from_json(player_json)
         else:
             return None
 
     def get_session_id_for_alias(self, alias):
-        session_id = self.redis.get('alias:{s}'.format(s=session_id))
+        key = 'alias:{s}'.format(s=session_id)
+        session_id = self.redis.get(key)
         return session_id
 
     def remove_player(self, session_id):
-        self.redis.delete('player:{s}'.format(s=session_id))
+        key = 'player:{s}'.format(s=session_id)
+        self.redis.delete(key)
