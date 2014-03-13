@@ -74,6 +74,18 @@ class Spiel(DTO):
         self._latitude = latitude
         self._longitude = longitude
 
+class PrivateSpiel(DTO):
+    _action = 'private_spiel'
+
+    def __init__(self, name='', spiel='', to='', latitude=49.15, longitude=123.88, date=None, color=None):
+        self.name = name
+        self.spiel = spiel
+        self.date = date
+        self.color = color
+        self._to = to
+        self._latitude = latitude
+        self._longitude = longitude
+
 class Spiels(DTO):
     _action = 'spiels'
 

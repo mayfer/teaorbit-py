@@ -46,6 +46,10 @@ class History(object):
         key = "block:{b}".format(b=self.__encode(room_id))
         self.redis.zadd(key, spiel_json, timestamp)
 
+    def insert_spiel(self, to_id, spiel_json, timestamp):
+        key = "pm:{b}".format(b=self.__encode(to_id))
+        self.redis.zadd(key, spiel_json, timestamp)
+
     def get_spiels(self, room_id, since=None, until=None):
         if since is None:
             since = '-inf'
