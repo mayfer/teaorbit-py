@@ -26,8 +26,8 @@ class GameState(object):
         room_id = self.get_room_id(spiel._latitude, spiel._longitude)
         self.history.insert_spiel(room_id, spiel.json(), spiel.date)
 
-    def post_private_spiel(self, pv_spiel):
-        self.history.insert_private_spiel(pv_spiel._to, spiel.json(), spiel.date)
+    def post_private_spiel(self, to_id, pv_spiel):
+        self.history.insert_private_spiel(to_id, spiel.json(), spiel.date)
 
     def post_spiel_to_room(self, room_id, spiel):
         self.history.insert_spiel(room_id, spiel.json(), spiel.date)

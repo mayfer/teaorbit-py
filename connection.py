@@ -4,7 +4,7 @@ from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
 from messages import DTO, Response, Spiel, Session, Block, OnlineUsers, Spiels, Ping, User, KeepAlive, Version
-from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM
+from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM
 
 class Connection(SockJSConnection):
     participants = set()
@@ -67,6 +67,16 @@ class Connection(SockJSConnection):
                 self.game.post_spiel_to_room(message.room_id, spiel_dto)
 
                 self._update_name(message.name)
+
+        if message.__class__ == PostPrivateSpielCM:
+            if message.spiel:
+                date = unix_now_ms()
+                player = self.game.get_player(self.session_id)
+                color = player.color
+
+                spiel_dto = Spiel(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
+                self.notify_recipient(message.to_id, spiel_dto)
+                self.game.post_private_spiel(message.to_id, spiel_dto)
 
     def _update_name(self, name):
         prev_name = self.sessions[self.room_id][self.session_id].get('name', '')

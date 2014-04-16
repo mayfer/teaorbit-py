@@ -74,18 +74,6 @@ class Spiel(DTO):
         self._latitude = latitude
         self._longitude = longitude
 
-class PrivateSpiel(DTO):
-    _action = 'private_spiel'
-
-    def __init__(self, name='', spiel='', to='', latitude=49.15, longitude=123.88, date=None, color=None):
-        self.name = name
-        self.spiel = spiel
-        self.date = date
-        self.color = color
-        self._to = to
-        self._latitude = latitude
-        self._longitude = longitude
-
 class Spiels(DTO):
     _action = 'spiels'
 
@@ -149,4 +137,11 @@ class PostSpielCM(ClientMessage):
         super(PostSpielCM, self).__init__(body)
         self.name = body.get('name', '')
         self.spiel = body.get('spiel', '')
+
+class PostPrivateSpielCM(ClientMessage):
+    def __init__(self, body):
+        super(PostSpielCM, self).__init__(body)
+        self.name = body.get('name', '')
+        self.spiel = body.get('spiel', '')
+        self.to = body.get('to', '')
 
