@@ -28,7 +28,7 @@ class FakeRedis(object):
         del self._blocks[key]
 
 class History(object):
-    spiels_per_request = 100
+    spiels_per_request = 200
 
     def __init__(self):
         try:
