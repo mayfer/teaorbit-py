@@ -1,12 +1,15 @@
+#!/usr/bin/env python
+
 from db import History
 import simplejson as json
 
 h = History()
-keys = [ key[6:] for key in h.redis.keys('block:*') ]
+keys = h.redis.keys('block:*')
 things = []
 for key in keys:
+    key = key.decode('utf8', 'ignore')[6:]
     spiels = h.get_spiels(key)
-    last = spiels[-1]
+    last = spiels[0]
     spiel = json.loads(last)
     things.append((key, last, spiel['date']))
 

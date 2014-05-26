@@ -260,7 +260,6 @@ function UI() {
                         $('<a>').addClass('remove').html("&times;").appendTo(channelelem).click(function(e){
                             e.preventDefault();
                             var channel = $(this).parents('.channel').data('channel');
-                            console.log('clocked', channel);
                             delete recent_channels[channel];
                             this_ui.global_cookie('recent_channels', recent_channels);
                             $(this).parents('.channel').remove();
@@ -286,15 +285,12 @@ function UI() {
             is_initial_load = false;
         }
 
-        console.log('---new msg', is_initial_load);
         if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
-            console.log('---notify');
             if(this.flags.windowFocused == false) {
                 this.flags.newMessages++;
                 document.title = "(" + this.flags.newMessages + ") " + window.title;
             }
             if(window.webkitNotifications !== undefined) {
-                console.log('---notify popup');
                 var havePermission = window.webkitNotifications.checkPermission();
                 if (havePermission == 0) {
                     // 0 is PERMISSION_ALLOWED
@@ -314,10 +310,10 @@ function UI() {
                         window.focus();
                         notification.close();
                     }
+                    notification.show();
                     setTimeout(function(){
                         notification.close();
                     }, 3000);
-                    notification.show();
                 } else {
                     $('#notification')[0].play();
                 }
