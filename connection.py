@@ -52,7 +52,7 @@ class Connection(SockJSConnection):
 
             self.sessions[message.room_id][self.session_id] = {
                 'last_active': unix_now_ms(),
-                'name': player.name,
+                'name': message.name,
                 'color': player.color,
             }
             ack_dto = KeepAlive()
