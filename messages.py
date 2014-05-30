@@ -125,6 +125,7 @@ class HelloCM(ClientMessage):
 class StillOnlineCM(ClientMessage):
     def __init__(self, body):
         super(StillOnlineCM, self).__init__(body)
+        self.name = body.get('name', '')
 
 class GetSpielsCM(ClientMessage):
     def __init__(self, body):
