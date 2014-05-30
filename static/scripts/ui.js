@@ -16,10 +16,14 @@ function UI() {
     }
 
     this.global_cookie = function(key, val) {
-        if(val === undefined) {
-            return JSON.parse(window.localStorage.getItem(key));
+        if(window.localStorage) {
+            if(val === undefined) {
+                return JSON.parse(window.localStorage.getItem(key));
+            } else {
+                window.localStorage.setItem(key, JSON.stringify(val));
+            }
         } else {
-            window.localStorage.setItem(key, JSON.stringify(val));
+            console.log("No local storage available");
         }
     }
 

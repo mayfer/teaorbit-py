@@ -24,6 +24,7 @@ function Networking(since) {
                     'latitude': window.latitude,
                     'longitude': window.longitude,
                     'chatroom': window.chatroom,
+                    'name': $('#name').val(),
                 });
             }
         }, 60000);

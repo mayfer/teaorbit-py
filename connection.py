@@ -46,7 +46,15 @@ class Connection(SockJSConnection):
             self.send_obj(Version())
 
         if message.__class__ == StillOnlineCM:
-            self.sessions.setdefault(message.room_id, {}).setdefault(self.session_id, {})['last_active'] = unix_now_ms()
+            player = self.game.get_player(self.session_id)
+            if player is None:
+                player = self.game.add_player(self.session_id)
+
+            self.sessions[message.room_id][self.session_id] = {
+                'last_active': unix_now_ms(),
+                'name': player.name,
+                'color': player.color,
+            }
             ack_dto = KeepAlive()
             self.send_obj(ack_dto)
 
