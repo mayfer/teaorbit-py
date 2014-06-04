@@ -1,7 +1,7 @@
 from random import choice
 from common import json_encode
 from db import History
-from messages import Spiel, Session
+from messages import SpielView, SessionView
 import random
 
 class GameState(object):
@@ -14,7 +14,7 @@ class GameState(object):
         r = lambda: random.randint(0,255)
         color = '#%02X%02X%02X' % (r(),r(),r())
 
-        player_dto = Session(session_id, color)
+        player_dto = SessionView(session_id, color)
         # self.players[session_id] = player_dto
         self.history.set_player(session_id, player_dto)
         return player_dto
@@ -36,7 +36,7 @@ class GameState(object):
         spiel_jsons = self.history.get_spiels(room_id, since, until)
         spiels = []
         for spiel_json in spiel_jsons:
-            spiel = Spiel.from_json(spiel_json)
+            spiel = SpielView.from_json(spiel_json)
             spiels.append(spiel)
 
         return spiels

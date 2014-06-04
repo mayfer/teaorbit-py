@@ -1,6 +1,6 @@
 from redis import Redis
 from redis.exceptions import ConnectionError
-from messages import Spiel, Session
+from messages import SpielView, SessionView
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
 
@@ -80,15 +80,19 @@ class History(object):
         key = 'player:{s}'.format(s=session_id)
         player_json = self.redis.get(key)
         if player_json is not None:
-            return Session.from_json(player_json)
+            return SessionView.from_json(player_json)
         else:
             return None
-
-    def get_session_id_for_alias(self, alias):
-        key = 'alias:{s}'.format(s=session_id)
-        session_id = self.redis.get(key)
-        return session_id
 
     def remove_player(self, session_id):
         key = 'player:{s}'.format(s=session_id)
         self.redis.delete(key)
+
+    def set_player_public_id(self, session_id, public_id):
+        key = 'public_id:{p}'.format(p=public_id)
+        self.redis.set(key, session_id)
+
+    def get_player_from_public_id(self, public_id):
+        key = 'public_id:{p}'.format(p=public_id)
+        session_id = self.redis.get(key)
+        return self.get_player(session_id)

@@ -30,3 +30,7 @@ def datetime_now():
 def unix_now_ms():
     date = datetime_now()
     return calendar.timegm(date.utctimetuple())*1e3 + date.microsecond/1e3
+
+def generate_unique_id():
+    return str(uuid4()).replace('-', '')
+

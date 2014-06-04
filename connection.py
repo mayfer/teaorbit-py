@@ -3,13 +3,16 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from game import GameState
 from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
-from messages import DTO, Response, Spiel, Session, Block, OnlineUsers, Spiels, Ping, User, KeepAlive, Version
+from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView
 from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM
+
+from subscriptions import SubscriptionManager
 
 class Connection(SockJSConnection):
     participants = set()
     rooms = {}
     sessions = {}
+    subscriptions = SubscriptionManager()
     game = GameState()
 
     client_messages = {
@@ -43,7 +46,7 @@ class Connection(SockJSConnection):
 
         if message.__class__ == HelloCM:
             self.add_online(connection=self, room_id=message.room_id, session_id=self.session_id, name=message.name)
-            self.send_obj(Version())
+            self.send_obj(VersionView())
 
         if message.__class__ == StillOnlineCM:
             player = self.game.get_player(self.session_id)
@@ -55,13 +58,13 @@ class Connection(SockJSConnection):
                 'name': message.name,
                 'color': player.color,
             }
-            ack_dto = KeepAlive()
+            ack_dto = KeepAliveView()
             self.send_obj(ack_dto)
 
         if message.__class__ == GetSpielsCM:
             spiels = self.game.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
 
-            spiels_dto = Spiels(spiels)
+            spiels_dto = SpielsView(spiels)
             self.send_obj(spiels_dto)
 
         if message.__class__ == PostSpielCM:
@@ -70,7 +73,7 @@ class Connection(SockJSConnection):
                 player = self.game.get_player(self.session_id)
                 color = player.color
 
-                spiel_dto = Spiel(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
+                spiel_dto = SpielView(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
                 self.notify_recipients(message.room_id, spiel_dto)
                 self.game.post_spiel_to_room(message.room_id, spiel_dto)
 
@@ -82,7 +85,7 @@ class Connection(SockJSConnection):
                 player = self.game.get_player(self.session_id)
                 color = player.color
 
-                spiel_dto = Spiel(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
+                spiel_dto = SpielView(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
                 self.notify_recipient(message.to_id, spiel_dto)
                 self.game.post_private_spiel(message.to_id, spiel_dto)
 
@@ -101,7 +104,7 @@ class Connection(SockJSConnection):
         if player is None:
             player = self.game.add_player(self.session_id)
 
-        self.send_obj(Session(self.session_id, color=player.color))
+        self.send_obj(SessionView(self.session_id, color=player.color))
 
         if room_id not in self.rooms.keys():
             self.rooms[room_id] = set()
@@ -117,7 +120,7 @@ class Connection(SockJSConnection):
             'color': player.color,
         }
 
-        self.send_obj(Block(room_id))
+        self.send_obj(BlockView(room_id))
 
         self.broadcast_online_users(room_id)
 
@@ -134,7 +137,7 @@ class Connection(SockJSConnection):
         self.broadcast_online_users(room_id)
 
     def update_online(self):
-        # ping = Ping()
+        # ping = PingView()
         # self.send_obj(ping)
         allowed_inactive = 120000
         now = unix_now_ms()
@@ -144,8 +147,8 @@ class Connection(SockJSConnection):
                     self.remove_online(room_id, session_id, self)
 
     def broadcast_online_users(self, room_id):
-        users = [ User(color=user['color'], name=user['name']) for user in self.sessions.get(room_id, {} ).values() ]
-        online = OnlineUsers(len(users), users)
+        users = [ UserView(color=user['color'], name=user['name']) for user in self.sessions.get(room_id, {} ).values() ]
+        online = OnlineUsersView(len(users), users)
         self.broadcast_obj(online, self.rooms.get(room_id, () ))
 
     def on_close(self):
@@ -158,7 +161,7 @@ class Connection(SockJSConnection):
         print log
 
     def response(self, dto):
-        return Response(action=dto._action, body=dto).json()
+        return ResponseView(action=dto._action, body=dto).json()
 
     def send_obj(self, dto):
         self.send(self.response(dto))

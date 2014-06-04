@@ -38,32 +38,32 @@ class DTO(object):
         kwargs = json_decode(json_text)
         return cls(**kwargs)
 
-class Ping(DTO):
+class PingView(DTO):
     _action = 'ping'
 
     def __init__(self):
         pass
 
-class Response(DTO):
+class ResponseView(DTO):
     def __init__(self, action=None, body=None, errors=None):
         self.action = action
         self.body = body
         self.errors = errors
 
-class Session(DTO):
+class SessionView(DTO):
     _action = 'session'
 
     def __init__(self, session_id, color):
         self.session_id = session_id
         self.color = color
 
-class Version(DTO):
+class VersionView(DTO):
     _action = 'version'
 
     def __init__(self):
         self.version = config.version
 
-class Spiel(DTO):
+class SpielView(DTO):
     _action = 'new_spiel'
 
     def __init__(self, name='', spiel='', latitude=49.15, longitude=123.88, date=None, color=None):
@@ -74,33 +74,43 @@ class Spiel(DTO):
         self._latitude = latitude
         self._longitude = longitude
 
-class Spiels(DTO):
+    @classmethod
+    def from_model(self, spiel_model):
+        sm = spiel_model
+        return SpielView(
+            name = sm.name.
+            spiel = sm.spiel,
+            date = sm.date,
+            color = sm.color,
+        )
+
+class SpielsView(DTO):
     _action = 'spiels'
 
     def __init__(self, spiels=[]):
         self.spiels = spiels
 
-class Block(DTO):
+class BlockView(DTO):
     _action = 'block'
 
     def __init__(self, block_id):
         self.block_id = block_id
 
-class User(DTO):
+class UserView(DTO):
     _action = 'user'
 
     def __init__(self, color, name):
         self.color = color
         self.name = name
 
-class OnlineUsers(DTO):
+class OnlineUsersView(DTO):
     _action = 'online'
 
     def __init__(self, num_online, users):
         self.num_online = num_online
         self.users = users
 
-class KeepAlive(DTO):
+class KeepAliveView(DTO):
     _action = 'keep_alive'
 
     def __init__(self):
