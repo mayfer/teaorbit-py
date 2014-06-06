@@ -57,6 +57,13 @@ class SessionView(DTO):
         self.session_id = session_id
         self.color = color
 
+    @classmethod
+    def from_model(cls, model):
+        return SessionView(
+            session_id = model.session_id,
+            color = model.color,
+        )
+
 class VersionView(DTO):
     _action = 'version'
 
@@ -78,7 +85,7 @@ class SpielView(DTO):
     def from_model(self, spiel_model):
         sm = spiel_model
         return SpielView(
-            name = sm.name.
+            name = sm.name,
             spiel = sm.spiel,
             date = sm.date,
             color = sm.color,
@@ -128,28 +135,38 @@ class ClientMessage(DTO):
             self.room_id = Geo.get_room_id(self.latitude, self.longitude)
 
 class HelloCM(ClientMessage):
+    _action = 'hello'
+
     def __init__(self, body):
         super(HelloCM, self).__init__(body)
         self.name = body.get('name', '')
 
 class StillOnlineCM(ClientMessage):
+    _action = 'still_online'
+
     def __init__(self, body):
         super(StillOnlineCM, self).__init__(body)
         self.name = body.get('name', '')
 
 class GetSpielsCM(ClientMessage):
+    _action = 'get_spiels'
+
     def __init__(self, body):
         super(GetSpielsCM, self).__init__(body)
         self.since = body.get('since', None)
         self.until = body.get('until', None)
 
 class PostSpielCM(ClientMessage):
+    _action = 'post_spiel'
+
     def __init__(self, body):
         super(PostSpielCM, self).__init__(body)
         self.name = body.get('name', '')
         self.spiel = body.get('spiel', '')
 
 class PostPrivateSpielCM(ClientMessage):
+    _action = 'post_private_spiel'
+
     def __init__(self, body):
         super(PostSpielCM, self).__init__(body)
         self.name = body.get('name', '')

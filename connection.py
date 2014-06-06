@@ -1,26 +1,31 @@
 from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
-from game import GameState
+from db import History
 from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
 from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView
 from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM
-
-from subscriptions import SubscriptionManager
+import actions
 
 class Connection(SockJSConnection):
     participants = set()
     rooms = {}
     sessions = {}
-    subscriptions = SubscriptionManager()
-    game = GameState()
+    db = History()
 
-    client_messages = {
-        'hello': HelloCM,
-        'still_online': StillOnlineCM,
-        'get_spiels': GetSpielsCM,
-        'post_spiel': PostSpielCM,
+    message_actions = {
+        HelloCM: actions.hello,
+        StillOnlineCM: actions.still_online,
+        GetSpielsCM: actions.get_spiels,
+        PostSpielCM: actions.post_spiel,
     }
+
+    def __init__(self, *args, **kwargs):
+        self.client_messages = {}
+        for msg_class, action in self.message_actions.items():
+            self.client_messages[msg_class._action] = msg_class
+
+        super(Connection, self).__init__(*args, **kwargs)
 
     def on_open(self, info):
         if 'session' in info.cookies:
@@ -32,62 +37,15 @@ class Connection(SockJSConnection):
         periodic = ioloop.PeriodicCallback(self.update_online, 60000)
         periodic.start()
 
-    def _parse_message(self, json_message):
-        message_dict = json_decode(json_message)
+    def on_message(self, text):
+        message_dict = json_decode(text)
         if 'action' not in message_dict.keys():
             raise InvalidMessageError
 
         action = message_dict['action']
         message = self.client_messages[action](message_dict['body'])
-        return message
-
-    def on_message(self, text):
-        message = self._parse_message(text)
-
-        if message.__class__ == HelloCM:
-            self.add_online(connection=self, room_id=message.room_id, session_id=self.session_id, name=message.name)
-            self.send_obj(VersionView())
-
-        if message.__class__ == StillOnlineCM:
-            player = self.game.get_player(self.session_id)
-            if player is None:
-                player = self.game.add_player(self.session_id)
-
-            self.sessions[message.room_id][self.session_id] = {
-                'last_active': unix_now_ms(),
-                'name': message.name,
-                'color': player.color,
-            }
-            ack_dto = KeepAliveView()
-            self.send_obj(ack_dto)
-
-        if message.__class__ == GetSpielsCM:
-            spiels = self.game.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
-
-            spiels_dto = SpielsView(spiels)
-            self.send_obj(spiels_dto)
-
-        if message.__class__ == PostSpielCM:
-            if message.spiel:
-                date = unix_now_ms()
-                player = self.game.get_player(self.session_id)
-                color = player.color
-
-                spiel_dto = SpielView(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
-                self.notify_recipients(message.room_id, spiel_dto)
-                self.game.post_spiel_to_room(message.room_id, spiel_dto)
-
-                self._update_name(message.name)
-
-        if message.__class__ == PostPrivateSpielCM:
-            if message.spiel:
-                date = unix_now_ms()
-                player = self.game.get_player(self.session_id)
-                color = player.color
-
-                spiel_dto = SpielView(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
-                self.notify_recipient(message.to_id, spiel_dto)
-                self.game.post_private_spiel(message.to_id, spiel_dto)
+        action = self.message_actions[message.__class__]
+        return action(self, message)
 
     def _update_name(self, name):
         prev_name = self.sessions[self.room_id][self.session_id].get('name', '')
@@ -100,9 +58,9 @@ class Connection(SockJSConnection):
         self.room_id = room_id
         self.participants.add(self)
 
-        player = self.game.get_player(self.session_id)
+        player = self.db.get_player(self.session_id)
         if player is None:
-            player = self.game.add_player(self.session_id)
+            player = self.db.add_player(self.session_id)
 
         self.send_obj(SessionView(self.session_id, color=player.color))
 

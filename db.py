@@ -1,6 +1,7 @@
 from redis import Redis
 from redis.exceptions import ConnectionError
 from messages import SpielView, SessionView
+from models import Session
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
 
@@ -42,15 +43,50 @@ class History(object):
     def __encode(self, text):
         return text.encode('utf-8')
 
-    def insert_spiel(self, room_id, spiel_json, timestamp):
+    def set_player_public_id(self, session_id, public_id):
+        key = 'public_id:{p}'.format(p=public_id)
+        self.redis.set(key, session_id)
+
+    def get_player_from_public_id(self, public_id):
+        key = 'public_id:{p}'.format(p=public_id)
+        session_id = self.redis.get(key)
+        return self.get_player(session_id)
+
+    def add_player(self, session_id):
+        r = lambda: random.randint(0,255)
+
+        player = Session(session_id)
+
+        key = 'player:{s}'.format(s=session_id)
+        self.redis.set(key, player.json())
+
+        self.set_player_public_id(self, session_id, player.public_id)
+        return player
+
+    def get_player(self, session_id):
+        key = 'player:{s}'.format(s=session_id)
+        player_json = self.redis.get(key)
+        if player_json is not None:
+            player_model = Session.from_json(player_json)
+            player = SessionView.from_model(player_model)
+        else:
+            player = None
+
+        return player
+
+    def remove_player(self, session_id):
+        key = 'player:{s}'.format(s=session_id)
+        self.redis.delete(key)
+
+    def post_spiel(self, room_id, spiel):
         key = "block:{b}".format(b=self.__encode(room_id))
-        self.redis.zadd(key, spiel_json, timestamp)
+        self.redis.zadd(key, spiel.json(), spiel.date)
 
-    def insert_private_spiel(self, to_id, spiel_json, timestamp):
+    def post_private_spiel(self, to_id, pv_spiel):
         key = "pm:{b}".format(b=self.__encode(to_id))
-        self.redis.zadd(key, spiel_json, timestamp)
+        self.redis.zadd(key, pv_spiel.json(), pv_spiel.date)
 
-    def get_spiels(self, room_id, since=None, until=None):
+    def get_spiels_by_room_id(self, room_id, since=None, until=None):
         if since is None:
             since = '-inf'
 
@@ -70,29 +106,10 @@ class History(object):
         if until is None:
             spiel_jsons.reverse()
 
-        return spiel_jsons
+        spiels = []
+        for spiel_json in spiel_jsons:
+            spiel = SpielView.from_model(Spiel.from_json(spiel_json))
+            spiels.append(spiel)
 
-    def set_player(self, session_id, player):
-        key = 'player:{s}'.format(s=session_id)
-        self.redis.set(key, player.json())
+        return spiels
 
-    def get_player(self, session_id):
-        key = 'player:{s}'.format(s=session_id)
-        player_json = self.redis.get(key)
-        if player_json is not None:
-            return SessionView.from_json(player_json)
-        else:
-            return None
-
-    def remove_player(self, session_id):
-        key = 'player:{s}'.format(s=session_id)
-        self.redis.delete(key)
-
-    def set_player_public_id(self, session_id, public_id):
-        key = 'public_id:{p}'.format(p=public_id)
-        self.redis.set(key, session_id)
-
-    def get_player_from_public_id(self, public_id):
-        key = 'public_id:{p}'.format(p=public_id)
-        session_id = self.redis.get(key)
-        return self.get_player(session_id)
