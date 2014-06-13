@@ -1,7 +1,7 @@
 from redis import Redis
 from redis.exceptions import ConnectionError
 from messages import SpielView, SessionView
-from models import Session
+from models import Session, Spiel
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
 
@@ -60,7 +60,7 @@ class History(object):
         key = 'player:{s}'.format(s=session_id)
         self.redis.set(key, player.json())
 
-        self.set_player_public_id(self, session_id, player.public_id)
+        self.set_player_public_id(session_id, player.public_id)
         return player
 
     def get_player(self, session_id):

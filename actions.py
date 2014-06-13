@@ -1,3 +1,5 @@
+from messages import VersionView, SpielsView, SpielView
+from common import json_encode, json_decode, unix_now, unix_now_ms
 
 def hello(conn, message):
     conn.add_online(connection=conn, room_id=message.room_id, session_id=conn.session_id, name=message.name)
@@ -28,7 +30,7 @@ def post_spiel(conn, message):
         player = conn.db.get_player(conn.session_id)
         color = player.color
 
-        spiel_dto = SpielView(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
+        spiel_dto = SpielView(name=message.name, spiel=message.spiel, date=date, color=color)
         conn.notify_recipients(message.room_id, spiel_dto)
         conn.db.post_spiel(message.room_id, spiel_dto)
 
