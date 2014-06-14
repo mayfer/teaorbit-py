@@ -7,26 +7,26 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link href="{{ STATIC_URL }}assets/icon-144x144.png" sizes="144x144" rel="apple-touch-icon">
         <link href="{{ STATIC_URL }}assets/splash-1024x1024.png" rel="apple-touch-startup-image">
-        <link rel='shortcut icon' href='{{ STATIC_URL }}assets/favicon.png' type='image/x-icon'> 
+        <link rel='shortcut icon' href='{{ STATIC_URL }}assets/favicon.png?v={{ version }}' type='image/x-icon'> 
 
         <title>tea orbit</title>
-        <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css' type='text/css'>
+        <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css?v={{ version }}' type='text/css'>
         {% if client == 'iPhoneTeaOrbit' %}
-            <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit_ios_native.css' type='text/css'>
+            <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit_ios_native.css?v={{ version }}' type='text/css'>
         {% end %}
-        <link rel='stylesheet' href='{{ STATIC_URL }}styles/icons.css' type='text/css'> 
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/scrollfix.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.teaorbit.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.cookie.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.linkify.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.timeago.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.autosize.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/modernizr.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/sockjs.min.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/ui.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/network.js'></script>
-        <script type='text/javascript' src='{{ STATIC_URL }}scripts/draw.js'></script>
+        <link rel='stylesheet' href='{{ STATIC_URL }}styles/icons.css?v={{ version }}' type='text/css'> 
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/scrollfix.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.teaorbit.min.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.cookie.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.linkify.min.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.timeago.min.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/jquery.autosize.min.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/modernizr.min.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/sockjs.min.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/ui.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/network.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/draw.js?v={{ version }}'></script>
         <script type='text/javascript'>
             window.static_url = '{{ STATIC_URL }}';
 

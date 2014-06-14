@@ -26,10 +26,10 @@ a:hover { border-bottom: 1px solid #666; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 15px; position: relative; }
-#post input, #post textarea, #post button { background: #444; border: 1px solid transparent; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: 'PT Mono', monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 13px; }
+#post input, #post textarea, #post button { background: #333; border: 1px solid transparent; border-bottom: 1px solid #555; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: 'PT Mono', monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 13px; }
 #post textarea.expanding { line-height: 17px; }
-#post textarea { width: 60%; vertical-align: bottom; }
-#post .submit { height: 30px; }
+#post textarea { width: 65%; vertical-align: bottom; }
+#post .submit { display: none; }
 
 #post form { padding-left: 30px; }
 .color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
@@ -105,8 +105,9 @@ and (max-device-width : 568px) {
     #post .inner { margin: 5px 10px; }
     #post input, button { display: block; }
     #post button { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
-    #post textarea[name='spiel'] {  width: 95%; }
-    #post input[name='name'] {  width: 60%; }
+    #post textarea[name='spiel'] {  width: 90%; }
+    #post input[name='name'] {  width: 90%; }
+    #my-color { top: 7px; bottom: auto; }
 
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
     #chat .inner { padding: 15px; }

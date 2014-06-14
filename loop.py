@@ -14,6 +14,8 @@ import tornado
 from tornado import httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
+from config import version
+
 STATIC_URL = '/static/'
 FILE_ROOT = os.path.dirname(__file__)
 
@@ -23,7 +25,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
         if room_name is None:
             room_name = ''
         client = self.request.headers.get('X-Requested-By', 'Web')
-        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client)
+        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=version)
 
 
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
