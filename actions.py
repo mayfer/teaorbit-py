@@ -1,4 +1,4 @@
-from messages import VersionView, SpielsView, SpielView
+from messages import VersionView, SpielsView, SpielView, KeepAliveView
 from common import json_encode, json_decode, unix_now, unix_now_ms
 
 def hello(conn, message):

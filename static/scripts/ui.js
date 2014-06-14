@@ -148,23 +148,6 @@ function UI() {
             this_ui.toggle_map();
         });
 
-        $('#channels .toggle').bind('click touchend', function(e){
-            e.preventDefault();
-            $(this).toggleClass('expanded');
-            if($(this).hasClass('expanded')) {
-                this_ui.global_cookie('channels_expanded', true);
-            } else {
-                $('#channels').css('top', '');
-                this_ui.global_cookie('channels_expanded', false);
-            }
-            $('#channels .inner').toggle(0, function(){
-                if($('#channels').height() >= ($(window).height() - $('#header').height() - $('#post').height() )) {
-                    $('#channels').css('top', '0px');
-                }
-            });
-
-        });
-
         $(window).focus(function(e){
             document.title = window.title;
             this_ui.flags.windowFocused = true;
@@ -198,6 +181,9 @@ function UI() {
         $.timeago.settings.allowFuture = true;
         $('textarea').autosize();
         $('textarea').keydown(function (e) {
+            this_ui.align_chat_window();
+            this_ui.scroll();
+
             // enter key
             if (e.keyCode == 13 && !e.shiftKey) {
                 $(this.form).submit();
@@ -210,9 +196,12 @@ function UI() {
         });
     }
 
-    this.init_web_only_features = function() {
-        $('#chat, #channels').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+    this.align_chat_window = function() {
+        $('#chat').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+    }
 
+    this.init_web_only_features = function() {
+        this.align_chat_window();
     }
 
     this.init_ios_native_features = function() {

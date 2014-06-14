@@ -30,7 +30,6 @@ function Networking(since) {
         }, 60000);
     };
     this.sock.onmessage = function(e) {
-        //console.log('message', e.data);
         var message = JSON.parse(e.data);
         console.log("new message,", message);
 
@@ -39,6 +38,7 @@ function Networking(since) {
             window.session_id = message.body.session_id;
             $.cookie("session", window.session_id, {expires: 1000, path: '/'});
             console.log("Logged in, session ID: " + window.session_id);
+            $('#my-color').css('background', message.body.color);
             that.send('get_spiels', {
                 'latitude': window.latitude,
                 'longitude': window.longitude,

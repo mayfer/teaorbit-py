@@ -25,12 +25,15 @@ a:hover { border-bottom: 1px solid #666; }
 #show-map img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-left: 20px; margin-right: -20px; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
-#post .inner { margin: 20px; position: relative; }
-#post input, #post textarea, #post button { background: #444; border: 1px solid #aaa; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: 'PT Mono', monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 13px; }
+#post .inner { margin: 15px; position: relative; }
+#post input, #post textarea, #post button { background: #444; border: 1px solid transparent; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: 'PT Mono', monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 13px; }
 #post textarea.expanding { line-height: 17px; }
 #post textarea { width: 60%; vertical-align: bottom; }
 #post .submit { height: 30px; }
-textarea { line-height: 1; }
+
+#post form { padding-left: 30px; }
+.color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
+#my-color { bottom: 7px; top: auto; }
 
 input#type-here { width: 60% }
 input#name { width: 20%; }
@@ -49,7 +52,6 @@ input#name { width: 20%; }
 .name:before { content: "[" }
 .name:after { content: "] " }
 
-.color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
 
 #channels { position: absolute; right: 0; bottom: 0; overflow: auto; z-index: 50; min-width: 30px; background: rgba(0,0,0,1); }
 #channels .inner { padding: 10px 0; display: none; }
