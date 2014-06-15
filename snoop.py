@@ -8,12 +8,11 @@ keys = h.redis.keys('block:*')
 things = []
 for key in keys:
     key = key.decode('utf8', 'ignore')[6:]
-    spiels = h.get_spiels(key)
-    last = spiels[0]
-    spiel = json.loads(last)
-    things.append((key, last, spiel['date']))
+    spiels = h.get_spiels_by_room_id(key)
+    spiel = spiels[0]
+    things.append((key, spiel, spiel.date))
 
 things = sorted(things, key=lambda x: x[2])
 
 for thing in things[-20:]:
-    print thing[0], thing[1]
+    print thing[0], thing[1].json()
