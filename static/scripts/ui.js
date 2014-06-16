@@ -16,14 +16,21 @@ function UI() {
     }
 
     this.global_cookie = function(key, val) {
-        if(window.localStorage) {
-            if(val === undefined) {
-                return JSON.parse(window.localStorage.getItem(key));
+        if($.cookie('teaorbit:global')) {
+            var cookie = JSON.parse($.cookie('teaorbit:global'));
+        } else {
+            var cookie = {};
+        }
+
+        if(val === undefined) {
+            if(key in cookie) {
+                return cookie[key];
             } else {
-                window.localStorage.setItem(key, JSON.stringify(val));
+                return undefined;
             }
         } else {
-            console.log("No local storage available");
+            cookie[key] = val;
+            return $.cookie('teaorbit:global', JSON.stringify(cookie), { expires: 1000, path: '/' });
         }
     }
 
@@ -157,12 +164,6 @@ function UI() {
             this_ui.flags.windowFocused = false;
         });
 
-        this.show_recent_channels();
-        var show_channels = this_ui.global_cookie('channels_expanded');
-        if(show_channels) {
-            $('#channels .toggle').click();
-        }
-
         $('<div>').attr('id', 'online-users').appendTo('body');
         $('#num-online').bind('click touchstart', function(e){
             e.preventDefault();
@@ -181,15 +182,15 @@ function UI() {
         $.timeago.settings.allowFuture = true;
         $('textarea').autosize();
         $('textarea').keydown(function (e) {
-            this_ui.align_chat_window();
-            this_ui.scroll();
-
             // enter key
             if (e.keyCode == 13 && !e.shiftKey) {
                 $(this.form).submit();
                 e.preventDefault();
                 e.stopPropagation();
             }
+
+            this_ui.align_chat_window();
+            this_ui.scroll();
          });
         $('input, textarea').bind('touchstart', function(e){
             $(this).focus();
