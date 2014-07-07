@@ -10,9 +10,15 @@ class Room(Model):
         self.name = name
         self.subscribers = []
 
+class RoomSession(Model):
+    def __init__(self, name, session):
+        self.name = name
+        self.session = session
+
 class Session(Model):
-    def __init__(self, session_id, color=None, public_id=None):
+    def __init__(self, session_id, color=None, public_id=None, last_active=0):
         self.session_id = session_id
+        self.last_active = last_active
 
         if public_id is None:
             public_id = generate_unique_id()[:10]
@@ -30,18 +36,10 @@ class SubscriptionManager(Model):
         self.subscriptions = {}
 
 class Spiel(DTO):
-    def __init__(self, name='', spiel='', date=None, color=None):
+    def __init__(self, id='', name='', spiel='', date=None, color=None):
+        self.id = id
         self.name = name
         self.spiel = spiel
         self.date = date
         self.color = color
 
-    @classmethod
-    def from_model(self, spiel_model):
-        sm = spiel_model
-        return SpielView(
-            name = sm.name,
-            spiel = sm.spiel,
-            date = sm.date,
-            color = sm.color,
-        )

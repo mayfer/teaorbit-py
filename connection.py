@@ -5,12 +5,13 @@ from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
 from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView
 from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM
+from models import Session, RoomSession
 import actions
 
 class Connection(SockJSConnection):
     participants = set()
-    rooms = {}
-    sessions = {}
+    connections = {}
+    room_sessions = {}
     db = History()
 
     message_actions = {
@@ -48,9 +49,9 @@ class Connection(SockJSConnection):
         return action(self, message)
 
     def _update_name(self, name):
-        prev_name = self.sessions[self.room_id][self.session_id].get('name', '')
+        prev_name = self.room_sessions[self.room_id][self.session_id].name
         if name != prev_name:
-            self.sessions[self.room_id][self.session_id]['name'] = name
+            self.room_sessions[self.room_id][self.session_id].name = name
             # and then notify everyone of new name
             self.broadcast_online_users(self.room_id)
 
@@ -64,19 +65,19 @@ class Connection(SockJSConnection):
 
         self.send_obj(SessionView(self.session_id, color=player.color))
 
-        if room_id not in self.rooms.keys():
-            self.rooms[room_id] = set()
-        if room_id not in self.sessions.keys():
-            self.sessions[room_id] = {}
+        if room_id not in self.connections.keys():
+            self.connections[room_id] = set()
+        if room_id not in self.room_sessions.keys():
+            self.room_sessions[room_id] = {}
 
-        self.rooms[room_id].add(self)
+        self.connections[room_id].add(self)
 
         last_active = unix_now_ms()
-        self.sessions[room_id][session_id] = {
-            'last_active': last_active,
-            'name': name,
-            'color': player.color,
-        }
+
+        session = Session(session_id=session_id, color=player.color, last_active=last_active, public_id=player.public_id)
+        self.current_session = session
+
+        self.room_sessions[room_id][session_id] = RoomSession(name=name, session=session)
 
         self.send_obj(BlockView(room_id))
 
@@ -85,13 +86,11 @@ class Connection(SockJSConnection):
     def remove_online(self, room_id, session_id, connection):
         try:
             self.participants.remove(connection)
+            self.connections[room_id].remove(connection)
+            self.room_sessions[room_id].pop(session_id, None)
         except:
             pass
-        try:
-            self.rooms.get(room_id, () ).remove(connection)
-        except:
-            pass
-        self.sessions[room_id].pop(session_id, None)
+
         self.broadcast_online_users(room_id)
 
     def update_online(self):
@@ -99,15 +98,15 @@ class Connection(SockJSConnection):
         # self.send_obj(ping)
         allowed_inactive = 120000
         now = unix_now_ms()
-        for room_id, sess in self.sessions.items():
-            for session_id, details in sess.items():
-                if details.get('last_active', 0) < now - allowed_inactive:
-                    self.remove_online(room_id, session_id, self)
+        for room_id, sessions in self.room_sessions.items():
+            for session_id, room_session in sessions.items():
+                if room_session.session.last_active < now - allowed_inactive:
+                    self.remove_online(room_id, room_session.session.session_id, self)
 
     def broadcast_online_users(self, room_id):
-        users = [ UserView(color=user['color'], name=user['name']) for user in self.sessions.get(room_id, {} ).values() ]
+        users = [ UserView(color=roomsession.session.color, name=roomsession.name) for roomsession in self.room_sessions[room_id].values() ]
         online = OnlineUsersView(len(users), users)
-        self.broadcast_obj(online, self.rooms.get(room_id, () ))
+        self.broadcast_obj(online, self.connections.get(room_id, () ))
 
     def on_close(self):
         session_id = self.session_id
@@ -125,7 +124,7 @@ class Connection(SockJSConnection):
         self.send(self.response(dto))
 
     def notify_recipients(self, room_id, spiel):
-        recipients = self.rooms[room_id]
+        recipients = self.connections[room_id]
         self.broadcast(recipients, self.response(spiel))
 
     def broadcast_text(self, text):

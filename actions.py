@@ -10,16 +10,26 @@ def still_online(conn, message):
     if player is None:
         player = conn.db.add_player(conn.session_id)
 
-    conn.sessions[message.room_id][conn.session_id] = {
-        'last_active': unix_now_ms(),
-        'name': message.name,
-        'color': player.color,
-    }
+    if conn.session_id in conn.room_sessions[message.room_id].keys():
+        session = conn.room_sessions[message.room_id][conn.session_id]
+        session.last_active = unix_now_ms()
+        session.name = message.name
+    else:
+        conn.add_online(conn, message.room_id, conn.session_id, name=message.name)
+
     ack_dto = KeepAliveView()
     conn.send_obj(ack_dto)
 
 def get_spiels(conn, message):
-    spiels = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
+    spiel_models = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
+    spiels = [ SpielView.from_model(spiel) for spiel in spiel_models ]
+
+    spiels_dto = SpielsView(spiels)
+    conn.send_obj(spiels_dto)
+
+def get_spiels_count(conn, message):
+    spiel_models = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
+    spiels = [ SpielView.from_model(spiel) for spiel in spiel_models ]
 
     spiels_dto = SpielsView(spiels)
     conn.send_obj(spiels_dto)

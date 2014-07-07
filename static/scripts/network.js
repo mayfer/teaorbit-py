@@ -28,6 +28,17 @@ function Networking(since) {
                 });
             }
         }, 60000);
+
+        that.poller = setInterval(function() {
+            if(window.chatroom || window.latitude) {
+                that.send('get_spiels', {
+                    'latitude': window.latitude,
+                    'longitude': window.longitude,
+                    'chatroom': window.chatroom,
+                    'since': that.since,
+                });
+            }
+        }, 30000);
     };
     this.sock.onmessage = function(e) {
         var message = JSON.parse(e.data);

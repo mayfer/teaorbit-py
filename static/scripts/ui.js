@@ -128,9 +128,11 @@ function UI() {
             var accuracy = window.gps_accuracy;
             
             if(chatroom || (latitude && longitude)) {
+                var spiel_id = uuid();
                 $(this).find('input[name="latitude"]').val(latitude);
                 $(this).find('input[name="longitude"]').val(longitude);
                 $(this).find('input[name="chatroom"]').val(chatroom);
+                $(this).find('input[name="spiel_id"]').val(spiel_id);
                 var form = $(this).serializeJSON();
                 window.networking.send('post_spiel', form);
 
@@ -331,6 +333,19 @@ function UI() {
 
         row.append(message);
         row.append(date_elem);
+
+        var messages = $($('#chat .message').get().reverse());
+        var highest = 0;
+        var lowest = Number.POSITIVE_INFINITY;
+        messages.each(function(index, message_elem){
+            if(messages[i+1]) {
+                var timestamp = parseInt(messages[i].find('time').data('timestamp');
+                var next_timestamp = parseInt(messages[i+1].find('time').data('timestamp');
+                if(spiel.date < timestamp && spiel.date > next_timestamp) {
+                    messages.eq(index).after()
+                }
+            }
+        });
 
         var is_new_message = (this_ui.last_spiel_date < spiel.date);
         if(is_new_message) {

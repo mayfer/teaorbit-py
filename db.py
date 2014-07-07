@@ -67,8 +67,7 @@ class History(object):
         key = 'player:{s}'.format(s=session_id)
         player_json = self.redis.get(key)
         if player_json is not None:
-            player_model = Session.from_json(player_json)
-            player = SessionView.from_model(player_model)
+            player = Session.from_json(player_json)
         else:
             player = None
 
@@ -108,7 +107,7 @@ class History(object):
 
         spiels = []
         for spiel_json in spiel_jsons:
-            spiel = SpielView.from_model(Spiel.from_json(spiel_json))
+            spiel = Spiel.from_json(spiel_json)
             spiels.append(spiel)
 
         return spiels
