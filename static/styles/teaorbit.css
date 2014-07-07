@@ -41,7 +41,7 @@ input#name { width: 20%; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; -webkit-text-size-adjust: none;  }
 #chat .inner { padding: 30px; }
-.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-wrap; word-wrap: break-word; }
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-wrap; word-wrap: break-word; overflow: hidden; }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
@@ -104,7 +104,6 @@ and (max-device-width : 568px) {
 
     #post .inner { margin: 5px 10px; }
     #post input, button { display: block; }
-    #post button { position: absolute; top: 0; right: 0; height: 30px; padding: 0 10px; text-align: center; }
     #post textarea[name='spiel'] {  width: 90%; }
     #post input[name='name'] {  width: 90%; }
     #my-color { top: 7px; bottom: auto; }
