@@ -3,6 +3,7 @@ function UI() {
 
     this.last_spiel_date = 0;
     this.first_spiel_date = 2147483648000;
+    this.added_spiel_ids = [];
 
     function toHashtagUrl(hashtag) {
         var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
@@ -277,92 +278,105 @@ function UI() {
         var datestring = date.toLocaleString()
         var text;
 
-        if(is_initial_load === undefined) {
-            is_initial_load = false;
-        }
 
-        if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
-            if(this.flags.windowFocused == false) {
-                this.flags.newMessages++;
-                document.title = "(" + this.flags.newMessages + ") " + window.title;
+        if(spiel.id && this.added_spiel_ids.indexOf(spiel.id) != -1) {
+            // message already added
+        } else {
+            this.added_spiel_ids.push(spiel.id);
+
+            if(is_initial_load === undefined) {
+                is_initial_load = false;
             }
-            if(window.webkitNotifications !== undefined) {
-                var havePermission = window.webkitNotifications.checkPermission();
-                if (havePermission == 0) {
-                    // 0 is PERMISSION_ALLOWED
-                    var message = '';
-                    if(spiel.name) {
-                        message += '['+spiel.name+'] '
-                    }
-                    message += spiel.spiel;
 
-                    var notification = window.webkitNotifications.createNotification(
-                        window.static_url + 'assets/icon-144x144.png',
-                        '#'+window.chatroom,
-                        message
-                    );
+            if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
+                if(this.flags.windowFocused == false) {
+                    this.flags.newMessages++;
+                    document.title = "(" + this.flags.newMessages + ") " + window.title;
+                }
+                if(window.webkitNotifications !== undefined) {
+                    var havePermission = window.webkitNotifications.checkPermission();
+                    if (havePermission == 0) {
+                        // 0 is PERMISSION_ALLOWED
+                        var message = '';
+                        if(spiel.name) {
+                            message += '['+spiel.name+'] '
+                        }
+                        message += spiel.spiel;
 
-                    notification.onclick = function () {
-                        window.focus();
-                        notification.close();
+                        var notification = window.webkitNotifications.createNotification(
+                            window.static_url + 'assets/icon-144x144.png',
+                            '#'+window.chatroom,
+                            message
+                        );
+
+                        notification.onclick = function () {
+                            window.focus();
+                            notification.close();
+                        }
+                        notification.show();
+                        setTimeout(function(){
+                            notification.close();
+                        }, 3000);
+                    } else {
+                        $('#notification')[0].play();
                     }
-                    notification.show();
-                    setTimeout(function(){
-                        notification.close();
-                    }, 3000);
                 } else {
                     $('#notification')[0].play();
                 }
-            } else {
-                $('#notification')[0].play();
             }
-        }
 
-        var message = $('<div>').addClass('message');
-        if(color) {
-            var color_elem = $('<span>').addClass('color').css('background', color);
-            message.append(color_elem);
-        }
-        if(spiel.name) {
-            message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
-        }
-        message.append(escapeHtml(spiel.spiel));
-        
+            var message = $('<div>').addClass('message');
+            if(color) {
+                var color_elem = $('<span>').addClass('color').css('background', color);
+                message.append(color_elem);
+            }
+            if(spiel.name) {
+                message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
+            }
+            message.append(escapeHtml(spiel.spiel));
+            
 
-        var date_elem = $('<time>').addClass('date').attr('datetime', datestring).data('timestamp', spiel.date).html(datestring);
+            var date_elem = $('<time>').addClass('date').attr('datetime', datestring).attr('timestamp', spiel.date).html(datestring);
 
-        row.append(message);
-        row.append(date_elem);
+            row.append(message);
+            row.append(date_elem);
 
-        var messages = $($('#chat .message').get().reverse());
-        var highest = 0;
-        var lowest = Number.POSITIVE_INFINITY;
-        messages.each(function(index, message_elem){
-            if(messages[i+1]) {
-                var timestamp = parseInt(messages[i].find('time').data('timestamp');
-                var next_timestamp = parseInt(messages[i+1].find('time').data('timestamp');
-                if(spiel.date < timestamp && spiel.date > next_timestamp) {
-                    messages.eq(index).after()
+            if(this_ui.last_spiel_date < spiel.date) {
+                this_ui.last_spiel_date = spiel.date;
+                chat.append(row);
+            } else if(this_ui.first_spiel_date > spiel.date) {
+                this_ui.first_spiel_date = spiel.date;
+                chat.prepend(row);
+            } else {
+                // find where to add the message
+                var rows = $($('#chat .row').get().reverse());
+                var found = false;
+                rows.each(function(index, message_elem){
+                    if(rows[index+1]) {
+                        var elem = $(rows[index]);
+                        var next_elem = $(rows[index+1]);
+                        var timestamp = parseInt(elem.find('time').attr('timestamp'));
+                        var next_timestamp = parseInt(next_elem.find('time').attr('timestamp'));
+                        if(spiel.date < timestamp && spiel.date >= next_timestamp) {
+                            console.log("Oddly timed message received", spiel);
+                            row.insertBefore($(rows[index]));
+                            found = true;
+                        }
+                    }
+                });
+                if(found == false) {
+                    console.log("Couldn't place message", spiel);
                 }
             }
-        });
 
-        var is_new_message = (this_ui.last_spiel_date < spiel.date);
-        if(is_new_message) {
-            this_ui.last_spiel_date = spiel.date;
-            chat.append(row);
-        } else {
-            this_ui.first_spiel_date = spiel.date;
-            chat.prepend(row);
-        }
-
-        row.linkify(toHashtagUrl);
-        row.find('time').timeago();
+            row.linkify(toHashtagUrl);
+            row.find('time').timeago();
 
 
-        if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height() - $('#post').height()) {
-            $('#chat').css('top', '0');
-            this.flags.chatCssUpdated = true;
+            if(this.flags.chatCssUpdated == false && $('#chat').height() >= $(window).height() - $('#post').height()) {
+                $('#chat').css('top', '0');
+                this.flags.chatCssUpdated = true;
+            }
         }
     }
 
@@ -370,6 +384,21 @@ function UI() {
         var chat = $('#chat');
         //chat.scrollTop(chat[0].scrollHeight);
         $("#chat").animate({ scrollTop: $('#chat')[0].scrollHeight-1}, 200);
+    }
+
+    this.scroll_up = function() {
+        $("#chat").animate({ scrollTop: 0}, 200);
+    }
+
+    this.manually_scrolled = function() {
+        var chat = $('#chat')[0]
+        if(chat.scrollTop == 0) {
+            return false;
+        } else if(chat.scrollHeight == chat.scrollTop + $(chat).height()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     this.reset = function() {

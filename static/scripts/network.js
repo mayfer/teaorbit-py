@@ -69,18 +69,33 @@ function Networking(since) {
         // chat state
         if(message.action == 'new_spiel') {
             var spiel = message.body;
+            // record scroll state before adding the message
+            var manually_scrolled = window.ui.manually_scrolled();
             window.ui.add_spiel(spiel);
-            window.ui.scroll();
+
+            if(!manually_scrolled) {
+                window.ui.scroll();
+            }
         }
         // chat state
         if(message.action == 'spiels') {
             var spiels = message.body.spiels;
+            // record scroll state before adding the message
+            var manually_scrolled = window.ui.manually_scrolled();
+
             for(var i=0; i<spiels.length; i++) {
                 var is_initial_load = true;
                 window.ui.add_spiel(spiels[i], true);
+
+                if(spiels[i].date > that.since) {
+                    that.since = spiels[i].date;
+                    console.log("SINCE: ", that.since);
+                }
             }
 
-            window.ui.scroll();
+            if(!manually_scrolled) {
+                window.ui.scroll();
+            }
         }
 
         // general activity log
