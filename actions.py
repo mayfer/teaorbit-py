@@ -11,7 +11,7 @@ def still_online(conn, message):
         player = conn.db.add_player(conn.session_id)
 
     if conn.session_id in conn.room_sessions[message.room_id].keys():
-        session = conn.room_sessions[message.room_id][conn.session_id]
+        session = conn.room_sessions[message.room_id][conn.session_id].session
         session.last_active = unix_now_ms()
         session.name = message.name
     else:

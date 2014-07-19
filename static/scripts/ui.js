@@ -281,6 +281,7 @@ function UI() {
 
         if(spiel.id && this.added_spiel_ids.indexOf(spiel.id) != -1) {
             // message already added
+            console.log("message already added");
         } else {
             this.added_spiel_ids.push(spiel.id);
 

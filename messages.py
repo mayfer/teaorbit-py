@@ -3,6 +3,7 @@ from common import json_encode, json_decode
 from decimal import Decimal
 from geo import Geo
 import config
+import hashlib
 
 def recursive_json(obj):
     def serialize(obj):
@@ -74,11 +75,12 @@ class SpielView(DTO):
     _action = 'new_spiel'
 
     def __init__(self, id='', name='', spiel='', date=None, color=None):
-        self.id = id
         self.name = name
         self.spiel = spiel
         self.date = date
         self.color = color
+
+        self.id = self.json().__hash__()
 
     @classmethod
     def from_model(self, spiel_model):

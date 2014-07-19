@@ -96,7 +96,7 @@ class Connection(SockJSConnection):
     def update_online(self):
         # ping = PingView()
         # self.send_obj(ping)
-        allowed_inactive = 120000
+        allowed_inactive = 10000 # 120000
         now = unix_now_ms()
         for room_id, sessions in self.room_sessions.items():
             for session_id, room_session in sessions.items():

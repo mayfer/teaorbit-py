@@ -8,6 +8,8 @@ function Networking(since) {
         this.since = since;
     }
 
+    var initial_load = true;
+
     this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
         console.log('Connected');
@@ -27,7 +29,7 @@ function Networking(since) {
                     'name': $('#name').val(),
                 });
             }
-        }, 60000);
+        }, 10000);
 
         that.poller = setInterval(function() {
             if(window.chatroom || window.latitude) {
@@ -84,14 +86,14 @@ function Networking(since) {
             var manually_scrolled = window.ui.manually_scrolled();
 
             for(var i=0; i<spiels.length; i++) {
-                var is_initial_load = true;
-                window.ui.add_spiel(spiels[i], true);
+                window.ui.add_spiel(spiels[i], that.initial_load);
 
                 if(spiels[i].date > that.since) {
                     that.since = spiels[i].date;
-                    console.log("SINCE: ", that.since);
                 }
             }
+
+            that.initial_load = false;
 
             if(!manually_scrolled) {
                 window.ui.scroll();
@@ -130,6 +132,7 @@ function Networking(since) {
         console.log('Connection closed');
         window.ui.disconnected();
         clearInterval(that.keep_alive);
+        clearInterval(that.poller);
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
             var since = window.ui.last_spiel_date;
