@@ -8,7 +8,7 @@ function Networking(since) {
         this.since = since;
     }
 
-    var initial_load = true;
+    this.initial_load = true;
 
     this.sock = new SockJS('/updates');
     this.sock.onopen = function() {
@@ -49,6 +49,8 @@ function Networking(since) {
         // initial login
         if(message.action == 'session') {
             window.session_id = message.body.session_id;
+            window.spiels_per_request = message.body.spiels_per_request;
+
             $.cookie("session", window.session_id, {expires: 1000, path: '/'});
             console.log("Logged in, session ID: " + window.session_id);
             $('#my-color').css('background', message.body.color);
@@ -93,11 +95,14 @@ function Networking(since) {
                 }
             }
 
-            that.initial_load = false;
+            if(spiels.length < window.spiels_per_request) {
+                $('#load-more').hide();
+            }
 
-            if(!manually_scrolled) {
+            if(!manually_scrolled || that.initial_load == true) {
                 window.ui.scroll();
             }
+            that.initial_load = false;
         }
 
         // general activity log
@@ -137,7 +142,6 @@ function Networking(since) {
             console.log('Retrying...');
             var since = window.ui.last_spiel_date;
             window.networking = new Networking(since);
-            console.log("Since", since);
             ui.network = window.network
         }, 2000);
     };

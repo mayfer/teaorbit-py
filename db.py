@@ -4,6 +4,7 @@ from messages import SpielView, SessionView
 from models import Session, Spiel
 from common import datetime_now, datetime_to_unix
 from datetime import timedelta
+import config
 
 class FakeRedis(object):
     def __init__(self):
@@ -29,7 +30,7 @@ class FakeRedis(object):
         del self._blocks[key]
 
 class History(object):
-    spiels_per_request = 200
+    spiels_per_request = config.spiels_per_request
 
     def __init__(self):
         try:

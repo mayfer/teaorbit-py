@@ -41,6 +41,9 @@ input#name { width: 20%; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; -webkit-text-size-adjust: none; overflow-x: hidden; }
 #chat .inner { padding: 30px; }
+#chat .load-more { display: block; padding: 3px 30px; background: rgba(0, 0, 0, 0.1); color: rgba(255,255,255,0.3); }
+#chat .load-more:hover { color: rgba(255,255,255,0.6); border: none; }
+
 .message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-wrap; word-wrap: break-word; }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }

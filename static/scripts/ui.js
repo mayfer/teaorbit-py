@@ -120,6 +120,16 @@ function UI() {
             });
         }
 
+    
+        $('#load-more').on('click', function(e) {
+            window.networking.send('get_spiels', {
+                'latitude': window.latitude,
+                'longitude': window.longitude,
+                'chatroom': window.chatroom,
+                'until': this_ui.first_spiel_date,
+            });
+        });
+
 
         $('#post form').on('submit', function(e){
             e.preventDefault();
@@ -193,7 +203,9 @@ function UI() {
             }
 
             this_ui.align_chat_window();
-            this_ui.scroll();
+            if(!this_ui.manually_scrolled() || e.keyCode == 13) {
+                this_ui.scroll();
+            }
          });
         $('input, textarea').bind('touchstart', function(e){
             $(this).focus();
@@ -394,7 +406,7 @@ function UI() {
     this.manually_scrolled = function() {
         var chat = $('#chat')[0]
         if(chat.scrollTop == 0) {
-            return false;
+            return true;
         } else if(chat.scrollHeight == chat.scrollTop + $(chat).height()) {
             return false;
         } else {

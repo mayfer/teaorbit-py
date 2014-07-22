@@ -4,6 +4,7 @@ from decimal import Decimal
 from geo import Geo
 import config
 import hashlib
+import config
 
 def recursive_json(obj):
     def serialize(obj):
@@ -57,6 +58,7 @@ class SessionView(DTO):
     def __init__(self, session_id, color):
         self.session_id = session_id
         self.color = color
+        self.spiels_per_request = config.spiels_per_request
 
     @classmethod
     def from_model(cls, model):
