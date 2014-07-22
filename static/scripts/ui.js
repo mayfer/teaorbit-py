@@ -122,6 +122,7 @@ function UI() {
 
     
         $('#load-more').on('click', function(e) {
+            e.preventDefault();
             window.networking.send('get_spiels', {
                 'latitude': window.latitude,
                 'longitude': window.longitude,
