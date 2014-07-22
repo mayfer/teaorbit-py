@@ -102,6 +102,11 @@ function Networking(since) {
             if(!manually_scrolled || that.initial_load == true) {
                 window.ui.scroll();
             }
+            
+            if(that.initial_load == true) {
+                $('#load-more').css('visibility', 'visible');
+            }
+
             that.initial_load = false;
         }
 
