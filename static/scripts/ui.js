@@ -1,6 +1,11 @@
 function UI() {
     var this_ui = this;
 
+    if(window.require) {
+        this_ui.gui = require('nw.gui'); 
+        this_ui.nw = this_ui.gui.Window.get();
+    }
+
     this.last_spiel_date = 0;
     this.first_spiel_date = 2147483648000;
     this.added_spiel_ids = [];
@@ -17,43 +22,64 @@ function UI() {
     }
 
     this.global_cookie = function(key, val) {
-        if($.cookie('teaorbit:global')) {
-            var cookie = JSON.parse($.cookie('teaorbit:global'));
-        } else {
-            var cookie = {};
-        }
-
-        if(val === undefined) {
-            if(key in cookie) {
-                return cookie[key];
+        try {
+            key = "global:" + key;
+            if(val === undefined) {
+                return window.localStorage.getItem(key);
             } else {
-                return undefined;
+                return window.localStorage.setItem(key, val);
             }
-        } else {
-            cookie[key] = val;
-            return $.cookie('teaorbit:global', JSON.stringify(cookie), { expires: 1000, path: '/' });
+            
+        } catch(err) {
+            if($.cookie('teaorbit:global')) {
+                var cookie = JSON.parse($.cookie('teaorbit:global'));
+            } else {
+                var cookie = {};
+            }
+
+            if(val === undefined) {
+                if(key in cookie) {
+                    return cookie[key];
+                } else {
+                    return undefined;
+                }
+            } else {
+                cookie[key] = val;
+                return $.cookie('teaorbit:global', JSON.stringify(cookie), { expires: 1000, path: '/' });
+            }
         }
     }
 
-    this.cookie = function(key, val) {
-        if($.cookie('teaorbit')) {
-            var cookie = JSON.parse($.cookie('teaorbit'));
-        } else {
-            var cookie = {};
-        }
+    this.channel_cookie = function(key, val) {
 
-        if(val === undefined) {
-            if(window.chatroom in cookie && key in cookie[window.chatroom]) {
-                return cookie[window.chatroom][key];
+        try {
+            key = "chatroom:" + window.chatroom + ":" + key;
+            if(val === undefined) {
+                return window.localStorage.getItem(key);
             } else {
-                return undefined;
+                return window.localStorage.setItem(key, val);
             }
-        } else {
-            if(!(window.chatroom in cookie)) {
-                cookie[window.chatroom] = {}
+        } catch(err) {
+
+            if($.cookie('teaorbit')) {
+                var cookie = JSON.parse($.cookie('teaorbit'));
+            } else {
+                var cookie = {};
             }
-            cookie[window.chatroom][key] = val;
-            return $.cookie('teaorbit', JSON.stringify(cookie), { expires: 1000, path: '/' });
+
+            if(val === undefined) {
+                if(window.chatroom in cookie && key in cookie[window.chatroom]) {
+                    return cookie[window.chatroom][key];
+                } else {
+                    return undefined;
+                }
+            } else {
+                if(!(window.chatroom in cookie)) {
+                    cookie[window.chatroom] = {}
+                }
+                cookie[window.chatroom][key] = val;
+                return $.cookie('teaorbit', JSON.stringify(cookie), { expires: 1000, path: '/' });
+            }
         }
     }
 
@@ -155,28 +181,40 @@ function UI() {
             }
         });
 
-        var name = this_ui.cookie("name");
+        var name = this_ui.channel_cookie("name");
         if(name) {
             $('#name').val(name);
         }
         $('#name').change(function(e){
             var name = $('input[name="name"]').val();
-            this_ui.cookie("name", name);
+            this_ui.channel_cookie("name", name);
         });
 
-        $('#show-map').bind('click touchstart', function(e){
+        $('#show-channels').bind('click touchstart', function(e){
             e.preventDefault();
-            this_ui.toggle_map();
+            this_ui.toggle_channels(e);
         });
 
-        $(window).focus(function(e){
+        var focused = function(e){
             document.title = window.title;
             this_ui.flags.windowFocused = true;
             this_ui.flags.newMessages = 0;
-        });
-        $(window).blur(function(e){
+            if(this_ui.nw) {
+                this_ui.nw.setBadgeLabel("");
+            }
+        }
+
+        var blurred = function(e){
             this_ui.flags.windowFocused = false;
-        });
+        }
+
+        $(window).focus(focused);
+        $(window).blur(blurred);
+
+        if(this_ui.nw) {
+            this_ui.nw.on('focus', focused);
+            this_ui.nw.on('blur', blurred);
+        }
 
         $('<div>').attr('id', 'online-users').appendTo('body');
         $('#num-online').bind('click touchstart', function(e){
@@ -188,7 +226,7 @@ function UI() {
                     'position': 'absolute',
                     'top': (offset.top + online_elem.height()) + 'px',
                     'left': (offset.left - 100) + 'px',
-                    'width': (online_elem.outerWidth() + $('#show-map').outerWidth() + 100) + "px",
+                    'width': (online_elem.outerWidth() + $('#show-channels').outerWidth() + 100) + "px",
                 })
                 .toggle();
         });
@@ -211,6 +249,14 @@ function UI() {
         $('input, textarea').bind('touchstart', function(e){
             $(this).focus();
         });
+        $('.new-channel input').keydown(function (e) {
+            // enter key
+            if (e.keyCode == 13 && !e.shiftKey) {
+                window.location = "/"+$(this).val();
+                e.preventDefault();
+                e.stopPropagation();
+            }
+         });
     }
 
     this.align_chat_window = function() {
@@ -303,10 +349,12 @@ function UI() {
             }
 
             if(is_initial_load === false && this.flags.windowFocused == false && this.flags.mute == false) {
-                if(this.flags.windowFocused == false) {
-                    this.flags.newMessages++;
-                    document.title = "(" + this.flags.newMessages + ") " + window.title;
+                this.flags.newMessages++;
+                document.title = "(" + this.flags.newMessages + ") " + window.title;
+                if(this_ui.nw) {
+                    this_ui.nw.setBadgeLabel(this.flags.newMessages.toString());
                 }
+
                 if(window.webkitNotifications !== undefined) {
                     var havePermission = window.webkitNotifications.checkPermission();
                     if (havePermission == 0) {
@@ -421,17 +469,19 @@ function UI() {
     this.set_map_url = function(url) {
         $('.map').attr('src', url);
     }
-    this.toggle_map = function() {
-        $('#map-expanded').toggleClass('show');
-        $('#show-map').toggleClass('show');
-            var toggler_elem = $('#show-map');
-            var offset = toggler_elem.offset();
-            $('#map-expanded')
-                .css({
-                    'position': 'absolute',
-                    'top': (offset.top + toggler_elem.height()) + 'px',
-                    'right': '0',
-                })
+    this.toggle_channels = function(e) {
+        $('#channels').toggleClass('show');
+        $('#show-channels').toggleClass('show');
+        var toggler_elem = $('#show-channels');
+        var offset = toggler_elem.offset();
+        $('#channels')
+            .css({
+                'position': 'absolute',
+                'top': (offset.top + toggler_elem.height()) + 'px',
+                'right': '0',
+            })
+        $('#channels input').focus();
+        e.stopPropagation();
     }
 
     this.private_message = function() {
