@@ -4,6 +4,12 @@ function UI() {
     if(window.require) {
         this_ui.gui = require('nw.gui'); 
         this_ui.nw = this_ui.gui.Window.get();
+        var nativeMenuBar = new this_ui.gui.Menu({ type: "menubar" });
+        try {
+            nativeMenuBar.createMacBuiltin("tea orbit");
+            this_ui.nw.menu = nativeMenuBar;
+        } catch (ex) {
+        }
     }
 
     this.last_spiel_date = 0;

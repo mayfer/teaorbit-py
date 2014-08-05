@@ -1,0 +1,17 @@
+{
+    "name": "teaorbit",
+    "main": "http://teaorbit.com/",
+    "window": {
+        "frame": true,
+        "position": "center",
+        "width": 1000,
+        "height": 600,
+        "toolbar": true,
+        "icon": "tea-black.icns",
+        "title": "teaorbit"
+    },
+    "node-remote": "http://localhost:8001;http://teaorbit.com;http://*.teaorbit.com",
+    "webkit": {
+        "page-cache": false
+    }
+}

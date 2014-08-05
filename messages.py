@@ -76,7 +76,7 @@ class VersionView(DTO):
 class SpielView(DTO):
     _action = 'new_spiel'
 
-    def __init__(self, id='', name='', spiel='', date=None, color=None):
+    def __init__(self, channel='', id='', name='', spiel='', date=None, color=None):
         self.name = name
         self.spiel = spiel
         self.date = date
