@@ -66,11 +66,11 @@ class Connection(SockJSConnection):
         self.send_obj(SessionView(self.session_id, color=player.color))
 
         if room_id not in self.connections.keys():
-            self.connections[room_id] = set()
+            self.connections[room_id] = {}
         if room_id not in self.room_sessions.keys():
             self.room_sessions[room_id] = {}
 
-        self.connections[room_id].add(self)
+        self.connections[room_id][session_id] = self
 
         last_active = unix_now_ms()
 
@@ -86,7 +86,7 @@ class Connection(SockJSConnection):
     def remove_online(self, room_id, session_id, connection):
         try:
             self.participants.remove(connection)
-            self.connections[room_id].remove(connection)
+            self.connections[room_id].pop(session_id, None)
             self.room_sessions[room_id].pop(session_id, None)
         except:
             pass
@@ -98,15 +98,14 @@ class Connection(SockJSConnection):
         # self.send_obj(ping)
         allowed_inactive = 10000 # 120000
         now = unix_now_ms()
-        for room_id, sessions in self.room_sessions.items():
-            for session_id, room_session in sessions.items():
-                if room_session.session.last_active < now - allowed_inactive:
-                    self.remove_online(room_id, room_session.session.session_id, self)
+        session = self.current_session
+        if session.last_active < now - allowed_inactive:
+            self.remove_online(self.room_id, session.session_id, connections[self.room_id][session.session_id])
 
     def broadcast_online_users(self, room_id):
         users = [ UserView(color=roomsession.session.color, name=roomsession.name) for roomsession in self.room_sessions[room_id].values() ]
         online = OnlineUsersView(len(users), users)
-        self.broadcast_obj(online, self.connections.get(room_id, () ))
+        self.broadcast_obj(online, self.connections.get(room_id, {} ).values())
 
     def on_close(self):
         session_id = self.session_id
@@ -124,7 +123,7 @@ class Connection(SockJSConnection):
         self.send(self.response(dto))
 
     def notify_recipients(self, room_id, spiel):
-        recipients = self.connections[room_id]
+        recipients = self.connections[room_id].values()
         self.broadcast(recipients, self.response(spiel))
 
     def broadcast_text(self, text):
