@@ -100,7 +100,7 @@ class Connection(SockJSConnection):
         now = unix_now_ms()
         session = self.current_session
         if session.last_active < now - allowed_inactive:
-            self.remove_online(self.room_id, session.session_id, connections[self.room_id][session.session_id])
+            self.remove_online(self.room_id, session.session_id, self.connections[self.room_id][session.session_id])
 
     def broadcast_online_users(self, room_id):
         users = [ UserView(color=roomsession.session.color, name=roomsession.name) for roomsession in self.room_sessions[room_id].values() ]
