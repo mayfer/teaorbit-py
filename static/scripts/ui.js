@@ -340,7 +340,7 @@ function UI() {
         var row = $('<div>').addClass('row');
         var date = new Date(spiel.date);
         var color = spiel.color;
-        var datestring = date.toLocaleString()
+        var datestring = date.toISOString()
         var text;
 
 
