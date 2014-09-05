@@ -118,7 +118,7 @@ class Connection(SockJSConnection):
         print log
 
     def response(self, dto):
-        return ResponseView(action=dto._action, body=dto).json()
+        return ResponseView(action=dto._action, room_id=self.room_id, body=dto).json()
 
     def send_obj(self, dto):
         self.send(self.response(dto))

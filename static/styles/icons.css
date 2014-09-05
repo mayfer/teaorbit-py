@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'icomoon';
-	src:url('../fonts/icomoon.eot');
-	src:url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
-		url('../fonts/icomoon.ttf') format('truetype'),
-		url('../fonts/icomoon.woff') format('woff'),
-		url('../fonts/icomoon.svg#icomoon') format('svg');
+	src:url('../fonts/icomoon.eot?-djlfoy');
+	src:url('../fonts/icomoon.eot?#iefix-djlfoy') format('embedded-opentype'),
+		url('../fonts/icomoon.woff?-djlfoy') format('woff'),
+		url('../fonts/icomoon.ttf?-djlfoy') format('truetype'),
+		url('../fonts/icomoon.svg?-djlfoy#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,12 +23,28 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-volume-mute:before {
+.icon-location:before {
 	content: "\e600";
 }
-.icon-volume-medium:before {
+.icon-map:before {
 	content: "\e601";
 }
-.icon-volume-mute2:before {
+.icon-target:before {
 	content: "\e602";
 }
+.icon-globe:before {
+	content: "\e603";
+}
+.icon-earth:before {
+	content: "\e604";
+}
+.icon-volume-medium:before {
+	content: "\e605";
+}
+.icon-volume-mute:before {
+	content: "\e606";
+}
+.icon-volume-mute2:before {
+	content: "\e607";
+}
+

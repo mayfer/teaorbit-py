@@ -72,13 +72,16 @@ function Networking(since) {
 
         // chat state
         if(message.action == 'new_spiel') {
-            var spiel = message.body;
-            // record scroll state before adding the message
-            var manually_scrolled = window.ui.manually_scrolled();
-            window.ui.add_spiel(spiel);
+            window.ui.touch_channel(message.room_id);
+            if(message.room_id == window.chatroom) {
+                var spiel = message.body;
+                // record scroll state before adding the message
+                var manually_scrolled = window.ui.manually_scrolled();
+                window.ui.add_spiel(spiel);
 
-            if(!manually_scrolled) {
-                window.ui.scroll();
+                if(!manually_scrolled) {
+                    window.ui.scroll();
+                }
             }
         }
         // chat state

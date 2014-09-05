@@ -10,11 +10,19 @@ function UI() {
             this_ui.nw.menu = nativeMenuBar;
         } catch (ex) {
         }
+        $(document).on('click', 'a', function(e) {
+            var url = $(this).attr('href');
+            if($(this).get(0).host != window.location.host) {
+                e.preventDefault();
+                this_ui.gui.Shell.openExternal(url);
+            }
+        });
     }
 
     this.last_spiel_date = 0;
     this.first_spiel_date = 2147483648000;
     this.added_spiel_ids = [];
+    this.channels_visible = false;
 
     function toHashtagUrl(hashtag) {
         var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
@@ -122,6 +130,22 @@ function UI() {
         });
     }
 
+    this.get_channels = function() {
+        var channels = this.global_cookie('channels');
+        if(!channels){
+            channels = {};
+        } else {
+            channels = JSON.parse(channels);
+        }
+        return channels;
+    }
+
+    this.touch_channel = function(channel) {
+        var channels = this.get_channels();
+        channels[window.chatroom] = parseInt((new Date().getTime() )/ 1000);
+        this.global_cookie('channels', JSON.stringify(channels));
+    }
+
     this.init = function(client) {
         this.setup_audio();
 
@@ -133,10 +157,7 @@ function UI() {
             window.gps_accuracy = 0;
 
             $('#loader').hide();
-            var recent = this.global_cookie('recent_channels');
-            if(!recent){ recent = {}; }
-            recent[window.chatroom] = true;
-            this.global_cookie('recent_channels', recent);
+            this.touch_channel(window.channel);
         } else {
             $('#loader').show();
             navigator.geolocation.getCurrentPosition(function(position){
@@ -222,7 +243,7 @@ function UI() {
             this_ui.nw.on('blur', blurred);
         }
 
-        $('<div>').attr('id', 'online-users').appendTo('body');
+        $('<div>').attr('id', 'online-users').addClass('popup').appendTo('body');
         $('#num-online').bind('click touchstart', function(e){
             e.preventDefault();
             var online_elem = $('#num-online');
@@ -262,7 +283,18 @@ function UI() {
                 e.preventDefault();
                 e.stopPropagation();
             }
-         });
+        });
+
+        var channels = this.get_channels();
+        for(channel in channels) {
+            $('#channels').append($('<div>').html(channel));
+        }
+
+        if(this.global_cookie('show_channels') == 'yes') {
+            this.show_channels();
+        } else {
+            this.hide_channels();
+        }
     }
 
     this.align_chat_window = function() {
@@ -476,20 +508,37 @@ function UI() {
         $('.map').attr('src', url);
     }
     this.toggle_channels = function(e) {
-        $('#channels').toggleClass('show');
-        $('#show-channels').toggleClass('show');
+        if(this.channels_visible) {
+            this.hide_channels();
+        } else {
+            this.show_channels();
+        }
+        //$('#channels input').focus();
+        //e.stopPropagation();
+    }
+    this.show_channels = function() {
+        $('#channels').addClass('show');
+        $('#show-channels').addClass('show');
         var toggler_elem = $('#show-channels');
+        var post_elem = $('#post');
         var offset = toggler_elem.offset();
         $('#channels')
             .css({
                 'position': 'absolute',
                 'top': (offset.top + toggler_elem.height()) + 'px',
+                'bottom': post_elem.height() + 'px',
                 'right': '0',
             })
-        $('#channels input').focus();
-        e.stopPropagation();
+        //$('#channels input').focus();
+        this.global_cookie('show_channels', 'yes');
+        this.channels_visible = true;
     }
-
+    this.hide_channels = function() {
+        $('#channels').removeClass('show');
+        $('#show-channels').removeClass('show');
+        this.global_cookie('show_channels', 'no');
+        this.channels_visible = false;
+    }
     this.private_message = function() {
     }
 

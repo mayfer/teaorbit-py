@@ -47,9 +47,10 @@ class PingView(DTO):
         pass
 
 class ResponseView(DTO):
-    def __init__(self, action=None, body=None, errors=None):
+    def __init__(self, action=None, room_id=None, body=None, errors=None):
         self.action = action
         self.body = body
+        self.room_id = room_id
         self.errors = errors
 
 class SessionView(DTO):
