@@ -150,7 +150,15 @@
 
         </script>
         <div id='channels'>
-            <label>Go to: <span class='new-channel'>#<input type='text' value='{{ room_name }}' /></span></label>
+            <div class='new'>
+                <h3>new</h3>
+                <label><span class='new-channel'>#<span contenteditable='true' class='edit'><span/></span></label>
+            </div>
+            <div class='recent'>
+                <h3>recent</h3>
+                <div id='recent-channels'>
+                </div>
+            </div>
         </div>
     </body>
 </html>

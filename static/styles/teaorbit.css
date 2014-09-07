@@ -19,11 +19,10 @@ a:hover { border-bottom: 1px solid #666; }
 #header h1 a span { margin-left: 10px; }
 
 #header .button, #header .info, #header #toggle-map { float: right; line-height: 50px; padding: 0 20px 0 20px; margin-left: 1px; }
-#header .button { background: #444; }
-#header .button:hover, #header .button.show { background: #777; border: none; }
+#header .button:hover, #header .button.show { border: none; }
 
 #show-channels img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-left: 20px; margin-right: -20px; }
-#show-channels .show { background: #777; }
+#show-channels.show { background: #333; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 15px; position: relative; }
@@ -61,11 +60,19 @@ input#name { width: 20%; }
 #audio { float: right; display: inline-block; line-height: 50px; cursor: pointer; }
 #audio:hover { color: #fff; }
 
-#channels { display: none; position: fixed; top: 50px; right: 0; background: #777; padding: 20px; text-align: center; z-index: 100; color: #ddd; font-size: 12px; }
+#channels { display: none; position: fixed; top: 50px; right: 0; background: #333; padding: 15px; z-index: 100; color: #ddd; font-size: 12px; overflow-y: scroll; border-left: 3px solid #000; }
 #channels img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; box-shadow: 0 0 5px 0 rgba(0,0,0,0.5); }
 #channels.show { display: block; }
-#channels .new-channel input { display: inline-block; background: none; border: none; color: #fff; font-family: 'PT Mono',monospace; font-size: 12px; }
-#channels .new-channel { display: inline-block; background: none; border: none; border-bottom: 1px solid #fff; }
+#channels .new-channel .edit { display: inline-block; color: #fff; font-size: 12px; min-width: 100px; }
+#channels .new-channel { display: inline-block; background: rgba(0, 0, 0, 0.2); border-radius: 2px; border: none; padding: 2px 4px; cursor: pointer; }
+#channels .new-channel:hover { color: #222; background: rgba(255,255,255,0.5); }
+#channels .new-channel:hover .edit { color: #222; }
+#channels .channel { padding-bottom: 2px; }
+#channels .channel a { background: rgba(0, 0, 0, 0.2); border-radius: 2px; display: inline-block; padding: 2px 4px; }
+#channels .channel a:hover { border: none; color: #222; background: rgba(255,255,255,0.5) }
+#channels h3 { color: rgba(0,0,0,0.4); font-size: 12px; margin: 0; padding: 0; }
+#channels .recent { margin-top: 15px; }
+
 
 #num-online { cursor: pointer; }
 #num-online:hover { color: #fff; }

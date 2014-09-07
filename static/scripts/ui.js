@@ -253,7 +253,7 @@ function UI() {
                     'position': 'absolute',
                     'top': (offset.top + online_elem.height()) + 'px',
                     'left': (offset.left - 100) + 'px',
-                    'width': (online_elem.outerWidth() + $('#show-channels').outerWidth() + 100) + "px",
+                    'right': 0,
                 })
                 .toggle();
         });
@@ -276,7 +276,7 @@ function UI() {
         $('input, textarea').bind('touchstart', function(e){
             $(this).focus();
         });
-        $('.new-channel input').keydown(function (e) {
+        $('.new-channel span').keydown(function (e) {
             // enter key
             if (e.keyCode == 13 && !e.shiftKey) {
                 window.location = "/"+$(this).val();
@@ -287,8 +287,17 @@ function UI() {
 
         var channels = this.get_channels();
         for(channel in channels) {
-            $('#channels').append($('<div>').html(channel));
+            $('#recent-channels').append(
+                $('<div>')
+                .addClass('channel')
+                .html('#' + channel)
+
+            );
         }
+        $('#recent-channels').linkify(toHashtagUrl);
+        $('#channels .new-channel').on('click', function(e) {
+            e.stopPropagation();
+        });
 
         if(this.global_cookie('show_channels') == 'yes') {
             this.show_channels();
@@ -513,8 +522,6 @@ function UI() {
         } else {
             this.show_channels();
         }
-        //$('#channels input').focus();
-        //e.stopPropagation();
     }
     this.show_channels = function() {
         $('#channels').addClass('show');
