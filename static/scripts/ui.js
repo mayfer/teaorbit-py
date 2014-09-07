@@ -307,7 +307,11 @@ function UI() {
     }
 
     this.align_chat_window = function() {
-        $('#chat').css('margin', $('#header').outerHeight()+'px 0 '+$('#post').outerHeight()+'px 0');
+        var right = 0;
+        if (this.channels_visible == true) {
+            right = $('#channels').outerHeight();
+        }
+        $('#chat').css('margin', $('#header').outerHeight()+'px ' + right + 'px '+$('#post').outerHeight()+'px 0');
     }
 
     this.init_web_only_features = function() {
@@ -340,40 +344,6 @@ function UI() {
                 console.log("Javascript got its response", responseData)
             })
         })
-    }
-
-    this.show_recent_channels = function() {
-        var container = $('#channels .inner').html('');
-        var recent_channels = this.global_cookie('recent_channels');
-        if(recent_channels) {
-            $.each(recent_channels, function(channel, enabled) {
-                if(enabled == true) {
-                    var channelelem = $('<div>')
-                        .addClass('channel')
-                        .data('channel', channel);
-
-                    var nameelem = $('<a>')
-                        .attr('href', '/'+channel)
-                        .html('#'+channel)
-                        .appendTo(channelelem);
-
-                    if(channel == window.chatroom) {
-                        $('<span>').addClass('current').html("[current]").appendTo(channelelem);
-                    } else {
-                        $('<a>').addClass('remove').html("&times;").appendTo(channelelem).click(function(e){
-                            e.preventDefault();
-                            var channel = $(this).parents('.channel').data('channel');
-                            delete recent_channels[channel];
-                            this_ui.global_cookie('recent_channels', recent_channels);
-                            $(this).parents('.channel').remove();
-
-                        });
-                    }
-                    channelelem.appendTo(container);
-
-                }
-            });
-        }
     }
 
     this.add_spiel = function(spiel, is_initial_load) {
@@ -539,12 +509,17 @@ function UI() {
         //$('#channels input').focus();
         this.global_cookie('show_channels', 'yes');
         this.channels_visible = true;
+
+
+        this.align_chat_window();
     }
     this.hide_channels = function() {
         $('#channels').removeClass('show');
         $('#show-channels').removeClass('show');
         this.global_cookie('show_channels', 'no');
         this.channels_visible = false;
+
+        this.align_chat_window();
     }
     this.private_message = function() {
     }
