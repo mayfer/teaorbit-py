@@ -38,6 +38,8 @@ class Connection(SockJSConnection):
         periodic = ioloop.PeriodicCallback(self.update_online, 60000)
         periodic.start()
 
+        self.send_obj(VersionView())
+
     def on_message(self, text):
         message_dict = json_decode(text)
         if 'action' not in message_dict.keys():
@@ -49,11 +51,15 @@ class Connection(SockJSConnection):
         return action(self, message)
 
     def _update_name(self, name):
-        prev_name = self.room_sessions[self.room_id][self.session_id].name
-        if name != prev_name:
-            self.room_sessions[self.room_id][self.session_id].name = name
-            # and then notify everyone of new name
-            self.broadcast_online_users(self.room_id)
+        try:
+            prev_name = self.room_sessions[self.room_id][self.session_id].name
+
+            if name != prev_name:
+                self.room_sessions[self.room_id][self.session_id].name = name
+                # and then notify everyone of new name
+                self.broadcast_online_users(self.room_id)
+        except KeyError:
+            self.add_online(self, self.room_id, self.session_id, name)
 
     def add_online(self, connection, room_id, session_id, name=''):
         self.room_id = room_id
@@ -67,10 +73,12 @@ class Connection(SockJSConnection):
 
         if room_id not in self.connections.keys():
             self.connections[room_id] = {}
+        if session_id not in self.connections[room_id]:
+            self.connections[room_id][session_id] = set()
+        self.connections[room_id][session_id].add(self)
+
         if room_id not in self.room_sessions.keys():
             self.room_sessions[room_id] = {}
-
-        self.connections[room_id][session_id] = self
 
         last_active = unix_now_ms()
 
@@ -86,9 +94,9 @@ class Connection(SockJSConnection):
     def remove_online(self, room_id, session_id, connection):
         try:
             self.participants.remove(connection)
-            self.connections[room_id].pop(session_id, None)
+            self.connections[room_id][session_id].remove(connection)
             self.room_sessions[room_id].pop(session_id, None)
-        except:
+        except KeyError:
             pass
 
         self.broadcast_online_users(room_id)
@@ -101,12 +109,20 @@ class Connection(SockJSConnection):
         if hasattr(self, 'current_session'):
             session = self.current_session
             if session.last_active < now - allowed_inactive:
-                self.remove_online(self.room_id, session.session_id, self.connections[self.room_id].get(session.session_id, None))
+                for conn in self.connections[self.room_id].get(session.session_id, set()):
+                    self.remove_online(self.room_id, session.session_id, conn)
 
     def broadcast_online_users(self, room_id):
         users = [ UserView(color=roomsession.session.color, name=roomsession.name) for roomsession in self.room_sessions[room_id].values() ]
         online = OnlineUsersView(len(users), users)
-        self.broadcast_obj(online, self.connections.get(room_id, {} ).values())
+        self.broadcast_obj(online, self.connections_for_room_id(room_id))
+
+    def connections_for_room_id(self, room_id):
+        connections = []
+        for conn_set in self.connections.get(room_id, {} ).values():
+            for conn in conn_set:
+                connections.append(conn)
+        return connections
 
     def on_close(self):
         session_id = self.session_id
@@ -118,13 +134,17 @@ class Connection(SockJSConnection):
         print log
 
     def response(self, dto):
-        return ResponseView(action=dto._action, room_id=self.room_id, body=dto).json()
+        if hasattr(self, 'room_id'):
+            room_id = self.room_id
+        else:
+            room_id = ''
+        return ResponseView(action=dto._action, body=dto, channel=room_id).json()
 
     def send_obj(self, dto):
         self.send(self.response(dto))
 
     def notify_recipients(self, room_id, spiel):
-        recipients = self.connections[room_id].values()
+        recipients = self.connections_for_room_id(room_id)
         self.broadcast(recipients, self.response(spiel))
 
     def broadcast_text(self, text):

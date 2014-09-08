@@ -3,7 +3,6 @@ from common import json_encode, json_decode, unix_now, unix_now_ms
 
 def hello(conn, message):
     conn.add_online(connection=conn, room_id=message.room_id, session_id=conn.session_id, name=message.name)
-    conn.send_obj(VersionView())
 
 def still_online(conn, message):
     player = conn.db.get_player(conn.session_id)
@@ -22,7 +21,7 @@ def still_online(conn, message):
 
 def get_spiels(conn, message):
     spiel_models = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
-    spiels = [ SpielView.from_model(spiel) for spiel in spiel_models ]
+    spiels = [ SpielView(name=spiel.spiel, spiel=spiel.spiel, date=spiel.date, color=spiel.color) for spiel in spiel_models ]
 
     if message.until is not None or len(spiels) != 0:
         spiels_dto = SpielsView(spiels)
@@ -30,7 +29,7 @@ def get_spiels(conn, message):
 
 def get_spiels_count(conn, message):
     spiel_models = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
-    spiels = [ SpielView.from_model(spiel) for spiel in spiel_models ]
+    spiels = [ SpielView.from_model(spiel, message.room_id) for spiel in spiel_models ]
 
     spiels_dto = SpielsView(spiels)
     conn.send_obj(spiels_dto)

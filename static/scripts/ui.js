@@ -97,6 +97,10 @@ function UI() {
         }
     }
 
+    this.last_message = function(channel) {
+        return parseInt(JSON.parse(this.global_cookie('channels'))[channel]);
+    }
+
     this.mute = function() {
         $('#audio').addClass('icon-volume-mute').removeClass('icon-volume-medium');
         this_ui.flags.mute = true;
@@ -150,7 +154,14 @@ function UI() {
         this.setup_audio();
 
         if(window.chatroom) {
-            window.networking = Networking();
+            window.networking = Networking(window.chatroom, 0);
+            window.connections = [];
+            var channels = window.ui.get_channels();
+            for(channel in channels) {
+                if(channel != window.chatroom) {
+                    window.connections.push(new Networking(channel, this_ui.last_message(channel)));
+                }
+            }
 
             window.latitude = 0;
             window.longitude = 0;
@@ -165,7 +176,7 @@ function UI() {
                 window.longitude = position.coords.longitude;
                 window.gps_accuracy = position.coords.accuracy;
 
-                window.networking = Networking();
+                //window.networking = Networking();
                 $('#loader').hide();
             }, function(error){
                 $('#loader .inner .title').html('<span class="error">Failed</span> getting location');
@@ -288,19 +299,21 @@ function UI() {
 
         var channels = this.get_channels();
         for(channel in channels) {
-            var channel = $('<div>')
-                .addClass('channel')
-                .html('#' + channel)
-                .attr('title', '#'+channel)
-                .attr('channel', channel)
-                .attr('timestamp', channels[channel])
-                .prepend(
-                    $('<div>').addClass('new-count')
-                )
-                .append(
-                    $('<div>').addClass('delete').html('&times;')
-                )
-            $('#recent-channels').append(channel);
+            if(channel != window.chatroom) {
+                var channel_elem = $('<div>')
+                    .addClass('channel')
+                    .html('#' + channel)
+                    .attr('title', '#'+channel)
+                    .attr('channel', channel)
+                    .attr('timestamp', channels[channel])
+                    .prepend(
+                        $('<div>').addClass('new-count')
+                    )
+                    .append(
+                        $('<div>').addClass('delete').html('&times;')
+                    )
+                $('#recent-channels').append(channel_elem);
+            }
         }
         $('#recent-channels').linkify(toHashtagUrl);
         $('#channels .new-channel').on('click', function(e) {
@@ -308,7 +321,6 @@ function UI() {
         });
         $('#recent-channels .channel').sort(function(a, b){
             var result = parseInt($(b).attr('timestamp')) - parseInt($(a).attr('timestamp'));
-            console.log(result);
             return result;
         }).detach().appendTo($('#recent-channels'));
 

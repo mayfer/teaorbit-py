@@ -47,10 +47,10 @@ class PingView(DTO):
         pass
 
 class ResponseView(DTO):
-    def __init__(self, action=None, room_id=None, body=None, errors=None):
+    def __init__(self, action=None, channel=None, body=None, errors=None):
         self.action = action
         self.body = body
-        self.room_id = room_id
+        self.channel = channel
         self.errors = errors
 
 class SessionView(DTO):
@@ -62,7 +62,7 @@ class SessionView(DTO):
         self.spiels_per_request = config.spiels_per_request
 
     @classmethod
-    def from_model(cls, model):
+    def from_model(cls, model, channel=''):
         return SessionView(
             session_id = model.session_id,
             color = model.color,
@@ -77,23 +77,13 @@ class VersionView(DTO):
 class SpielView(DTO):
     _action = 'new_spiel'
 
-    def __init__(self, channel='', id='', name='', spiel='', date=None, color=None):
+    def __init__(self, id='', name='', spiel='', date=None, color=None):
         self.name = name
         self.spiel = spiel
         self.date = date
         self.color = color
 
         self.id = self.json().__hash__()
-
-    @classmethod
-    def from_model(self, spiel_model):
-        sm = spiel_model
-        return SpielView(
-            name = sm.name,
-            spiel = sm.spiel,
-            date = sm.date,
-            color = sm.color,
-        )
 
 class SpielsView(DTO):
     _action = 'spiels'

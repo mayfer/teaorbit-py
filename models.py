@@ -36,7 +36,7 @@ class SubscriptionManager(Model):
         self.subscriptions = {}
 
 class Spiel(DTO):
-    def __init__(self, id='', name='', spiel='', date=None, color=None):
+    def __init__(self, channel='', id='', name='', spiel='', date=None, color=None):
         self.id = id
         self.name = name
         self.spiel = spiel

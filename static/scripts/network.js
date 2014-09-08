@@ -1,6 +1,7 @@
 
-function Networking(since) {
+function Networking(chatroom, since) {
     var that = this;
+    that.chatroom = chatroom;
 
     if(since === undefined) {
         this.since = 0;
@@ -11,12 +12,17 @@ function Networking(since) {
     this.initial_load = true;
 
     this.sock = new SockJS('/updates');
+
+    this.hello = function(chatroom) {
+    }
+
     this.sock.onopen = function() {
         console.log('Connected');
-        that.send('hello', {
+
+        return that.send('hello', {
             'latitude': window.latitude,
             'longitude': window.longitude,
-            'chatroom': window.chatroom,
+            'chatroom': that.chatroom,
             'name': $('#name').val(),
         });
 
@@ -48,18 +54,28 @@ function Networking(since) {
 
         // initial login
         if(message.action == 'session') {
-            window.session_id = message.body.session_id;
-            window.spiels_per_request = message.body.spiels_per_request;
 
-            $.cookie("session", window.session_id, {expires: 1000, path: '/'});
-            console.log("Logged in, session ID: " + window.session_id);
-            $('#my-color').css('background', message.body.color);
-            that.send('get_spiels', {
-                'latitude': window.latitude,
-                'longitude': window.longitude,
-                'chatroom': window.chatroom,
-                'since': that.since,
-            });
+            if(message.channel == window.chatroom) {
+                window.session_id = message.body.session_id;
+                $.cookie("session", window.session_id, {expires: 1000, path: '/'});
+                console.log("Logged in to "+message.channel+", session ID: " + window.session_id);
+                $('#my-color').css('background', message.body.color);
+                window.spiels_per_request = message.body.spiels_per_request;
+
+                that.send('get_spiels', {
+                    'latitude': window.latitude,
+                    'longitude': window.longitude,
+                    'chatroom': message.channel,
+                    'since': that.since,
+                });
+            } else {
+                that.send('get_spiels', {
+                    'latitude': window.latitude,
+                    'longitude': window.longitude,
+                    'chatroom': message.channel,
+                    'since': window.ui.last_message(message.channel) * 1000,
+                });
+            }
         }
 
         if(message.action == 'version') {
@@ -73,7 +89,7 @@ function Networking(since) {
         // chat state
         if(message.action == 'new_spiel') {
             window.ui.touch_channel(message.room_id);
-            if(message.room_id == window.chatroom) {
+            if(message.channel == window.chatroom) {
                 var spiel = message.body;
                 // record scroll state before adding the message
                 var manually_scrolled = window.ui.manually_scrolled();
@@ -82,13 +98,21 @@ function Networking(since) {
                 if(!manually_scrolled) {
                     window.ui.scroll();
                 }
+            } else {
+                $('#recent-channels .channel').each(function(){
+                    if($(this).attr('channel') == message.channel) {
+                        var elem = $(this).find('.new-count');
+                        var count = parseInt(elem.html());
+                        elem.html(count+1);
+                    }
+                });
             }
         }
         // chat state
         if(message.action == 'spiels') {
             var spiels = message.body.spiels;
 
-            if(message.room_id == window.chatroom) {
+            if(message.channel == window.chatroom) {
                 // record scroll state before adding the message
                 var manually_scrolled = window.ui.manually_scrolled();
 
@@ -114,6 +138,11 @@ function Networking(since) {
 
                 that.initial_load = false;
             } else {
+                $('#recent-channels .channel').each(function(){
+                    if($(this).attr('channel') == message.channel) {
+                        $(this).find('.new-count').html(message.body.spiels.length);
+                    }
+                });
             }
         }
 
@@ -124,17 +153,19 @@ function Networking(since) {
 
         // online users
         if(message.action == 'online') {
-            var num_online = message.body.num_online;
-            var users = message.body.users;
-            $('#num-online').html(num_online + " online");
+            if(message.channel == window.chatroom) {
+                var num_online = message.body.num_online;
+                var users = message.body.users;
+                $('#num-online').html(num_online + " online");
 
-            var colors = [];
-            for(var i=0; i<users.length; i++) {
-                var color = '<div class="message"><div class="color" style="background-color: '+users[i].color+'"></div> <span class="name">'+users[i].name+'</span></div><br />';
-                colors.push(color);
+                var colors = [];
+                for(var i=0; i<users.length; i++) {
+                    var color = '<div class="message"><div class="color" style="background-color: '+users[i].color+'"></div> <span class="name">'+users[i].name+'</span></div><br />';
+                    colors.push(color);
+                }
+
+                $('#online-users').html(colors.join(''));
             }
-
-            $('#online-users').html(colors.join(''));
         }
 
         // area info
