@@ -288,17 +288,19 @@ function UI() {
 
         var channels = this.get_channels();
         for(channel in channels) {
-            $('#recent-channels').append(
-                $('<div>')
+            var channel = $('<div>')
                 .addClass('channel')
                 .html('#' + channel)
                 .attr('title', '#'+channel)
-                .addClass('channel-'+channel)
+                .attr('channel', channel)
                 .attr('timestamp', channels[channel])
                 .prepend(
                     $('<div>').addClass('new-count')
                 )
-            );
+                .append(
+                    $('<div>').addClass('delete').html('&times;')
+                )
+            $('#recent-channels').append(channel);
         }
         $('#recent-channels').linkify(toHashtagUrl);
         $('#channels .new-channel').on('click', function(e) {
@@ -309,6 +311,14 @@ function UI() {
             console.log(result);
             return result;
         }).detach().appendTo($('#recent-channels'));
+
+        $('#recent-channels .channel .delete').click(function(e){
+            var parent = $(this).parents('.channel');
+            var channels = JSON.parse(this_ui.global_cookie('channels'));
+            delete channels[parent.attr('channel')];
+            this_ui.global_cookie('channels', JSON.stringify(channels));
+            parent.remove();
+        });
 
         if(this.global_cookie('show_channels') == 'yes') {
             this.show_channels();
