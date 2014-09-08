@@ -57,7 +57,7 @@ input#name { width: 20%; }
 #audio { float: right; display: inline-block; line-height: 50px; cursor: pointer; }
 #audio:hover { color: #fff; }
 
-#show-channels { width: 140px; border-left: 3px solid transparent; background: #222; overflow: hidden; text-overflow: ellipsis; }
+#show-channels { width: 140px; border-left: 3px solid transparent; background: #222; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 #show-channels:after { font-size: 10px; content: "▼"; position: relative; left: 5px; float: right; }
 #show-channels span {  }
 #show-channels.show { background: #777; border-left: 3px solid #aaa; }
@@ -71,7 +71,7 @@ input#name { width: 20%; }
 #channels .new-channel { display: inline-block; background: rgba(255,255,255, 0.2); border-radius: 2px; border: none; padding: 2px 4px; cursor: pointer; margin-left: 25px; }
 #channels .new-channel:hover { color: #222; background: rgba(255,255,255,0.9); }
 #channels .new-channel:hover .edit { color: #222; }
-#channels .channel { padding-bottom: 2px; }
+#channels .channel { padding-bottom: 2px; white-space: nowrap; }
 #channels .channel .new-count { width: 25px; display: inline-block; text-align: center; overflow: hidden; line-height: 20px; }
 #channels .channel .delete { width: 25px; display: inline-block; text-align: center; overflow: hidden; line-height: 20px; cursor: pointer; visibility: hidden; }
 #channels .channel:hover .delete { visibility: visible; }

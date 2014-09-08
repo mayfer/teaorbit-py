@@ -50,7 +50,7 @@ function Networking(chatroom, since) {
     };
     this.sock.onmessage = function(e) {
         var message = JSON.parse(e.data);
-        //console.log("new message,", message);
+        console.log("new message,", that.chatroom, message);
 
         // initial login
         if(message.action == 'session') {
