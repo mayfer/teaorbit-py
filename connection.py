@@ -109,7 +109,7 @@ class Connection(SockJSConnection):
         if hasattr(self, 'current_session'):
             session = self.current_session
             if session.last_active < now - allowed_inactive:
-                for conn in self.connections[self.room_id].get(session.session_id, set()):
+                for conn in self.connections[self.room_id].get(session.session_id, set()).copy():
                     self.remove_online(self.room_id, session.session_id, conn)
 
     def broadcast_online_users(self, room_id):

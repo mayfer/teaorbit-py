@@ -17,7 +17,7 @@ function Networking(chatroom, since) {
     }
 
     this.sock.onopen = function() {
-        console.log('Connected');
+        console.log('Connected', that.chatroom);
 
         return that.send('hello', {
             'latitude': window.latitude,
@@ -50,7 +50,7 @@ function Networking(chatroom, since) {
     };
     this.sock.onmessage = function(e) {
         var message = JSON.parse(e.data);
-        console.log("new message,", message);
+        //console.log("new message,", message);
 
         // initial login
         if(message.action == 'session') {
@@ -177,15 +177,14 @@ function Networking(chatroom, since) {
 
     };
     this.sock.onclose = function() {
-        console.log('Connection closed');
+        console.log('Connection closed', that.chatroom);
         window.ui.disconnected();
         clearInterval(that.keep_alive);
         clearInterval(that.poller);
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
             var since = window.ui.last_spiel_date;
-            window.networking = new Networking(since);
-            ui.network = window.network
+            Networking.call(that, that.chatroom, since);
         }, 2000);
     };
     this.send = function(action, body) {
