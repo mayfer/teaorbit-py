@@ -19,10 +19,7 @@ a:hover { border-bottom: 1px solid #666; }
 #header h1 a span { margin-left: 10px; }
 
 #header .button, #header .info, #header #toggle-map { float: right; line-height: 50px; padding: 0 20px 0 20px; margin-left: 1px; }
-#header .button:hover, #header .button.show { border: none; }
-
-#show-channels img.map { display: inline-block; width: 50px; height: 50px; vertical-align: middle; margin-left: 20px; margin-right: -20px; }
-#show-channels.show { background: #333; }
+#header .button:hover, #header .button.show { border-bottom: none; }
 
 #post { position: absolute; bottom: 0; left: 0; background: #000; width: 100%; z-index: 100; }
 #post .inner { margin: 15px; position: relative; }
@@ -45,7 +42,7 @@ input#name { width: 20%; }
 #chat .load-more:hover { color: rgba(255,255,255,0.5); border: none; }
 #chat .load-more:active { color: rgba(255,255,255,0.8); border: none; }
 
-.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; max-width: 90%; white-space: pre-wrap; word-wrap: break-word; }
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; white-space: pre-wrap; word-wrap: break-word; }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
@@ -60,23 +57,31 @@ input#name { width: 20%; }
 #audio { float: right; display: inline-block; line-height: 50px; cursor: pointer; }
 #audio:hover { color: #fff; }
 
-#channels { display: none; position: fixed; top: 50px; right: 0; background: #333; padding: 15px; z-index: 100; color: #ddd; font-size: 12px; overflow-y: scroll; border-left: 3px solid #000; }
+#show-channels { width: 110px; border-left: 3px solid transparent; background: #222; overflow: hidden; text-overflow: ellipsis; }
+#show-channels:after { font-size: 10px; content: "▼"; position: relative; left: 5px; float: right; }
+#show-channels span {  }
+#show-channels.show { background: #777; border-left: 3px solid #aaa; }
+#show-channels.show:after { font-size: 10px; content: "▲"; position: relative; left: 5px; float: right; }
+#show-channels:hover { background: #999; }
+
+#channels { display: none; position: fixed; top: 50px; right: 0; background: #777; z-index: 100; color: #ddd; font-size: 12px; overflow-y: scroll; border-left: 3px solid #aaa; width: 150px; }
 #channels img.map { display: inline-block; width: 350px; height: 350px; vertical-align: middle; margin: 12px; box-shadow: 0 0 5px 0 rgba(0,0,0,0.5); }
 #channels.show { display: block; }
-#channels .new-channel .edit { display: inline-block; color: #fff; font-size: 12px; min-width: 100px; }
-#channels .new-channel { display: inline-block; background: rgba(0, 0, 0, 0.2); border-radius: 2px; border: none; padding: 2px 4px; cursor: pointer; }
-#channels .new-channel:hover { color: #222; background: rgba(255,255,255,0.5); }
+#channels .new-channel .edit { display: inline-block; color: #fff; font-size: 12px; min-width: 90px; }
+#channels .new-channel { display: inline-block; background: rgba(255,255,255, 0.2); border-radius: 2px; border: none; padding: 2px 4px; cursor: pointer; margin-left: 25px; }
+#channels .new-channel:hover { color: #222; background: rgba(255,255,255,0.9); }
 #channels .new-channel:hover .edit { color: #222; }
 #channels .channel { padding-bottom: 2px; }
-#channels .channel a { background: rgba(0, 0, 0, 0.2); border-radius: 2px; display: inline-block; padding: 2px 4px; }
-#channels .channel a:hover { border: none; color: #222; background: rgba(255,255,255,0.5) }
-#channels h3 { color: rgba(255,255,255,0.4); font-size: 12px; margin: 2px 0 3px 0; padding: 0; }
+#channels .channel .new-count { width: 25px; display: inline-block; text-align: center; overflow: hidden; line-height: 20px; }
+#channels .channel a { background: rgba(255,255,255, 0.2); border-radius: 2px; display: inline-block; padding: 0 4px; line-height: 20px; max-width: 100px; text-overflow: ellipsis; overflow: hidden; }
+#channels .channel a:hover { border: none; color: #222; background: rgba(255,255,255,0.9) }
+#channels h3 { color: rgba(255,255,255,0.4); font-size: 11px; margin: 2px 0 3px 25px; padding: 0; font-weight: normal; }
 #channels .recent { margin-top: 15px; }
 
 
 #num-online { cursor: pointer; }
 #num-online:hover { color: #fff; }
-#online-users { padding: 10px 20px; background: #000; display: none; z-index: 200; position: relative; }
+#online-users { padding: 10px 0 10px 20px; background: #000; display: none; z-index: 200; position: relative; }
 
 #drawing {  background: #fff; }
 

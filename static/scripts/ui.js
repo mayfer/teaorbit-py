@@ -247,13 +247,14 @@ function UI() {
         $('#num-online').bind('click touchstart', function(e){
             e.preventDefault();
             var online_elem = $('#num-online');
+            var channels_elem = $('#show-channels');
             var offset = online_elem.offset();
             $('#online-users')
                 .css({
                     'position': 'absolute',
                     'top': (offset.top + online_elem.height()) + 'px',
                     'left': (offset.left - 100) + 'px',
-                    'right': 0,
+                    'right': channels_elem.outerWidth() + 'px',
                 })
                 .toggle();
         });
@@ -291,13 +292,23 @@ function UI() {
                 $('<div>')
                 .addClass('channel')
                 .html('#' + channel)
-
+                .attr('title', '#'+channel)
+                .addClass('channel-'+channel)
+                .attr('timestamp', channels[channel])
+                .prepend(
+                    $('<div>').addClass('new-count')
+                )
             );
         }
         $('#recent-channels').linkify(toHashtagUrl);
         $('#channels .new-channel').on('click', function(e) {
             e.stopPropagation();
         });
+        $('#recent-channels .channel').sort(function(a, b){
+            var result = parseInt($(b).attr('timestamp')) - parseInt($(a).attr('timestamp'));
+            console.log(result);
+            return result;
+        }).detach().appendTo($('#recent-channels'));
 
         if(this.global_cookie('show_channels') == 'yes') {
             this.show_channels();
@@ -309,7 +320,7 @@ function UI() {
     this.align_chat_window = function() {
         var right = 0;
         if (this.channels_visible == true) {
-            right = $('#channels').outerHeight();
+            right = $('#channels').outerWidth();
         }
         $('#chat').css('margin', $('#header').outerHeight()+'px ' + right + 'px '+$('#post').outerHeight()+'px 0');
     }
@@ -503,7 +514,8 @@ function UI() {
             .css({
                 'position': 'absolute',
                 'top': (offset.top + toggler_elem.height()) + 'px',
-                'bottom': post_elem.height() + 'px',
+                //'bottom': post_elem.height() + 'px',
+                'bottom': '0',
                 'right': '0',
             })
         //$('#channels input').focus();

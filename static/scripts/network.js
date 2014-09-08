@@ -87,30 +87,34 @@ function Networking(since) {
         // chat state
         if(message.action == 'spiels') {
             var spiels = message.body.spiels;
-            // record scroll state before adding the message
-            var manually_scrolled = window.ui.manually_scrolled();
 
-            for(var i=0; i<spiels.length; i++) {
-                window.ui.add_spiel(spiels[i], that.initial_load);
+            if(message.room_id == window.chatroom) {
+                // record scroll state before adding the message
+                var manually_scrolled = window.ui.manually_scrolled();
 
-                if(spiels[i].date > that.since) {
-                    that.since = spiels[i].date;
+                for(var i=0; i<spiels.length; i++) {
+                    window.ui.add_spiel(spiels[i], that.initial_load);
+
+                    if(spiels[i].date > that.since) {
+                        that.since = spiels[i].date;
+                    }
                 }
-            }
 
-            if(spiels.length < window.spiels_per_request) {
-                $('#load-more').hide();
-            }
+                if(spiels.length < window.spiels_per_request) {
+                    $('#load-more').hide();
+                }
 
-            if(!manually_scrolled || that.initial_load == true) {
-                window.ui.scroll();
-            }
-            
-            if(that.initial_load == true) {
-                $('#load-more').css('visibility', 'visible');
-            }
+                if(!manually_scrolled || that.initial_load == true) {
+                    window.ui.scroll();
+                }
+                
+                if(that.initial_load == true) {
+                    $('#load-more').css('visibility', 'visible');
+                }
 
-            that.initial_load = false;
+                that.initial_load = false;
+            } else {
+            }
         }
 
         // general activity log

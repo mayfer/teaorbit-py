@@ -9,7 +9,7 @@
         <link href="{{ STATIC_URL }}assets/splash-1024x1024.png" rel="apple-touch-startup-image">
         <link rel='shortcut icon' href='{{ STATIC_URL }}assets/favicon.png?v={{ version }}' type='image/x-icon'> 
 
-        <title>tea orbit</title>
+        <title>#{{ room_name }}</title>
         <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit.css?v={{ version }}' type='text/css'>
         {% if client == 'iPhoneTeaOrbit' %}
             <link rel='stylesheet' href='{{ STATIC_URL }}styles/teaorbit_ios_native.css?v={{ version }}' type='text/css'>
@@ -32,7 +32,6 @@
 
             window.networking = null;
             window.ui = null;
-            window.title = "tea orbit";
 
             window.last_spiel_date = 0;
             window.latitude = null;
@@ -98,8 +97,8 @@
         <div id='container'>
             <div id='header'>
                 <a id='show-channels' href='#' class='button'><span id='show-hide-details'>nearby</span></a>
-                <div id='toggle-map'><span class='icon-location'></span></div>
                 <div class='info' id='num-online'>? online</div>
+                <div id='toggle-map'><span class='icon-location'></span></div>
                 <span id='audio'></span>
                 <h1 id='logo'><a href='/'><img src='{{ STATIC_URL }}assets/tea-white.png' /><span>tea orbit</span></a></h1>
             </div>
