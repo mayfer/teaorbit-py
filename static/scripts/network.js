@@ -100,7 +100,7 @@ function Networking(since) {
                     }
                 }
 
-                if(spiels.length < window.spiels_per_request) {
+                if(that.initial_load == true && spiels.length < window.spiels_per_request) {
                     $('#load-more').hide();
                 }
 
