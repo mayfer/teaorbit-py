@@ -42,9 +42,6 @@
                 window.chatroom = '{{ room_name }}';
                 window.title = "#" + window.chatroom;
                 document.title = window.title;
-                $(document).ready(function() {
-                    $('#show-hide-details').html('#'+window.chatroom);
-                });
             {% else %}
                 window.chatroom = '';
             {% end %}
@@ -96,7 +93,7 @@
     <body>
         <div id='container'>
             <div id='header'>
-                <a id='show-channels' href='#' class='button'><span id='show-hide-details'>nearby</span></a>
+                <a id='show-channels' href='#' class='button'>#{{ room_name }}</a>
                 <div class='info' id='num-online'>? online</div>
                 <!--<div id='toggle-map'><span class='icon-location'></span></div>-->
                 <span id='audio'></span>

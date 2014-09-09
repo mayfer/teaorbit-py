@@ -10,11 +10,12 @@ def still_online(conn, message):
         player = conn.db.add_player(conn.session_id)
 
     if conn.session_id in conn.room_sessions[message.room_id].keys():
-        session = conn.room_sessions[message.room_id][conn.session_id].session
-        session.last_active = unix_now_ms()
-        session.name = message.name
+        conn.current_session.last_active = unix_now_ms()
+        conn.current_session.name = message.name
+        print "updating", conn.room_id, conn.current_session.session_id, conn.current_session.last_active
     else:
         conn.add_online(conn, message.room_id, conn.session_id, name=message.name)
+        print "re-adding", conn.room_id, conn.current_session.session_id
 
     ack_dto = KeepAliveView()
     conn.send_obj(ack_dto)

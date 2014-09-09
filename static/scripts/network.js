@@ -19,30 +19,22 @@ function Networking(chatroom, since) {
     this.sock.onopen = function() {
         console.log('Connected', that.chatroom);
 
-        return that.send('hello', {
-            'latitude': window.latitude,
-            'longitude': window.longitude,
+        that.send('hello', {
             'chatroom': that.chatroom,
             'name': $('#name').val(),
         });
 
         that.keep_alive = setInterval(function() {
-            if(window.chatroom || window.latitude) {
-                that.send('still_online', {
-                    'latitude': window.latitude,
-                    'longitude': window.longitude,
-                    'chatroom': window.chatroom,
-                    'name': $('#name').val(),
-                });
-            }
+            that.send('still_online', {
+                'chatroom': that.chatroom,
+                'name': $('#name').val(),
+            });
         }, 10000);
 
         that.poller = setInterval(function() {
             if(window.chatroom || window.latitude) {
                 that.send('get_spiels', {
-                    'latitude': window.latitude,
-                    'longitude': window.longitude,
-                    'chatroom': window.chatroom,
+                    'chatroom': that.chatroom,
                     'since': that.since,
                 });
             }
@@ -63,15 +55,11 @@ function Networking(chatroom, since) {
                 window.spiels_per_request = message.body.spiels_per_request;
 
                 that.send('get_spiels', {
-                    'latitude': window.latitude,
-                    'longitude': window.longitude,
                     'chatroom': message.channel,
                     'since': that.since,
                 });
             } else {
                 that.send('get_spiels', {
-                    'latitude': window.latitude,
-                    'longitude': window.longitude,
                     'chatroom': message.channel,
                     'since': window.ui.last_message(message.channel) * 1000,
                 });
@@ -88,8 +76,9 @@ function Networking(chatroom, since) {
 
         // chat state
         if(message.action == 'new_spiel') {
-            window.ui.touch_channel(message.room_id);
             if(message.channel == window.chatroom) {
+                window.ui.touch_channel(message.channel);
+
                 var spiel = message.body;
                 // record scroll state before adding the message
                 var manually_scrolled = window.ui.manually_scrolled();
@@ -102,7 +91,11 @@ function Networking(chatroom, since) {
                 $('#recent-channels .channel').each(function(){
                     if($(this).attr('channel') == message.channel) {
                         var elem = $(this).find('.new-count');
-                        var count = parseInt(elem.html());
+                        var num = elem.html();
+                        if(!num) num = 0;
+                        else num = parseInt(num);
+
+                        var count = num;
                         elem.html(count+1);
                     }
                 });
@@ -113,6 +106,7 @@ function Networking(chatroom, since) {
             var spiels = message.body.spiels;
 
             if(message.channel == window.chatroom) {
+                window.ui.touch_channel(message.channel);
                 // record scroll state before adding the message
                 var manually_scrolled = window.ui.manually_scrolled();
 
@@ -171,7 +165,6 @@ function Networking(chatroom, since) {
         // area info
         if(message.action == 'block') {
             var block_id = message.body.block_id;
-            console.log("Block ID: " + block_id);
             window.ui.set_map_url("https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000aa|fillcolor:0x6666ff|weight:5|"+block_id+"&size=512x512&sensor=false");
         }
 
@@ -183,7 +176,7 @@ function Networking(chatroom, since) {
         clearInterval(that.poller);
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
-            var since = window.ui.last_spiel_date;
+            var since = window.ui.last_message(that.chatroom);
             Networking.call(that, that.chatroom, since);
         }, 2000);
     };
@@ -200,9 +193,7 @@ function Networking(chatroom, since) {
 
     this.get_older_spiels = function(until) {
         that.send('get_spiels', {
-            'latitude': window.latitude,
-            'longitude': window.longitude,
-            'chatroom': window.chatroom,
+            'chatroom': that.chatroom,
             'until': until,
         });
     };

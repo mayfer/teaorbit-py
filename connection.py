@@ -95,38 +95,45 @@ class Connection(SockJSConnection):
         try:
             self.participants.remove(connection)
             self.connections[room_id][session_id].remove(connection)
-            self.room_sessions[room_id].pop(session_id, None)
-        except KeyError:
-            pass
+            if len(self.connections[room_id][session_id]) == 0:
+                self.room_sessions[room_id].pop(session_id, None)
+        except KeyError as e:
+            print "KeyError", e
 
+        print "removed", room_id, session_id
         self.broadcast_online_users(room_id)
 
     def update_online(self):
         # ping = PingView()
         # self.send_obj(ping)
-        allowed_inactive = 10000 # 120000
+        allowed_inactive = 120000
         now = unix_now_ms()
         if hasattr(self, 'current_session'):
             session = self.current_session
             if session.last_active < now - allowed_inactive:
                 for conn in self.connections[self.room_id].get(session.session_id, set()).copy():
+                    print "removing due to timeout", self.room_id, session.session_id
+                    print "last active", session.last_active, "now", now
                     self.remove_online(self.room_id, session.session_id, conn)
 
     def broadcast_online_users(self, room_id):
         users = [ UserView(color=roomsession.session.color, name=roomsession.name) for roomsession in self.room_sessions[room_id].values() ]
         online = OnlineUsersView(len(users), users)
-        self.broadcast_obj(online, self.connections_for_room_id(room_id))
+        connections = self.connections_for_room_id(room_id)
+        self.broadcast_obj(online, connections)
 
     def connections_for_room_id(self, room_id):
-        connections = []
+        connections = set()
         for conn_set in self.connections.get(room_id, {} ).values():
             for conn in conn_set:
-                connections.append(conn)
+                if conn.room_id == room_id:
+                    connections.add(conn)
         return connections
 
     def on_close(self):
         session_id = self.session_id
         room_id = self.room_id
+        print "connection closed", room_id, session_id
         self.remove_online(room_id=room_id, session_id=session_id, connection=self)
         self.broadcast_online_users(room_id)
 

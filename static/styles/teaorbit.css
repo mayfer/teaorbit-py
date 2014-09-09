@@ -58,10 +58,10 @@ input#name { width: 20%; }
 #audio:hover { color: #fff; }
 
 #show-channels { width: 140px; border-left: 3px solid transparent; background: #222; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-#show-channels:after { font-size: 10px; content: "▼"; position: relative; left: 5px; float: right; }
-#show-channels span {  }
+#show-channels:after, #show-channels.show:after { font-size: 10px; position: absolute; right: 10px; 5px; float: right; }
+#show-channels:after { content: "▼"; }
+#show-channels.show:after { content: "▲"; }
 #show-channels.show { background: #777; border-left: 3px solid #aaa; }
-#show-channels.show:after { font-size: 10px; content: "▲"; position: relative; left: 5px; float: right; }
 #show-channels:hover { background: #999; }
 
 #channels { display: none; position: fixed; top: 50px; right: 0; background: #777; z-index: 100; color: #ddd; font-size: 12px; overflow-y: scroll; border-left: 3px solid #aaa; width: 180px; }
