@@ -14,7 +14,6 @@ def still_online(conn, message):
         conn.current_session.name = message.name
     else:
         conn.add_online(conn, message.room_id, conn.session_id, name=message.name)
-
     ack_dto = KeepAliveView()
     conn.send_obj(ack_dto)
 

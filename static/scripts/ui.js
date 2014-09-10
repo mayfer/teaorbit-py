@@ -146,7 +146,7 @@ function UI() {
 
     this.touch_channel = function(channel) {
         var channels = this.get_channels();
-        channels[window.chatroom] = parseInt((new Date().getTime() )/ 1000);
+        channels[window.chatroom] = parseInt((new Date().getTime() ));
         this.global_cookie('channels', JSON.stringify(channels));
     }
 
@@ -159,7 +159,7 @@ function UI() {
             var channels = window.ui.get_channels();
             for(channel in channels) {
                 if(channel != window.chatroom) {
-                    window.connections.push(new Networking(channel, parseInt(this_ui.last_message(channel))*1000));
+                    window.connections.push(new Networking(channel, parseInt(this_ui.last_message(channel))));
                 }
             }
 
@@ -291,31 +291,40 @@ function UI() {
         $('.new-channel span').keydown(function (e) {
             // enter key
             if (e.keyCode == 13 && !e.shiftKey) {
-                window.location = "/"+$(this).val();
+                window.location = "/"+$(this).text();
                 e.preventDefault();
                 e.stopPropagation();
             }
         });
 
         var channels = this.get_channels();
+
         for(channel in channels) {
             if(channel != window.chatroom) {
                 var channel_elem = $('<div>')
                     .addClass('channel')
-                    .html('#' + channel)
                     .attr('title', '#'+channel)
                     .attr('channel', channel)
                     .attr('timestamp', channels[channel])
+                    .append(
+                        $('<a>').attr("href", "/"+channel).html("#"+channel)
+                    )
                     .prepend(
                         $('<div>').addClass('new-count')
                     )
                     .append(
                         $('<div>').addClass('delete').html('&times;')
-                    )
+                    );
                 $('#recent-channels').append(channel_elem);
             }
         }
-        $('#recent-channels').linkify(toHashtagUrl);
+        if(Object.keys(channels).length <= 1) {
+            $('#recent-channels').append(
+                $('<div>').addClass('none').html("none")
+            );
+        }
+        
+
         $('#channels .new-channel').on('click', function(e) {
             e.stopPropagation();
         });
@@ -335,7 +344,8 @@ function UI() {
         if(this.global_cookie('show_channels') == 'yes') {
             this.show_channels();
         } else {
-            this.hide_channels();
+            // default behavior
+            this.show_channels();
         }
     }
 

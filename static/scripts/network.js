@@ -29,16 +29,17 @@ function Networking(chatroom, since) {
                 'chatroom': that.chatroom,
                 'name': $('#name').val(),
             });
-        }, 10000);
+        }, 30000);
 
         that.poller = setInterval(function() {
             if(window.chatroom || window.latitude) {
+                // console.log('polling for', that.chatroom, that.since);
                 that.send('get_spiels', {
                     'chatroom': that.chatroom,
                     'since': that.since,
                 });
             }
-        }, 30000);
+        }, 60000);
     };
     this.sock.onmessage = function(e) {
         var message = JSON.parse(e.data);
@@ -61,7 +62,7 @@ function Networking(chatroom, since) {
             } else {
                 that.send('get_spiels', {
                     'chatroom': message.channel,
-                    'since': window.ui.last_message(message.channel) * 1000,
+                    'since': window.ui.last_message(message.channel),
                 });
             }
         }
