@@ -1,3 +1,3 @@
-version = 26
+version = 27
 
 spiels_per_request = 50
