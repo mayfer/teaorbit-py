@@ -351,7 +351,8 @@ function UI() {
 
     this.align_chat_window = function() {
         var right = 0;
-        if (this.channels_visible == true) {
+        // in case you want to make room for messages
+        if ($(window).width() > 600) { // this.channels_visible == true) {
             right = $('#channels').outerWidth();
         }
         $('#chat').css('margin', $('#header').outerHeight()+'px ' + right + 'px '+$('#post').outerHeight()+'px 0');
