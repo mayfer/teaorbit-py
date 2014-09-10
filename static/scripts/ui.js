@@ -341,8 +341,8 @@ function UI() {
             parent.remove();
         });
 
-        if(this.global_cookie('show_channels') == 'yes') {
-            this.show_channels();
+        if(this.global_cookie('show_channels') == 'no') {
+            this.hide_channels();
         } else {
             // default behavior
             this.show_channels();
