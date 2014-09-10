@@ -19,18 +19,11 @@ def still_online(conn, message):
 
 def get_spiels(conn, message):
     spiel_models = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
-    spiels = [ SpielView(name=spiel.spiel, spiel=spiel.spiel, date=spiel.date, color=spiel.color) for spiel in spiel_models ]
+    spiels = [ SpielView(name=spiel.name, spiel=spiel.spiel, date=spiel.date, color=spiel.color) for spiel in spiel_models ]
 
     if message.until is not None or len(spiels) != 0:
         spiels_dto = SpielsView(spiels)
         conn.send_obj(spiels_dto)
-
-def get_spiels_count(conn, message):
-    spiel_models = conn.db.get_spiels_by_room_id(message.room_id, since=message.since, until=message.until)
-    spiels = [ SpielView.from_model(spiel, message.room_id) for spiel in spiel_models ]
-
-    spiels_dto = SpielsView(spiels)
-    conn.send_obj(spiels_dto)
 
 def post_spiel(conn, message):
     if message.spiel:
