@@ -58,7 +58,7 @@ input#name { width: 20%; }
 #audio:hover { color: #fff; }
 
 #show-channels { width: 180px; border-left: 3px solid transparent; background: #222; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-#show-channels:after, #show-channels.show:after { font-size: 10px; position: absolute; right: 10px; 5px; float: right; }
+#show-channels:after, #show-channels.show:after { font-size: 10px; position: absolute; right: 10px; 5px; float: right; color: rgba(255, 255, 255, 0.4); }
 #show-channels:after { content: "▼"; }
 #show-channels.show:after { content: "▲"; }
 #show-channels.show { background: #777; border-left: 3px solid #aaa; }
