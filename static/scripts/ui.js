@@ -159,7 +159,7 @@ function UI() {
             var channels = window.ui.get_channels();
             for(channel in channels) {
                 if(channel != window.chatroom) {
-                    window.connections.push(new Networking(channel, this_ui.last_message(channel)));
+                    window.connections.push(new Networking(channel, parseInt(this_ui.last_message(channel))*1000));
                 }
             }
 

@@ -100,7 +100,6 @@ class Connection(SockJSConnection):
         except KeyError as e:
             print "KeyError", e
 
-        print "removed", room_id, session_id
         self.broadcast_online_users(room_id)
 
     def update_online(self):
@@ -112,8 +111,6 @@ class Connection(SockJSConnection):
             session = self.current_session
             if session.last_active < now - allowed_inactive:
                 for conn in self.connections[self.room_id].get(session.session_id, set()).copy():
-                    print "removing due to timeout", self.room_id, session.session_id
-                    print "last active", session.last_active, "now", now
                     self.remove_online(self.room_id, session.session_id, conn)
 
     def broadcast_online_users(self, room_id):
@@ -133,7 +130,6 @@ class Connection(SockJSConnection):
     def on_close(self):
         session_id = self.session_id
         room_id = self.room_id
-        print "connection closed", room_id, session_id
         self.remove_online(room_id=room_id, session_id=session_id, connection=self)
         self.broadcast_online_users(room_id)
 
