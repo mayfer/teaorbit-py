@@ -26,15 +26,13 @@ a:hover { border-bottom: 1px solid #666; }
 #post input, #post textarea, #post button { background: #333; border: 1px solid transparent; border-bottom: 1px solid #555; height: 21px; color: #fff; border-radius: 2px; padding: 3px 10px; font-family: 'PT Mono', monospace; line-height: 21px; display: inline-block; vertical-align: middle; font-size: 13px; }
 #post textarea.expanding { line-height: 17px; }
 #post textarea { width: 65%; vertical-align: bottom; }
-#post .submit { display: none; }
+#post textarea { width: calc(80% - 280px); vertical-align: bottom; }
+#post #name { width: 20%; }
+#post .submit { display: none; padding-right: 8px; }
 
 #post form { padding-left: 30px; }
 .color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
 #my-color { bottom: 7px; top: auto; }
-
-input#type-here { width: 60% }
-input#name { width: 20%; }
-#submit { padding-right: 8px; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; -webkit-text-size-adjust: none; overflow-x: hidden; }
 #chat .inner { padding: 30px; }
