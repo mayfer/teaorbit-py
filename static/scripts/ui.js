@@ -385,10 +385,10 @@ function UI() {
                     responseCallback("Right back atcha")
                 }
             })
-            bridge.send('Hello from the javascript')
-            bridge.send('Please respond to this', function responseCallback(responseData) {
-                console.log("Javascript got its response", responseData)
-            })
+            bridge.send('channel:'+window.chatroom);
+            //bridge.send('Please respond to this', function responseCallback(responseData) {
+            //    console.log("Javascript got its response", responseData)
+            //})
         })
     }
 
