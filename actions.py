@@ -2,7 +2,7 @@ from messages import VersionView, SpielsView, SpielView, KeepAliveView
 from common import json_encode, json_decode, unix_now, unix_now_ms
 
 def hello(conn, message):
-    conn.add_online(connection=conn, room_id=message.room_id, session_id=conn.session_id, name=message.name)
+    conn.add_online(connection=conn, room_id=message.room_id, session_id=conn.session_id, name=message.name, channels=message.channels)
 
 def still_online(conn, message):
     player = conn.db.get_player(conn.session_id)

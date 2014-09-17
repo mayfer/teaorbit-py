@@ -1,7 +1,8 @@
 
-function Networking(chatroom, since) {
+function Networking(chatroom, since, channels) {
     var that = this;
     that.chatroom = chatroom;
+    that.channels = channels;
 
     if(since === undefined) {
         this.since = 0;
@@ -21,6 +22,7 @@ function Networking(chatroom, since) {
 
         that.send('hello', {
             'chatroom': that.chatroom,
+            'channels': that.channels,
             'name': $('#name').val(),
         });
 
@@ -178,7 +180,8 @@ function Networking(chatroom, since) {
         this.retry_interval = window.setTimeout(function () {
             console.log('Retrying...');
             var since = window.ui.last_message(that.chatroom);
-            Networking.call(that, that.chatroom, since);
+            var channels = window.ui.get_channels();
+            Networking.call(that, that.chatroom, since, channels);
         }, 2000);
     };
     this.send = function(action, body) {
@@ -190,13 +193,6 @@ function Networking(chatroom, since) {
         console.log('sending,', data);
         var json_data = JSON.stringify(data);
         this.sock.send(json_data);
-    };
-
-    this.get_older_spiels = function(until) {
-        that.send('get_spiels', {
-            'chatroom': that.chatroom,
-            'until': until,
-        });
     };
 
     return this;

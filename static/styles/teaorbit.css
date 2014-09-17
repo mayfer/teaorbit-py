@@ -108,13 +108,15 @@ and (max-device-width : 568px) {
     #channels img.map { width: 250px; height: 250px; }
 
     #post .inner { margin: 5px 10px; }
-    #post input, button { display: block; }
     #post textarea[name='spiel'] {  width: 90%; }
-    #post input[name='name'] {  width: 90%; }
+    #post #name {  width: 90%; }
     #my-color { top: 7px; bottom: auto; }
 
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
     #chat .inner { padding: 15px; }
+
+    #show-channels.show:hover { background: #777; }
+    #show-channels:hover { background: #222; }
 }
 
 img.disabled-desaturate {

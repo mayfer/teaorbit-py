@@ -154,14 +154,8 @@ function UI() {
         this.setup_audio();
 
         if(window.chatroom) {
-            window.networking = Networking(window.chatroom, 0);
-            window.connections = [];
             var channels = window.ui.get_channels();
-            for(channel in channels) {
-                if(channel != window.chatroom) {
-                    window.connections.push(new Networking(channel, parseInt(this_ui.last_message(channel))));
-                }
-            }
+            window.networking = Networking(window.chatroom, null, channels);
 
             window.latitude = 0;
             window.longitude = 0;
@@ -367,10 +361,10 @@ function UI() {
     this.init_ios_native_features = function() {
         function connectWebViewJavascriptBridge(callback) {
             if (window.WebViewJavascriptBridge) {
-                callback(WebViewJavascriptBridge)
+                callback(window.WebViewJavascriptBridge)
             } else {
                 document.addEventListener('WebViewJavascriptBridgeReady', function() {
-                    callback(WebViewJavascriptBridge)
+                    callback(window.WebViewJavascriptBridge)
                 }, false)
             }
         }
@@ -378,18 +372,21 @@ function UI() {
         connectWebViewJavascriptBridge(function(bridge) {
 
             /* Init your app here */
-
             bridge.init(function(message, responseCallback) {
                 alert('Received message: ' + message)   
                 if (responseCallback) {
                     responseCallback("Right back atcha")
                 }
             })
-            bridge.send('Hello from the javascript')
-            bridge.send('Please respond to this', function responseCallback(responseData) {
-                console.log("Javascript got its response", responseData)
-            })
+            console.log('iOS javascript bridge initialized');
+            bridge.send('channel:'+window.chatroom);
+
+            //bridge.send('Hello from the javascript')
+            //bridge.send('Please respond to this', function responseCallback(responseData) {
+            //    console.log("Javascript got its response", responseData)
+            //})
         })
+
     }
 
     this.add_spiel = function(spiel, is_initial_load) {

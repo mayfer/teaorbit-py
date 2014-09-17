@@ -134,6 +134,7 @@ class HelloCM(ClientMessage):
     def __init__(self, body):
         super(HelloCM, self).__init__(body)
         self.name = body.get('name', '')
+        self.channels = body.get('channels', '')
 
 class StillOnlineCM(ClientMessage):
     _action = 'still_online'

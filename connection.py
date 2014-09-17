@@ -61,7 +61,7 @@ class Connection(SockJSConnection):
         except KeyError:
             self.add_online(self, self.room_id, self.session_id, name)
 
-    def add_online(self, connection, room_id, session_id, name=''):
+    def add_online(self, connection, room_id, session_id, name='', channels=[]):
         self.room_id = room_id
         self.participants.add(self)
 

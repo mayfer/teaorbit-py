@@ -25,6 +25,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
         if room_name is None:
             room_name = 'index.html'
         client = self.request.headers.get('X-Requested-By', 'Web')
+        print self.request.headers
         self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=version)
 
 
