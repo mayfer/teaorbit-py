@@ -116,7 +116,7 @@ class Connection(SockJSConnection):
         try:
             self.participants.remove(connection)
             self.connections[room_id][session_id].remove(connection)
-            self.subscriptions[sesssion_id][channel]['connections'].remove(connection)
+            self.subscriptions[session_id][channel]['connections'].remove(connection)
             if len(self.connections[room_id][session_id]) == 0:
                 self.room_sessions[room_id].pop(session_id, None)
         except KeyError as e:

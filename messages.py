@@ -117,6 +117,16 @@ class KeepAliveView(DTO):
     def __init__(self):
         self.version = config.version
 
+class NumSpielsView(DTO):
+    _action = 'num_spiels'
+
+    def __init__(self, channel, num_spiels):
+        self.channel = channel
+        self.num_spiels = num_spiels
+
+
+# ++++++++++++++++++++++++++++
+
 class ClientMessage(DTO):
     def __init__(self, body):
         self.chatroom = body.get('chatroom', '')

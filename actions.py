@@ -1,4 +1,4 @@
-from messages import VersionView, SpielsView, SpielView, KeepAliveView
+from messages import VersionView, SpielsView, SpielView, KeepAliveView, NumSpielsView
 from common import json_encode, json_decode, unix_now, unix_now_ms
 
 def hello(conn, message):
@@ -51,3 +51,8 @@ def post_private_spiel(conn, message):
 def subscribe(conn, message):
     for channel, since in message.channels.items():
         conn.add_subscription(channel, conn.session_id, since, conn)
+        num_spiels = len(conn.db.get_spiels_by_room_id(channel, since=since))
+
+        if num_spiels != 0:
+            num_spiels_dto = NumSpielsView(channel, num_spiels)
+            conn.send_obj(num_spiels_dto)
