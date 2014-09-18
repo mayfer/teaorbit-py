@@ -118,6 +118,7 @@ and (max-device-width : 568px) {
 
     #show-channels.show:hover { background: #777; }
     #show-channels:hover { background: #222; }
+    #chat .load-more { line-height: 40px; }
 }
 
 img.disabled-desaturate {
