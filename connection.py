@@ -16,8 +16,8 @@ class Connection(SockJSConnection):
 
     db = History()
 
-    from rfoo.utils import rconsole
-    rconsole.spawn_server()
+    # from rfoo.utils import rconsole
+    # rconsole.spawn_server()
 
 
     message_actions = {
