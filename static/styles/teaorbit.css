@@ -41,7 +41,7 @@ a:hover { border-bottom: 1px solid #666; }
 #chat .load-more:active { color: rgba(255,255,255,0.8); border: none; }
 #chat.truncated { padding-right: 220px; }
 
-.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; white-space: pre-wrap; word-wrap: break-word; }
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; white-space: pre-wrap; word-wrap: break-word; max-width: 100%; max-width: calc(100% - 60px); }
 .date { display: inline-block; color: #444; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
@@ -114,6 +114,7 @@ and (max-device-width : 568px) {
 
     #chat .date { display: none; color: #444; font-size: 12px; margin-left: 5px; }
     #chat .inner { padding: 15px; }
+    .message {  max-width: calc(100% - 30px); }
 
     #show-channels.show:hover { background: #777; }
     #show-channels:hover { background: #222; }
