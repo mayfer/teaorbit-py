@@ -25,7 +25,6 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
         if room_name is None:
             room_name = 'index.html'
         client = self.request.headers.get('X-Requested-By', 'Web')
-        print self.request.headers
         self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=version)
 
 
@@ -99,7 +98,6 @@ def init():
         raise CommandError("%r is not a valid port number." % port)
 
     runloop(addr, options.port, options.xheaders, options.no_keep_alive, options.use_reloader, options.daemonize)
-
 
 if __name__ == "__main__":
     init()

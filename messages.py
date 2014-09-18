@@ -168,3 +168,10 @@ class PostPrivateSpielCM(ClientMessage):
         self.spiel = body.get('spiel', '')
         self.to = body.get('to', '')
 
+class SubscribeCM(ClientMessage):
+    _action = 'subscribe'
+
+    def __init__(self, body):
+        super(SubscribeCM, self).__init__(body)
+        self.channels = body.get('channels', '')
+        self.since = body.get('since', '')

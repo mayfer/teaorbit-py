@@ -4,7 +4,7 @@ from db import History
 from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
 from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView
-from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM
+from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM, SubscribeCM
 from models import Session, RoomSession
 import actions
 
@@ -12,13 +12,21 @@ class Connection(SockJSConnection):
     participants = set()
     connections = {}
     room_sessions = {}
+    subscriptions = {}
+
     db = History()
+
+    from rfoo.utils import rconsole
+    rconsole.spawn_server()
+
 
     message_actions = {
         HelloCM: actions.hello,
         StillOnlineCM: actions.still_online,
         GetSpielsCM: actions.get_spiels,
         PostSpielCM: actions.post_spiel,
+        PostSpielCM: actions.post_spiel,
+        SubscribeCM: actions.subscribe,
     }
 
     def __init__(self, *args, **kwargs):
@@ -91,10 +99,24 @@ class Connection(SockJSConnection):
 
         self.broadcast_online_users(room_id)
 
+    def add_subscription(self, channel, session_id, since, conn):
+        if channel not in self.subscriptions.keys():
+            self.subscriptions[channel] = {}
+
+        if session_id not in self.subscriptions[channel].keys():
+            self.subscriptions[channel][session_id] = {
+                'since': since,
+                'connections': set([conn]),
+            }
+        else:
+            self.subscriptions[channel][session_id]['since'] = since
+            self.subscriptions[channel][session_id]['connections'].add(conn)
+
     def remove_online(self, room_id, session_id, connection):
         try:
             self.participants.remove(connection)
             self.connections[room_id][session_id].remove(connection)
+            self.subscriptions[sesssion_id][channel]['connections'].remove(connection)
             if len(self.connections[room_id][session_id]) == 0:
                 self.room_sessions[room_id].pop(session_id, None)
         except KeyError as e:
@@ -127,6 +149,13 @@ class Connection(SockJSConnection):
                     connections.add(conn)
         return connections
 
+    def subscriptions_for_room_id(self, room_id):
+        connections = set()
+        for subscription in self.subscriptions.get(room_id, {} ).values():
+            for conn in subscription.get('connections', set([])):
+                connections.add(conn)
+        return connections
+
     def on_close(self):
         session_id = self.session_id
         room_id = self.room_id
@@ -148,6 +177,10 @@ class Connection(SockJSConnection):
 
     def notify_recipients(self, room_id, spiel):
         recipients = self.connections_for_room_id(room_id)
+        self.broadcast(recipients, self.response(spiel))
+
+    def notify_subscribers(self, room_id, spiel):
+        recipients = self.subscriptions_for_room_id(room_id)
         self.broadcast(recipients, self.response(spiel))
 
     def broadcast_text(self, text):

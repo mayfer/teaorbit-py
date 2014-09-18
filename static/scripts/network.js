@@ -49,6 +49,9 @@ function Networking(chatroom, since, channels) {
 
         // initial login
         if(message.action == 'session') {
+            that.send('subscribe', {
+                'channels': window.ui.get_channels(),
+            });
 
             if(message.channel == window.chatroom) {
                 window.session_id = message.body.session_id;
@@ -61,6 +64,7 @@ function Networking(chatroom, since, channels) {
                     'chatroom': message.channel,
                     'since': that.since,
                 });
+
             } else {
                 that.send('get_spiels', {
                     'chatroom': message.channel,

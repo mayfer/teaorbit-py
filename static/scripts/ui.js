@@ -135,13 +135,16 @@ function UI() {
     }
 
     this.get_channels = function() {
-        var channels = this.global_cookie('channels');
-        if(!channels){
-            channels = {};
-        } else {
-            channels = JSON.parse(channels);
+        if(window.channels_cache == undefined) {
+            var channels = this.global_cookie('channels');
+            if(!channels){
+                channels = {};
+            } else {
+                channels = JSON.parse(channels);
+            }
+            window.channels_cache = channels;
         }
-        return channels;
+        return window.channels_cache;
     }
 
     this.touch_channel = function(channel) {

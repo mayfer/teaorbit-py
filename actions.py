@@ -33,6 +33,7 @@ def post_spiel(conn, message):
 
         spiel_dto = SpielView(name=message.name, spiel=message.spiel, date=date, color=color)
         conn.notify_recipients(message.room_id, spiel_dto)
+        conn.notify_subscribers(message.room_id, spiel_dto)
         conn.db.post_spiel(message.room_id, spiel_dto)
 
         conn._update_name(message.name)
@@ -46,3 +47,7 @@ def post_private_spiel(conn, message):
         spiel_dto = SpielView(name=message.name, spiel=message.spiel, latitude=message.latitude, longitude=message.longitude, date=date, color=color)
         conn.notify_recipient(message.to_id, spiel_dto)
         conn.db.post_private_spiel(message.to_id, spiel_dto)
+
+def subscribe(conn, message):
+    for channel, since in message.channels.items():
+        conn.add_subscription(channel, conn.session_id, since, conn)
