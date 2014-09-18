@@ -147,7 +147,7 @@ function Networking(chatroom, since, channels) {
             }
         }
 
-        if(message.action = 'num_spiels') {
+        if(message.action == 'num_spiels') {
             $('#recent-channels .channel').each(function(){
                 if($(this).attr('channel') == message.body.channel) {
                     $(this).find('.new-count').html(message.body.num_spiels);
