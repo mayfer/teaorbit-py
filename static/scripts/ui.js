@@ -574,6 +574,18 @@ function UI() {
     this.disconnected = function() {
         $('#num-online').html("disconnected");
     }
+    this.set_session_info = function(channel, session_id, color) {
+        
+        $('#my-color').css('background', color);
+
+        var login_url = window.location.protocol + "//" + "login-" + session_id + "." + window.location.host + "/" + channel;
+        $('a.login-url').html(login_url).attr('href', login_url);
+
+        $('#choose-color').css('bottom', $('#post').height() + "px");
+        $('#my-color').click(function(e){
+            $('#choose-color').toggle();
+        });
+    }
 
     return this;
 }

@@ -115,12 +115,21 @@ class Connection(SockJSConnection):
     def remove_online(self, room_id, session_id, connection):
         try:
             self.participants.remove(connection)
-            self.connections[room_id][session_id].remove(connection)
+        except:
+            pass
+        try:
+            self.connections[room_id].get(session_id).remove(connection)
+        except:
+            pass
+        try:
             self.subscriptions[session_id][channel]['connections'].remove(connection)
+        except:
+            pass
+        try:
             if len(self.connections[room_id][session_id]) == 0:
                 self.room_sessions[room_id].pop(session_id, None)
-        except KeyError as e:
-            print "KeyError", e
+        except:
+            pass
 
         self.broadcast_online_users(room_id)
 

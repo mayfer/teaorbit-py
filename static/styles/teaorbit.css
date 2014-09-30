@@ -32,7 +32,7 @@ a:hover { border-bottom: 1px solid #666; }
 
 #post form { padding-left: 30px; }
 .color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
-#my-color { bottom: 7px; top: auto; }
+#my-color { bottom: 7px; top: auto; cursor: pointer; }
 
 #chat { position: absolute; left: 0; right: 0; bottom: 0; overflow: scroll; z-index: 50; font-size: 13px; -webkit-overflow-scrolling: touch; -webkit-text-size-adjust: none; overflow-x: hidden; }
 #chat .inner { padding: 30px; }
@@ -82,6 +82,8 @@ a:hover { border-bottom: 1px solid #666; }
 #channels .suggested .channel { margin-left: 25px; }
 #channels .none { margin-left: 25px; color: rgba(255, 255, 255, 0.2); }
 
+#choose-color { display: none; position: absolute; bottom: 30px; left: 0; padding: 15px 25px; background: #000; font-size: 11px; z-index: 100; text-align: center; }
+#choose-color p.faint { margin: 5px 0 0 0; opacity: 0.5; }
 
 #num-online { cursor: pointer; }
 #num-online:hover { color: #fff; }

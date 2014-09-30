@@ -57,8 +57,8 @@ function Networking(chatroom, since, channels) {
                 window.session_id = message.body.session_id;
                 $.cookie("session", window.session_id, {expires: 1000, path: '/'});
                 console.log("Logged in to "+message.channel+", session ID: " + window.session_id);
-                $('#my-color').css('background', message.body.color);
                 window.spiels_per_request = message.body.spiels_per_request;
+                window.ui.set_session_info(message.channel, message.body.session_id, message.body.color);
 
                 that.send('get_spiels', {
                     'chatroom': message.channel,

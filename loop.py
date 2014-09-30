@@ -9,12 +9,13 @@ from optparse import make_option, OptionParser
 from connection import Connection
 import os
 import sys
+import re
 
 import tornado
 from tornado import httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-from config import version
+from config import version, cookie_name
 
 STATIC_URL = '/static/'
 FILE_ROOT = os.path.dirname(__file__)
@@ -24,8 +25,22 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
     def get(self, room_name=None):
         if room_name is None:
             room_name = 'index.html'
+
+        prefix = 'login-'
+        if self.request.host.startswith(prefix):
+            matches = re.match('^{p}([a-zA-Z0-9_-]+)\.(teaorbit\.com|tea.local)(:\d{{4}})?$'.format(p=prefix), self.request.host)
+            if matches:
+                session_id = matches.group(1)
+                base_host = matches.group(2)
+                port = matches.group(3) or ""
+                print "domain", base_host
+                print "session", session_id
+                print "port", port
+                self.set_cookie(cookie_name, session_id, domain=".{host}".format(host=base_host), expires=None, path='/', expires_days=2000)
+                return self.redirect("http://{host}{port}/{channel}".format(host=base_host, channel=room_name, port=port))
+
         client = self.request.headers.get('X-Requested-By', 'Web')
-        self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=version)
+        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=version)
 
 
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
