@@ -36,6 +36,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
                 print "domain", base_host
                 print "session", session_id
                 print "port", port
+                self.clear_cookie(cookie_name, domain="{host}".format(host=base_host), path='/')
                 self.set_cookie(cookie_name, session_id, domain=".{host}".format(host=base_host), expires=None, path='/', expires_days=2000)
                 return self.redirect("http://{host}{port}/{channel}".format(host=base_host, channel=room_name, port=port))
 
