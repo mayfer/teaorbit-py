@@ -456,7 +456,7 @@ function UI() {
                 message.append(color_elem);
             }
             if(spiel.name) {
-                //message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
+                message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
             }
             message.append(escapeHtml(spiel.spiel));
             
