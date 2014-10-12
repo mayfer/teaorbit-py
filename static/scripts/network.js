@@ -170,7 +170,7 @@ function Networking(chatroom, since, channels) {
 
                 var colors = [];
                 for(var i=0; i<users.length; i++) {
-                    var color = '<div class="message"><div class="color" style="background-color: '+users[i].color+'"></div> <span class="name">'+users[i].name+'</span></div><br />';
+                    var color = '<div class="message"><div class="color" style="background-color: '+users[i].color+'"></div> <span class="name">'+escapeHtml(users[i].name)+'</span></div><br />';
                     colors.push(color);
                 }
 

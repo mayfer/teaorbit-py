@@ -424,7 +424,7 @@ function UI() {
                         // 0 is PERMISSION_ALLOWED
                         var message = '';
                         if(spiel.name) {
-                            message += '['+spiel.name+'] '
+                            message += '['+escapeHtml(spiel.name)+'] '
                         }
                         message += spiel.spiel;
 
@@ -456,9 +456,9 @@ function UI() {
                 message.append(color_elem);
             }
             if(spiel.name) {
-                message.append($("<span>").addClass('name').html(escapeHtml(spiel.name)));
+                message.append($("<span>").addClass('name').text(spiel.name));
             }
-            message.append(escapeHtml(spiel.spiel));
+            message.append($('<span>').text(spiel.spiel));
             
 
             var date_elem = $('<time>').addClass('date').attr('datetime', datestring).attr('timestamp', spiel.date).html(datestring);

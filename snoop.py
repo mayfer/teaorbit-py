@@ -14,5 +14,5 @@ for key in keys:
 
 things = sorted(things, key=lambda x: x[2])
 
-for thing in things[-20:]:
+for thing in things[-50:]:
     print thing[0], thing[1].json()
