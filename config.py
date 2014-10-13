@@ -1,4 +1,4 @@
-version = 41
+version = 42
 
 spiels_per_request = 50
 cookie_name = "session"
