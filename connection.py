@@ -16,9 +16,8 @@ class Connection(SockJSConnection):
 
     db = History()
 
-    # from rfoo.utils import rconsole
-    # rconsole.spawn_server()
-
+    from rfoo.utils import rconsole
+    rconsole.spawn_server()
 
     message_actions = {
         HelloCM: actions.hello,
@@ -29,6 +28,10 @@ class Connection(SockJSConnection):
         SubscribeCM: actions.subscribe,
     }
 
+    def close_connection_if_banned(self, info):
+        if self.db.ip_is_banned(info.ip):
+            self.close()
+
     def __init__(self, *args, **kwargs):
         self.client_messages = {}
         for msg_class, action in self.message_actions.items():
@@ -37,6 +40,8 @@ class Connection(SockJSConnection):
         super(Connection, self).__init__(*args, **kwargs)
 
     def on_open(self, info):
+        self.close_connection_if_banned(info)
+
         if 'session' in info.cookies:
             self.session_id = info.cookies['session'].value
         else:
@@ -77,7 +82,7 @@ class Connection(SockJSConnection):
         if player is None:
             player = self.db.add_player(self.session_id)
 
-        self.send_obj(SessionView(self.session_id, color=player.color))
+        self.send_obj(SessionView(self.session_id, color=player.color, public_id=player.public_id))
 
         if room_id not in self.connections.keys():
             self.connections[room_id] = {}

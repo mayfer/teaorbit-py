@@ -113,3 +113,15 @@ class History(object):
 
         return spiels
 
+
+    def ip_is_banned(self, ip):
+        key = "banned_ips"
+        return self.redis.sismember(key, ip)
+
+    def ban_ip(self, ip):
+        key = "banned_ips"
+        self.redis.sadd(key, ip)
+
+    def unban_ip(self, ip):
+        key = "banned_ips"
+        self.redis.srem(key, ip)

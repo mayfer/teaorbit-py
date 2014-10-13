@@ -56,9 +56,10 @@ class ResponseView(DTO):
 class SessionView(DTO):
     _action = 'session'
 
-    def __init__(self, session_id, color):
+    def __init__(self, session_id, color, public_id):
         self.session_id = session_id
         self.color = color
+        self.public_id = public_id
         self.spiels_per_request = config.spiels_per_request
 
     @classmethod
@@ -77,11 +78,12 @@ class VersionView(DTO):
 class SpielView(DTO):
     _action = 'new_spiel'
 
-    def __init__(self, id='', name='', spiel='', date=None, color=None):
+    def __init__(self, id='', name='', spiel='', date=None, color=None, public_id=None):
         self.name = name
         self.spiel = spiel
         self.date = date
         self.color = color
+        self.public_id = public_id
 
         self.id = self.json().__hash__()
 

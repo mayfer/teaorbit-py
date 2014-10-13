@@ -465,6 +465,7 @@ function UI() {
 
             row.append(message);
             row.append(date_elem);
+            row.data('public_id', spiel.public_id);
 
             if(this_ui.last_spiel_date < spiel.date) {
                 this_ui.last_spiel_date = spiel.date;
