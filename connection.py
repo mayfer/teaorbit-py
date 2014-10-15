@@ -16,8 +16,12 @@ class Connection(SockJSConnection):
 
     db = History()
 
-    from rfoo.utils import rconsole
-    rconsole.spawn_server()
+    try:
+        from rfoo.utils import rconsole
+        rconsole.spawn_server()
+        print "*** rconsole ready"
+    except:
+        pass
 
     message_actions = {
         HelloCM: actions.hello,
