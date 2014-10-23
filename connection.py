@@ -44,6 +44,7 @@ class Connection(SockJSConnection):
         super(Connection, self).__init__(*args, **kwargs)
 
     def on_open(self, info):
+        self.info = info
         self.close_connection_if_banned(info)
 
         if 'session' in info.cookies:
