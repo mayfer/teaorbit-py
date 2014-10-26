@@ -14,6 +14,7 @@ import tornado
 from tornado import httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
+from geo import Geo
 import config
 
 STATIC_URL = '/static/'
@@ -24,6 +25,12 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
     def get(self, room_name=None):
         if room_name is None:
             room_name = 'index.html'
+
+        location = Geo.get_location_from_ip(self.request.remote_ip)
+        if location is None:
+            city = 'Vancouver'.lower()
+        else:
+            city = location['city'].lower()
 
         prefix = 'login-'
         if self.request.host.startswith(prefix):
@@ -39,7 +46,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
                 return self.redirect("http://{host}{port}/{channel}".format(host=base_host, channel=room_name, port=port))
 
         client = self.request.headers.get('X-Requested-By', 'Web')
-        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=config.version)
+        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=config.version, city=city)
 
 
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
@@ -85,7 +92,7 @@ def init():
             dest='use_reloader', default=True,
             help="Tells Tornado to use auto-reloader."),
         make_option('--no-reload', action='store_false',
-            dest='use_reloader', default=False,
+            dest='use_reloader', default=True,
             help="Tells Tornado NOT to use auto-reloader."),
         make_option('--admin', action='store_true',
             dest='admin_media', default=False,

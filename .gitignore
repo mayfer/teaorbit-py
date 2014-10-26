@@ -2,3 +2,5 @@
 *.swp
 settings.py
 .DS_Store
+error.log
+output.log

@@ -148,10 +148,6 @@ function Networking(chatroom, since, channels) {
             }
         }
 
-        if(message.action == 'location') {
-            window.ui.add_nearby_channels(message.body.city.toLowerCase());
-        }
-
         if(message.action == 'num_spiels') {
             $('#channels .channel').each(function(){
                 if($(this).attr('channel') == message.body.channel) {

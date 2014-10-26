@@ -168,7 +168,13 @@
             <div class='section new'>
                 <h3>nearby</h3>
                 <div id='nearby-channels'>
-                    <div class='none'>none</div>
+                    {% if city %}
+                        <div class='channel'>
+                            <div class='new-count'></div><a href='/{{ city }}'>#{{city}}</a><div class='delete'>&times;</div>
+                        </div>
+                    {% else %}
+                        <div class='none'>none</div>
+                    {% end %}
                 </div>
             </div>
             <div class='section recent'>

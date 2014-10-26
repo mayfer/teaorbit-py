@@ -59,10 +59,6 @@ class Connection(SockJSConnection):
 
         self.send_obj(VersionView())
 
-        location = Geo.get_location_from_ip(self.info.ip)
-        if location is not None:
-            self.send_obj(LocationView(city=location['city'], latitude=location['latitude'], longitude=location['longitude']))
-
     def on_message(self, text):
         message_dict = json_decode(text)
         if 'action' not in message_dict.keys():
