@@ -2,7 +2,6 @@
 
 # disable .pyc files
 import sys
-sys.dont_write_bytecode = True
 
 import daemon
 from optparse import make_option, OptionParser
@@ -15,7 +14,7 @@ import tornado
 from tornado import httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-from config import version, cookie_name
+import config
 
 STATIC_URL = '/static/'
 FILE_ROOT = os.path.dirname(__file__)
@@ -36,11 +35,11 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
                 print "domain", base_host
                 print "session", session_id
                 print "port", port
-                self.set_cookie(cookie_name, session_id, domain=".{host}".format(host=base_host), expires=None, path='/', expires_days=2000)
+                self.set_cookie(config.cookie_name, session_id, domain=".{host}".format(host=base_host), expires=None, path='/', expires_days=2000)
                 return self.redirect("http://{host}{port}/{channel}".format(host=base_host, channel=room_name, port=port))
 
         client = self.request.headers.get('X-Requested-By', 'Web')
-        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=version)
+        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=config.version)
 
 
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):
@@ -85,6 +84,9 @@ def init():
         make_option('--reload', action='store_true',
             dest='use_reloader', default=True,
             help="Tells Tornado to use auto-reloader."),
+        make_option('--no-reload', action='store_false',
+            dest='use_reloader', default=False,
+            help="Tells Tornado NOT to use auto-reloader."),
         make_option('--admin', action='store_true',
             dest='admin_media', default=False,
             help="Serve admin media."),
@@ -105,6 +107,9 @@ def init():
         make_option('--prod', action='store_true',
             dest='prod', default=False,
             help="Run with production settings."),
+        make_option('--bytecode', action='store_true',
+            dest='bytecode', default=False,
+            help="Write .pyc files."),
     )
     parser = OptionParser(option_list=option_list)
     (options, args) = parser.parse_args()
@@ -114,6 +119,9 @@ def init():
 
     if not options.port.isdigit():
         raise CommandError("%r is not a valid port number." % port)
+
+    if not options.bytecode:
+        sys.dont_write_bytecode = True
 
     runloop(addr, options.port, options.xheaders, options.no_keep_alive, options.use_reloader, options.daemonize)
 
