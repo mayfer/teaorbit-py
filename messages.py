@@ -134,11 +134,7 @@ class ClientMessage(DTO):
         self.chatroom = body.get('chatroom', '')
         self.latitude = body.get('latitude', 0)
         self.longitude = body.get('longitude', 0)
-
-        if self.chatroom:
-            self.room_id = self.chatroom
-        else:
-            self.room_id = Geo.get_room_id(self.latitude, self.longitude)
+        self.room_id = self.chatroom
 
 class HelloCM(ClientMessage):
     _action = 'hello'

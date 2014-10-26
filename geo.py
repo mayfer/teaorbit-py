@@ -1,25 +1,52 @@
+import MySQLdb
+import MySQLdb.cursors as cursors
+import math
+import pygeoip
+import config
+import os
 
+class Location(object):
+    def __init__(self, latitude, longitude, city):
+        self.latitude = latitude
+        self.longitude = longitude
+        self.city = city
 
+    def __repr__(self):
+        return "[{city}] Lat: {latitude}, Lng: {longitude}".format(city=self.city, latitude=self.latitude, longitude=self.longitude)
 
 class Geo(object):
-    @staticmethod
-    def _truncate(f, n):
-        '''Truncates/pads a float f to n decimal places without rounding'''
-        return float(('%.*f' % (n + 1, f))[:-1])
+    connection = MySQLdb.connect(
+        host='localhost',
+        user='root',
+        passwd='',
+        db='teaorbit',
+        cursorclass=cursors.SSCursor,
+    )
+    cursor = connection.cursor(cursors.DictCursor)
+    geoip = pygeoip.GeoIP(os.path.join(os.path.dirname(__file__), config.geoip_data_path))
 
-    @staticmethod
-    def get_room_id(latitude, longitude):
-        latitude = float(latitude)
-        longitude = float(longitude)
+    def __init__(self):
+        pass
 
-        flat_lat = Geo._truncate(latitude, 2)
-        flat_long = Geo._truncate(longitude, 2)
+    @classmethod
+    def get_channels_within_bounds(cls, location1, location2):
+        top = max(location1.latitude, location2.latitude)
+        bottom = min(location1.latitude, location2.latitude)
+        left = min(location1.longitude, location2.longitude)
+        right = max(location1.longitude, location2.longitude)
 
-        poly = [
-            ('%.2f' % (flat_lat + 0.00), '%.2f' % (flat_long - 0.00)),
-            ('%.2f' % (flat_lat + 0.01), '%.2f' % (flat_long - 0.00)),
-            ('%.2f' % (flat_lat + 0.01), '%.2f' % (flat_long - 0.01)),
-            ('%.2f' % (flat_lat + 0.00), '%.2f' % (flat_long - 0.01)),
-            ('%.2f' % (flat_lat + 0.00), '%.2f' % (flat_long - 0.00)),
-        ]
-        return '|'.join([ ','.join(coords) for coords in poly ])
+        query = "SELECT * FROM geo WHERE latitude < :right AND latitude > :left AND longitude < :top AND longitude > :bottom"
+        self.cursor.execute(query, {'top': top, 'right': right, 'bottom': bottom, 'left': left})
+        results = []
+        for row in self.cursor:
+            results.append(row)
+        return results
+
+    @classmethod
+    def get_location_from_ip(cls, ip_address):
+        try:
+            location = self.geoip.record_by_addr(ip_address)
+            return Location(latitude=location['latitude'], longitude=location['longitude'], city=location['city'])
+        except:
+            return None
+

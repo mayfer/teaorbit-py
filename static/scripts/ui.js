@@ -579,7 +579,7 @@ function UI() {
         
         $('#my-color').css('background', color);
 
-        var login_url = window.location.protocol + "//" + "login-" + session_id + "." + window.location.host + "/" + channel;
+        var login_url = window.location.protocol + "//" + "login-" + session_id + "." + window.location.host;
         $('a.login-url').html(login_url).attr('href', login_url);
 
         $('#choose-color').css('bottom', $('#post').height() + "px");

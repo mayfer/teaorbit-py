@@ -6,6 +6,7 @@ from errors import InvalidMessageError
 from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView
 from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM, SubscribeCM
 from models import Session, RoomSession
+from geo import Geo
 import actions
 
 class Connection(SockJSConnection):
@@ -46,6 +47,8 @@ class Connection(SockJSConnection):
     def on_open(self, info):
         self.info = info
         self.close_connection_if_banned(info)
+
+        print Geo.get_location_from_ip(info.ip)
 
         if 'session' in info.cookies:
             self.session_id = info.cookies['session'].value
