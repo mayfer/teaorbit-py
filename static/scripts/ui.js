@@ -345,6 +345,7 @@ function UI() {
     }
 
     this.add_nearby_channels = function(channel) {
+        $('#nearby-channels').html('');
         var channel_elem = $('<div>')
             .addClass('channel')
             .attr('title', '#'+channel)
