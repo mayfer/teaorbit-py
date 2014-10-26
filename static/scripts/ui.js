@@ -315,10 +315,8 @@ function UI() {
                 $('#recent-channels').append(channel_elem);
             }
         }
-        if(Object.keys(channels).length <= 1) {
-            $('#recent-channels').append(
-                $('<div>').addClass('none').html("none")
-            );
+        if(Object.keys(channels).length > 1) {
+            $('#recent-channels .none').remove();
         }
         
 
@@ -346,7 +344,7 @@ function UI() {
         }
     }
 
-    this.add_nearby_channel = function(channel) {
+    this.add_nearby_channels = function(channel) {
         var channel_elem = $('<div>')
             .addClass('channel')
             .attr('title', '#'+channel)
@@ -360,6 +358,7 @@ function UI() {
             .append(
                 $('<div>').addClass('delete').html('&times;')
             );
+        $('#nearby-channels .none').remove();
         $('#nearby-channels').append(channel_elem);
     }
 
