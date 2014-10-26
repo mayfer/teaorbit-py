@@ -102,6 +102,9 @@ def init():
         make_option('--port', action='store',
             dest='port', default='8001',
             help="Port to listen."),
+        make_option('--prod', action='store_true',
+            dest='prod', default=False,
+            help="Run with production settings."),
     )
     parser = OptionParser(option_list=option_list)
     (options, args) = parser.parse_args()

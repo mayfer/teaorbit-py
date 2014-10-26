@@ -36,17 +36,14 @@ class Geo(object):
         right = max(location1.longitude, location2.longitude)
 
         query = "SELECT * FROM geo WHERE latitude < :right AND latitude > :left AND longitude < :top AND longitude > :bottom"
-        self.cursor.execute(query, {'top': top, 'right': right, 'bottom': bottom, 'left': left})
+        cls.cursor.execute(query, {'top': top, 'right': right, 'bottom': bottom, 'left': left})
         results = []
-        for row in self.cursor:
+        for row in cls.cursor:
             results.append(row)
         return results
 
     @classmethod
     def get_location_from_ip(cls, ip_address):
-        try:
-            location = self.geoip.record_by_addr(ip_address)
-            return Location(latitude=location['latitude'], longitude=location['longitude'], city=location['city'])
-        except:
-            return None
+        location = cls.geoip.record_by_addr(ip_address)
+        return Location(latitude=location['latitude'], longitude=location['longitude'], city=location['city'])
 
