@@ -47,6 +47,10 @@
                 window.chatroom = '';
             {% end %}
 
+
+            window.dragging = false;
+            window.mousedown_coordinates = null;
+
             $(document).ready(function(){
                 $(window).bind('touchmove', function(e){
                     e.preventDefault();
@@ -58,8 +62,18 @@
                 if($.browser.mobile == false) {
                     $('#type-here').focus();
                     $('body').on('click', function(e){
-                        if(!$(e.target).is('input') && !$(e.target).is('textarea')) {
+                        if(!$(e.target).is('input') && !$(e.target).is('textarea') && !window.dragging) {
                             $('#type-here').focus();
+                        }
+                        window.dragging = false;
+                    });
+                    $('body').on('mousedown', function(e){
+                        window.dragging = true;
+                        window.mousedown_coordinates = { x: e.pageX, y: e.pageY };
+                    });
+                    $('body').on('mouseup', function(e){
+                        if(pixel_distance(e.pageX, e.pageY, window.mousedown_coordinates.x, window.mousedown_coordinates.y) < 10) {
+                            window.dragging = false;
                         }
                     });
                 } else {
@@ -80,7 +94,6 @@
                     });
                 }
                 window.ui = new UI();
-                // {{ client }}
                 {% if client == 'iPhoneTeaOrbit' %}
                     window.ui.init_ios_native_features();
                 {% else %}
