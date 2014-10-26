@@ -346,6 +346,23 @@ function UI() {
         }
     }
 
+    this.add_nearby_channel = function(channel) {
+        var channel_elem = $('<div>')
+            .addClass('channel')
+            .attr('title', '#'+channel)
+            .attr('channel', channel)
+            .append(
+                $('<a>').attr("href", "/"+channel).html("#"+channel)
+            )
+            .prepend(
+                $('<div>').addClass('new-count')
+            )
+            .append(
+                $('<div>').addClass('delete').html('&times;')
+            );
+        $('#nearby-channels').append(channel_elem);
+    }
+
     this.align_chat_window = function() {
         var right = 0;
         // in case you want to make room for messages

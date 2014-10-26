@@ -126,6 +126,16 @@ class NumSpielsView(DTO):
         self.channel = channel
         self.num_spiels = num_spiels
 
+class LocationView(DTO):
+    _action = 'location'
+
+    def __init__(self, city, latitude, longitude):
+        self.city = city
+        self.latitude = latitude
+        self.longitude = longitude
+
+    def __repr__(self):
+        return "[{city}] Lat: {latitude}, Lng: {longitude}".format(city=self.city, latitude=self.latitude, longitude=self.longitude)
 
 # ++++++++++++++++++++++++++++
 

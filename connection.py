@@ -3,7 +3,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from db import History
 from common import json_encode, json_decode, unix_now, unix_now_ms
 from errors import InvalidMessageError
-from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView
+from messages import DTO, ResponseView, SpielView, SessionView, BlockView, OnlineUsersView, SpielsView, PingView, UserView, KeepAliveView, VersionView, LocationView
 from messages import HelloCM, StillOnlineCM, GetSpielsCM, PostSpielCM, PostPrivateSpielCM, SubscribeCM
 from models import Session, RoomSession
 from geo import Geo
@@ -47,8 +47,6 @@ class Connection(SockJSConnection):
     def on_open(self, info):
         self.info = info
         self.close_connection_if_banned(info)
-
-        print Geo.get_location_from_ip(info.ip)
 
         if 'session' in info.cookies:
             self.session_id = info.cookies['session'].value
@@ -108,7 +106,9 @@ class Connection(SockJSConnection):
 
         self.room_sessions[room_id][session_id] = RoomSession(name=name, session=session)
 
-        self.send_obj(BlockView(room_id))
+        location = Geo.get_location_from_ip(self.info.ip)
+        if location is not None:
+            self.send_obj(LocationView(city=location['city'], latitude=location['latitude'], longitude=location['longitude']))
 
         self.broadcast_online_users(room_id)
 

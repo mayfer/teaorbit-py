@@ -5,15 +5,6 @@ import pygeoip
 import config
 import os
 
-class Location(object):
-    def __init__(self, latitude, longitude, city):
-        self.latitude = latitude
-        self.longitude = longitude
-        self.city = city
-
-    def __repr__(self):
-        return "[{city}] Lat: {latitude}, Lng: {longitude}".format(city=self.city, latitude=self.latitude, longitude=self.longitude)
-
 class Geo(object):
     connection = MySQLdb.connect(
         host='localhost',
@@ -45,5 +36,5 @@ class Geo(object):
     @classmethod
     def get_location_from_ip(cls, ip_address):
         location = cls.geoip.record_by_addr(ip_address)
-        return Location(latitude=location['latitude'], longitude=location['longitude'], city=location['city'])
+        return location
 
