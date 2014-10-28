@@ -28,7 +28,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
 
         location = Geo.get_location_from_ip(self.request.remote_ip)
         if location is None or location['city'] is None:
-            city = 'Vancouver'.lower()
+            city = None
         else:
             city = location['city'].lower()
 
