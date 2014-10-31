@@ -187,6 +187,9 @@ function Networking(chatroom, since, channels) {
             window.ui.set_map_url("https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000aa|fillcolor:0x6666ff|weight:5|"+block_id+"&size=512x512&sensor=false");
         }
 
+        if(message.action == 'local') {
+        }
+
     };
     this.sock.onclose = function() {
         console.log('Connection closed', that.chatroom);
