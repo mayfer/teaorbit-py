@@ -14,4 +14,5 @@ tornado==3.1.1
 wsgiref==0.1.2
 pygeoip==0.3.1
 MySQL-python==1.2.5
+geoip2==2.0.2
 

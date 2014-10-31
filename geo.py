@@ -1,7 +1,8 @@
 import MySQLdb
 import MySQLdb.cursors as cursors
 import math
-import pygeoip
+import geoip2.database
+from geoip2.errors import AddressNotFoundError
 import config
 import os
 
@@ -14,7 +15,7 @@ class Geo(object):
         cursorclass=cursors.SSCursor,
     )
     cursor = connection.cursor(cursors.DictCursor)
-    geoip = pygeoip.GeoIP(os.path.join(os.path.dirname(__file__), config.geoip_data_path))
+    geoip = geoip2.database.Reader(os.path.join(os.path.dirname(__file__), config.geoip_data_path))
 
     def __init__(self):
         pass
@@ -35,6 +36,9 @@ class Geo(object):
 
     @classmethod
     def get_location_from_ip(cls, ip_address):
-        location = cls.geoip.record_by_addr(ip_address)
+        try:
+            location = cls.geoip.city(ip_address)
+        except AddressNotFoundError:
+            location = None
         return location
 
