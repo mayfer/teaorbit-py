@@ -29,10 +29,10 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
             room_name = 'index.html'
 
         location = Geo.get_location_from_ip(self.request.remote_ip)
-        if location is None or location.city is None:
-            location = None
-        else:
+        try:
             location = LocationView(city=location.city.name.lower(), latitude=location.location.latitude, longitude=location.location.longitude)
+        except AttributeError:
+            location = None
 
         prefix = 'login-'
         if self.request.host.startswith(prefix):
