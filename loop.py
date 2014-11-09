@@ -32,7 +32,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
         if location is None or location.city is None:
             location = None
         else:
-            location = LocationView(city=location.city.name.lower(), latitude=location.latitude, longitude=location.longitude)
+            location = LocationView(city=location.city.name.lower(), latitude=location.location.latitude, longitude=location.location.longitude)
 
         prefix = 'login-'
         if self.request.host.startswith(prefix):
