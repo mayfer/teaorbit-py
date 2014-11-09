@@ -17,6 +17,8 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from geo import Geo
 import config
 
+from messages import LocationView
+
 STATIC_URL = '/static/'
 FILE_ROOT = os.path.dirname(__file__)
 
@@ -28,9 +30,9 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
 
         location = Geo.get_location_from_ip(self.request.remote_ip)
         if location is None or location.city is None:
-            city = None
+            location = None
         else:
-            city = location.city.lower()
+            location = LocationView(city=location.city.lower(), latitude=location.city.latitude, longitude=location.city.longitude)
 
         prefix = 'login-'
         if self.request.host.startswith(prefix):
@@ -46,7 +48,7 @@ class TeaOrbitHandler(tornado.web.RequestHandler):
                 return self.redirect("http://{host}{port}/{channel}".format(host=base_host, channel=room_name, port=port))
 
         client = self.request.headers.get('X-Requested-By', 'Web')
-        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=config.version, city=city)
+        return self.render("templates/index.html", STATIC_URL=STATIC_URL, room_name=room_name, client=client, version=config.version, location=location)
 
 
 def runloop(addr, port, xheaders, no_keep_alive, use_reloader, daemonize=False):

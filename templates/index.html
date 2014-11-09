@@ -1,5 +1,23 @@
 <!DOCTYPE html>
-<!-- listen to the white dot -->
+
+<!--
+
+this website was built by someone who thinks
+
+* the leaking of privacy due to "so-and-so is typing a message..." notifications is disgusting
+* honesty is seldom achieved when names are attached to the thoughts expressed
+* speaking of expression, feelings are best conveyed with unicode. preferably mono-space for alignment convience.
+* emoticons are lame
+* gifs are tasteless
+* registration and login are soul sucking chores
+* making products with the goal of making money dilutes the field of programming with idiotic efforts of targeting the least common denominator audience
+* coders must not forget that programming is a craft, and can be done has a hobby, and can be used for expression of one's self.
+
+- white dot
+
+-->
+
+
 <html>
     <head>
         <link href='http://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
@@ -78,7 +96,7 @@
                     });
                 } else {
                     $('#type-here, #name').focus(function(e){
-                        window.ui.scroll();
+                        window.ui.scroll(); 
                     });
                 }
                 if(window.navigator.standalone) {
@@ -158,9 +176,9 @@
             <div class='section new'>
                 <h3>nearby</h3>
                 <div id='nearby-channels'>
-                    {% if city %}
+                    {% if location %}
                         <div class='channel'>
-                            <div class='new-count'></div><a href='/{{ city }}'>#{{city}}</a><div class='delete'>&times;</div>
+                            <div class='new-count'></div><a href='/{{ location.city }}'>#{{location.city}}</a><div class='delete'>&times;</div>
                         </div>
                     {% else %}
                         <div class='none'>none</div>
@@ -210,23 +228,39 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASm3CwaK9qtcZEWYa-iQwHaGi3gcosAJc&sensor=false"></script>
         <script type="text/javascript"> 
             google.maps.event.addDomListener(window, 'load', init_map);
+
+            {% if location %}
+                var position = {
+                    city: '{{location.city}}',
+                    latitude: {{location.latitude}},
+                    longitude: {{location.longitude}},
+                }
+            {% else %}
+                var position = {
+                    city: 'vancouver',
+                    latitude: 49.2500,
+                    longitude: -123.1000,
+                }
+            {% end %}
         
             function init_map() {
                 // Basic options for a simple Google Map
                 // For more options see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
                 var mapOptions = {
                     backgroundColor: "#333333",
+                    zoomControlOptions: {
+                        style: google.maps.ZoomControlStyle.LARGE,
+                        position: google.maps.ControlPosition.RIGHT_TOP,
+                    },
                     disableDefaultUI: true,
                     zoomControl: true,
                     scaleControl: true,
-                    // How zoomed in you want the map to start at (always required)
-                    zoom: 11,
+                    zoom: 12,
+                    maxZoom: 18,
+                    minZoom: 11,
+                    center: new google.maps.LatLng(position.latitude, position.longitude),
 
-                    // The latitude and longitude to center the map (always required)
-                    center: new google.maps.LatLng(49.2500, -123.1000),
-
-                    // How you would like to style the map. 
-                    // This is where you would paste any style found on Snazzy Maps.
+                    // Snazzy Maps
                     styles: [
                     {
                         "stylers": [{
@@ -313,14 +347,8 @@
                         }]
                     }]
                 };
-
-                // Get the HTML DOM element that will contain your map 
-                // We are using a div with id="map" seen below in the <body>
                 var mapElement = document.getElementById('map');
-
-                // Create the Google Map using out element and options defined above
                 window.map = new google.maps.Map(mapElement, mapOptions);
-
                 window.overlay = new google.maps.OverlayView();
                 overlay.draw = function() {};
                 overlay.setMap(window.map);

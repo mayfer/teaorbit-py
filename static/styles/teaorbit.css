@@ -41,8 +41,9 @@ a:hover { border-bottom: 1px solid #666; }
 #chat .load-more:active { color: rgba(255,255,255,0.8); border: none; }
 #chat.truncated { padding-right: 220px; }
 
-.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; white-space: pre-wrap; word-wrap: break-word; max-width: 100%; max-width: calc(100% - 60px); }
-.date { display: inline-block; color: #444; text-shadow: 1px 1px 1px #333; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
+.message { background: rgba(255,255,255,0.1); padding: 5px 10px 5px 30px; border-radius: 3px; display: inline-block; margin: 2px 0;  position: relative; line-height: 16px; min-height: 16px; font-size: 13px; white-space: pre-wrap; word-wrap: break-word; max-width: 100%; max-width: calc(100% - 60px);  }
+.row { pointer-events: auto; display: inline-block; }
+.date { display: inline-block; color: #444; text-shadow: 1px 1px 1px #222; font-size: 12px; margin-left: 5px; -webkit-text-size-adjust: none; }
 .row:hover .date { color: #aaa; }
 .row:hover .message { color: #ccc; }
 .row:hover .name { color: #aaa; }
@@ -91,7 +92,17 @@ a:hover { border-bottom: 1px solid #666; }
 
 #drawing {  background: #fff; }
 
-#map { position: absolute; top: 30px; right: 30px; bottom: 30px; left: 0px; box-shadow: 0px 0 15px #000; background: rgba(255,255,255,0.1); z-index: 1; }
+#map { position: absolute; top: 50px; right: 0; bottom: 0px; left: 0px; box-shadow: 0px 0 15px #000; background: rgba(255,255,255,0.1); z-index: 1; }
+
+img.disabled-desaturate {
+    -webkit-filter: grayscale(1); -webkit-filter: grayscale(100%); -moz-filter: grayscale(100%);
+    filter: gray; filter: grayscale(100%);
+    filter: url(desaturate.svg#greyscale);
+}
+
+.gmnoprint {
+    opacity: 0.6;
+}
 
 @media only screen 
 and (min-device-width : 320px) 
@@ -123,10 +134,9 @@ and (max-device-width : 568px) {
     #show-channels.show:hover { background: #777; }
     #show-channels:hover { background: #222; }
     #chat .load-more { line-height: 40px; }
-}
 
-img.disabled-desaturate {
-    -webkit-filter: grayscale(1); -webkit-filter: grayscale(100%); -moz-filter: grayscale(100%);
-    filter: gray; filter: grayscale(100%);
-    filter: url(desaturate.svg#greyscale);
+    #map { top: 30px; }
+    .gmnoprint {
+        opacity: 0;
+    }
 }

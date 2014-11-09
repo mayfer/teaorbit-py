@@ -484,6 +484,8 @@ function UI() {
             row.append(date_elem);
             row.data('public_id', spiel.public_id);
 
+            row = $('<div>').addClass('row-wrapper').append(row);
+
             if(this_ui.last_spiel_date < spiel.date) {
                 this_ui.last_spiel_date = spiel.date;
                 chat.append(row);
@@ -571,6 +573,10 @@ function UI() {
                 'bottom': '0',
                 'right': '0',
             })
+        $('#map')
+            .css({
+                'margin-right': $('#channels').outerWidth() + 'px',
+            });
         //$('#channels input').focus();
         this.global_cookie('show_channels', 'yes');
         this.channels_visible = true;
@@ -581,6 +587,10 @@ function UI() {
     this.hide_channels = function() {
         $('#channels').removeClass('show');
         $('#show-channels').removeClass('show');
+        $('#map')
+            .css({
+                'margin-right': '0',
+            });
         this.global_cookie('show_channels', 'no');
         this.channels_visible = false;
 
