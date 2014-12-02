@@ -158,7 +158,7 @@ function UI() {
 
         if(window.chatroom) {
             var channels = window.ui.get_channels();
-            window.networking = Networking(window.chatroom, null, channels);
+            window.networking = new Networking(window.chatroom, null, channels);
 
             window.latitude = 0;
             window.longitude = 0;
@@ -173,7 +173,6 @@ function UI() {
                 window.longitude = position.coords.longitude;
                 window.gps_accuracy = position.coords.accuracy;
 
-                //window.networking = Networking();
                 $('#loader').hide();
             }, function(error){
                 $('#loader .inner .title').html('<span class="error">Failed</span> getting location');
@@ -342,6 +341,8 @@ function UI() {
             // default behavior
             this.show_channels();
         }
+
+        this.init_drawing();
     }
 
     this.add_nearby_channels = function(channel) {
@@ -603,6 +604,28 @@ function UI() {
         $('#my-color').click(function(e){
             $('#choose-color').toggle();
         });
+    }
+
+    this.init_drawing = function() {
+        this_ui.drawing = false;
+
+        Mousetrap.bind(['command+e', 'ctrl+e'], function(e) {
+            this_ui.toggle_drawing();
+            return false;
+        });
+
+        this_ui.drawing_canvas = new drawingCanvas($('#draw'));
+    }
+
+    this.toggle_drawing = function() {
+        this_ui.drawing = !this_ui.drawing;
+        var offset = $('#type-here').offset();
+
+        $('#draw-wrapper').toggle().css({
+            bottom: $('#post').height() - 10,
+            left: offset.left - 10,
+        });
+        
     }
 
     return this;

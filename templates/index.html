@@ -25,6 +25,7 @@
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/modernizr.min.js?v={{ version }}'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/sockjs.min.js?v={{ version }}'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/basics.js?v={{ version }}'></script>
+        <script type='text/javascript' src='{{ STATIC_URL }}scripts/libs/mousetrap.js?v={{ version }}'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/ui.js?v={{ version }}'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/network.js?v={{ version }}'></script>
         <script type='text/javascript' src='{{ STATIC_URL }}scripts/draw.js?v={{ version }}'></script>
@@ -123,13 +124,13 @@
                 <div class='inner'>
                     <form action='/post'>
                         <span class='color' id='my-color'></span>
-                        <input type='text' name='name' id='name' placeholder='Name (optional)' />
+                        <input type='text' name='name' id='name' class='mousetrap' placeholder='Name (optional)' />
                         <input type='hidden' name='latitude' value='0' />
                         <input type='hidden' name='longitude' value='0' />
                         <input type='hidden' name='last_id' value='0' />
                         <input type='hidden' name='session' value='' />
                         <input type='hidden' name='chatroom' value='' />
-                        <textarea name='spiel' id='type-here' placeholder='Type your message'></textarea>
+                        <textarea name='spiel' id='type-here' class='mousetrap' placeholder='Type your message'></textarea>
                         <button type='submit' class='submit' id='submit' />Submit</button>
                     </form>
                     <!--<canvas id='drawing' width="500" height="300"></canvas>-->
@@ -150,16 +151,6 @@
                 </div>
             </div>
         </div>
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-46162095-1', 'teaorbit.com');
-            ga('send', 'pageview');
-
-        </script>
         <div id='channels'>
             <div class='section new'>
                 <h3>new</h3>
@@ -205,5 +196,19 @@
             go to <a href="" class='login-url'></a> to keep this color
             <p class='faint'>or clear your cache if you want a new one</p>
         </div>
+        <div id='draw-wrapper'>
+            <div id='draw'>
+            </div>
+        </div>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-46162095-1', 'teaorbit.com');
+            ga('send', 'pageview');
+
+        </script>
     </body>
 </html>
