@@ -198,7 +198,7 @@ function UI() {
         var spamFilter = function(){
             console.log(spamCounter)
             spamCounter = spamCounter + 1
-            if(spamCounter >= 3){
+            if(spamCounter > 3){
                 $("#post .submit").show();
                 $("textarea").css("width", "calc(72.355% - 280px)");
                 antiSpamNeeded = true;
@@ -211,7 +211,7 @@ function UI() {
                 } else {
                     timers = timers - 1
                 };
-            }, 5000);
+            }, 3000);
         }
 
         $('#post form').on('submit', function(e){
@@ -314,9 +314,10 @@ function UI() {
             e.preventDefault();
             e.stopPropagation();
             $("#post .submit").hide();
-            $("textarea").css("width", "calc(80% - 280px)");
+            $("textarea").css("width", "calc(80% - 280px)").attr("placeholder", "Please be patient...")
             window.setTimeout(function(){
                 antiSpamNeeded = false;
+                 $("textarea").attr("placeholder", "Type your message")
             },8000);
         });
 
