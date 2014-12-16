@@ -192,8 +192,31 @@ function UI() {
             });
         });
 
+        var spamCounter = 0
+        var antiSpamNeeded = false
+        var timers = 0
+        var spamFilter = function(){
+            console.log(spamCounter)
+            spamCounter = spamCounter + 1
+            if(spamCounter >= 3){
+                $("#post .submit").show();
+                $("textarea").css("width", "calc(72.355% - 280px)");
+                antiSpamNeeded = true;
+            }
+            timers = timers + 1
+            window.setTimeout(function(){
+                if(timers <= 1){
+                    spamCounter = 0
+                    timers = 0
+                } else {
+                    timers = timers - 1
+                };
+            }, 5000);
+        }
 
         $('#post form').on('submit', function(e){
+            //should update counter by one for each post
+            spamFilter();
             e.preventDefault();
             var latitude = window.latitude;
             var longitude = window.longitude;
@@ -271,7 +294,7 @@ function UI() {
         $('textarea').autosize();
         $('textarea').keydown(function (e) {
             // enter key
-            if (e.keyCode == 13 && !e.shiftKey) {
+            if (e.keyCode == 13 && !e.shiftKey && !antiSpamNeeded) {
                 $(this.form).submit();
                 e.preventDefault();
                 e.stopPropagation();
@@ -285,6 +308,18 @@ function UI() {
         $('input, textarea').bind('touchstart', function(e){
             $(this).focus();
         });
+
+        $("#post .submit").on('click', function (e){
+            $(this.form).submit();
+            e.preventDefault();
+            e.stopPropagation();
+            $("#post .submit").hide();
+            $("textarea").css("width", "calc(80% - 280px)");
+            window.setTimeout(function(){
+                antiSpamNeeded = false;
+            },8000);
+        });
+
         $('.new-channel span').keydown(function (e) {
             // enter key
             if (e.keyCode == 13 && !e.shiftKey) {

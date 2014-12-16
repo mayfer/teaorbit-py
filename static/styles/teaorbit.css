@@ -28,7 +28,7 @@ a:hover { border-bottom: 1px solid #666; }
 #post textarea { width: 65%; vertical-align: bottom; }
 #post textarea { width: calc(80% - 280px); vertical-align: bottom; }
 #post #name { width: 20%; }
-#post .submit { display: none; padding-right: 8px; }
+#post .submit { display: none; padding-right: 8px; height: 29px;}
 
 #post form { padding-left: 30px; }
 .color { display: inline-block; height: 16px; width: 16px; border-radius: 8px; position: absolute; left: 5px; top: 5px; }
