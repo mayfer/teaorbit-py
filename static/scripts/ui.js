@@ -203,7 +203,7 @@ function UI() {
 
         var spamFilter = function(){
             spam.counter = spam.counter + 1
-            if(sapam.counter > 3){
+            if(spam.counter > 3){
                 $("#post .submit").show();
                 $("textarea").css("width", "calc(72.355% - 280px)"); //this isn't exactly responsive... doesn't fit in smaller windows.
                 spam.antiNeeded = true;
