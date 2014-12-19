@@ -192,30 +192,34 @@ function UI() {
             });
         });
 
-        var spamCounter = 0
-        var antiSpamNeeded = false
-        var timers = 0
+        var spam = {
+            counter: 0,
+            antiNeeded: false,
+            timers: 0
+            //add # of offenses. Stored on the server and loaded in when connected. Ajax I guess
+            //offenses: session || 0 
+            //offenses will be 2*1000 to add to wait time for the button.
+        };
+
         var spamFilter = function(){
-            console.log(spamCounter)
-            spamCounter = spamCounter + 1
-            if(spamCounter > 3){
+            spam.counter = spam.counter + 1
+            if(sapam.counter > 3){
                 $("#post .submit").show();
-                $("textarea").css("width", "calc(72.355% - 280px)");
-                antiSpamNeeded = true;
+                $("textarea").css("width", "calc(72.355% - 280px)"); //this isn't exactly responsive... doesn't fit in smaller windows.
+                spam.antiNeeded = true;
             }
-            timers = timers + 1
+            spam.timers = spam.timers + 1
             window.setTimeout(function(){
-                if(timers <= 1){
-                    spamCounter = 0
-                    timers = 0
+                if(spam.timers <= 1){
+                    spam.counter = 0
+                    spam.timers = 0
                 } else {
-                    timers = timers - 1
+                    spam.timers = spam.timers - 1
                 };
             }, 3000);
         }
 
         $('#post form').on('submit', function(e){
-            //should update counter by one for each post
             spamFilter();
             e.preventDefault();
             var latitude = window.latitude;
@@ -294,7 +298,7 @@ function UI() {
         $('textarea').autosize();
         $('textarea').keydown(function (e) {
             // enter key
-            if (e.keyCode == 13 && !e.shiftKey && !antiSpamNeeded) {
+            if (e.keyCode == 13 && !e.shiftKey && !spam.antiNeeded) {
                 $(this.form).submit();
                 e.preventDefault();
                 e.stopPropagation();
@@ -316,7 +320,7 @@ function UI() {
             $("#post .submit").hide();
             $("textarea").css("width", "calc(80% - 280px)").attr("placeholder", "Please be patient...")
             window.setTimeout(function(){
-                antiSpamNeeded = false;
+                spam.antiNeeded = false;
                  $("textarea").attr("placeholder", "Type your message")
             },8000);
         });
@@ -446,6 +450,7 @@ function UI() {
     }
 
     this.add_spiel = function(spiel, is_initial_load) {
+        //add length function. "click to expand" Messages that are too long 
         var chat = $('#chat .inner');
         var row = $('<div>').addClass('row');
         var date = new Date(spiel.date);

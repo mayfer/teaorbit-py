@@ -37,6 +37,7 @@ def post_spiel(conn, message):
         conn.db.post_spiel(message.room_id, spiel_dto)
 
         conn._update_name(message.name)
+    }
 
 def post_private_spiel(conn, message):
     if message.spiel:
