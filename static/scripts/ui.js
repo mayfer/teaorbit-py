@@ -342,7 +342,6 @@ function UI() {
             this.show_channels();
         }
 
-        this.init_drawing();
     }
 
     this.add_nearby_channels = function(channel) {
@@ -604,9 +603,11 @@ function UI() {
         $('#my-color').click(function(e){
             $('#choose-color').toggle();
         });
+
+        this.init_drawing(color);
     }
 
-    this.init_drawing = function() {
+    this.init_drawing = function(color) {
         this_ui.drawing = false;
 
         Mousetrap.bind(['command+e', 'ctrl+e'], function(e) {
@@ -614,7 +615,7 @@ function UI() {
             return false;
         });
 
-        this_ui.drawing_canvas = new drawingCanvas($('#draw'));
+        this_ui.drawing_canvas = new drawingCanvas($('#draw'), color);
     }
 
     this.toggle_drawing = function() {
@@ -622,8 +623,8 @@ function UI() {
         var offset = $('#type-here').offset();
 
         $('#draw-wrapper').toggle().css({
-            bottom: $('#post').height() - 10,
-            left: offset.left - 10,
+            bottom: $('#post').height() - 12,
+            left: offset.left - 15,
         });
         
     }

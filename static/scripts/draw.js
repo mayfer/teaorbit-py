@@ -43,7 +43,7 @@ function Canvas(jq_elem) {
     return canvas_jq;
 }
 
-function drawingCanvas(jq_elem) {
+function drawingCanvas(jq_elem, color) {
     var jq_elem = jq_elem;
     var canvas_jq = Canvas(jq_elem).addClass('drawing-canvas');
     var canvas = canvas_jq.get(0);
@@ -156,8 +156,13 @@ function drawingCanvas(jq_elem) {
     this.getImage = function() {
         return canvas.toDataURL();
     }
+    this.reset = function() {
+        ctx.clearRect(0, 0, ctx.width, ctx.height);
+        history = [];
+        history_position = 0;
+    }
 
-    this.init();
+    this.init(color);
     return this;
 }
 

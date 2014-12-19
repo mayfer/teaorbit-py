@@ -89,8 +89,8 @@ a:hover { border-bottom: 1px solid #666; }
 #num-online:hover { color: #fff; }
 #online-users { padding: 10px 0 10px 20px; background: #000; display: none; z-index: 200; position: relative; }
 
-#draw-wrapper { position: absolute; background: #000; padding: 10px 10px 0 10px; display: none; z-index: 101; border-top-left-radius: 5px; border-top-right-radius: 5px; }
-#draw {  background: #333; width: 300px; height: 300px; }
+#draw-wrapper { position: absolute; background: #333; border: 15px solid #000; border-bottom: none; display: none; z-index: 101; border-top-left-radius: 5px; border-top-right-radius: 5px; }
+#draw {  background: rgba(255,255,255,0.1); width: 300px; height: 300px; cursor: crosshair; }
 #draw:before { content: "Draw here"; color: #888; font-size: 13px; padding: 10px; display: block; background: none; position: absolute; }
 
 
