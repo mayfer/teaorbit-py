@@ -196,9 +196,6 @@ function UI() {
             counter: 0,
             antiNeeded: false,
             timers: 0
-            //add # of offenses. Stored on the server and loaded in when connected. Ajax I guess
-            //offenses: session || 0 
-            //offenses will be 2*1000 to add to wait time for the button.
         };
 
         var spamFilter = function(){
